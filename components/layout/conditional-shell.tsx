@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation"
 
-const AUTH_ROUTES = ["/login", "/signup", "/dashboard"]
+const AUTH_ROUTES = ["/login", "/signup", "/dashboard", "/onboarding"]
 
 export function ConditionalShell({
   children,
