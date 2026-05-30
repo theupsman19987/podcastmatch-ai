@@ -1,9 +1,9 @@
 "use client"
 
 import { useDNA } from "../dna-context"
-import { StepCard, StepHeader, SectionLabel, SelectionCard, StepNav } from "../dna-inputs"
+import { StepCard, StepHeader, SectionLabel, SelectionCard, StepTextarea, StepNav } from "../dna-inputs"
 
-const EXPERTISE_AREAS = [
+const TOPICS = [
   { emoji: "💼", label: "Business & Entrepreneurship" },
   { emoji: "⚡", label: "Technology & Innovation" },
   { emoji: "🌿", label: "Health & Wellness" },
@@ -18,48 +18,89 @@ const EXPERTISE_AREAS = [
   { emoji: "📖", label: "Education & Learning" },
 ]
 
-const YEARS = [
-  { label: "1–2 years",   description: "Still establishing my foundation" },
-  { label: "3–5 years",   description: "Growing and gaining recognition" },
-  { label: "6–10 years",  description: "Established with a solid track record" },
-  { label: "10+ years",   description: "Recognized authority in my field" },
+const CATEGORIES = [
+  { emoji: "🎓", label: "Industry Expert",    description: "Deep specialist knowledge in your field" },
+  { emoji: "📚", label: "Author / Creator",   description: "You've published books, courses, or content" },
+  { emoji: "🧭", label: "Coach / Mentor",     description: "You guide and develop others" },
+  { emoji: "💡", label: "Thought Leader",     description: "You shape ideas and perspectives at scale" },
+  { emoji: "🚀", label: "Entrepreneur",       description: "You build and operate ventures" },
+  { emoji: "🔬", label: "Researcher / Academic", description: "Evidence-based insights and data" },
+  { emoji: "🏛️", label: "Executive / Leader", description: "C-suite, board, or senior leadership" },
+  { emoji: "🌱", label: "Practitioner",       description: "You apply your craft hands-on every day" },
 ]
 
 export function Step2Expertise() {
   const { formData, setField, next, back } = useDNA()
-  const canNext = formData.expertise !== ""
+  const canNext = formData.s2_primaryTopic !== ""
 
   return (
     <StepCard>
       <StepHeader
-        headline="What's your primary area of expertise?"
-        sub="Select your main field. We use this to match you with podcast audiences hungry for your knowledge."
+        headline="Your Expertise"
+        sub="Define your knowledge, your craft, and the results you create."
       />
 
-      <SectionLabel>Your Expertise Area</SectionLabel>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mb-8">
-        {EXPERTISE_AREAS.map(({ emoji, label }) => (
-          <SelectionCard
-            key={label}
-            emoji={emoji}
-            label={label}
-            selected={formData.expertise === label}
-            onClick={() => setField("expertise", label)}
-          />
-        ))}
-      </div>
+      <div className="space-y-6">
+        <div>
+          <SectionLabel>6. Which topic best represents your primary expertise?</SectionLabel>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+            {TOPICS.map(({ emoji, label }) => (
+              <SelectionCard
+                key={label}
+                emoji={emoji}
+                label={label}
+                selected={formData.s2_primaryTopic === label}
+                onClick={() => setField("s2_primaryTopic", label)}
+              />
+            ))}
+          </div>
+        </div>
 
-      <SectionLabel>Years in Your Field</SectionLabel>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {YEARS.map(({ label, description }) => (
-          <SelectionCard
-            key={label}
-            label={label}
-            description={description}
-            selected={formData.yearsInField === label}
-            onClick={() => setField("yearsInField", label)}
+        <div>
+          <SectionLabel>7. What subject could you speak about for an hour without preparation?</SectionLabel>
+          <StepTextarea
+            value={formData.s2_speakForHour}
+            onChange={v => setField("s2_speakForHour", v)}
+            placeholder="The topic you know so deeply you could go on forever without notes..."
+            rows={3}
           />
-        ))}
+        </div>
+
+        <div>
+          <SectionLabel>8. What problem do you help people solve?</SectionLabel>
+          <StepTextarea
+            value={formData.s2_problemSolved}
+            onChange={v => setField("s2_problemSolved", v)}
+            placeholder="Describe the specific pain, challenge, or obstacle your expertise addresses..."
+            rows={3}
+          />
+        </div>
+
+        <div>
+          <SectionLabel>9. What results have you personally achieved in this area?</SectionLabel>
+          <StepTextarea
+            value={formData.s2_personalResults}
+            onChange={v => setField("s2_personalResults", v)}
+            placeholder="Share measurable wins, milestones, or transformations you've experienced yourself..."
+            rows={3}
+          />
+        </div>
+
+        <div>
+          <SectionLabel>10. Which expertise category best describes you?</SectionLabel>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {CATEGORIES.map(({ emoji, label, description }) => (
+              <SelectionCard
+                key={label}
+                emoji={emoji}
+                label={label}
+                description={description}
+                selected={formData.s2_expertiseCategory === label}
+                onClick={() => setField("s2_expertiseCategory", label)}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
       <StepNav canNext={canNext} onBack={back} onNext={next} />
