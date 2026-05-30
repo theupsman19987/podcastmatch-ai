@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "motion/react"
 import { CheckCircle2, Sparkles } from "lucide-react"
+import { useDNA } from "./dna-context"
 
 const ANALYSIS_STEPS = [
   "Mapping your expertise profile...",
@@ -16,7 +17,15 @@ const ANALYSIS_STEPS = [
 
 export function DNAAnalysis() {
   const router = useRouter()
+  const { formData } = useDNA()
   const [revealed, setRevealed] = useState(0)
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("podmatch_creator_dna", JSON.stringify(formData))
+    } catch { /* ignore */ }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (revealed < ANALYSIS_STEPS.length) {
