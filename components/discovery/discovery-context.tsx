@@ -108,6 +108,8 @@ export function DiscoveryProvider({ children }: { children: React.ReactNode }) {
     if (filters.guestAcceptance     !== "any") n++
     if (filters.minMatch            > 0)       n++
     if (filters.visibilityPotential !== "any") n++
+    if (filters.activityStatus      !== "any") n++
+    if (filters.guestFriendlyMin    > 0)       n++
     return n
   }, [filters])
 
@@ -133,6 +135,8 @@ export function DiscoveryProvider({ children }: { children: React.ReactNode }) {
           if (filters.audienceSize === "50-100k"  && (s < 50 || s >= 100))return false
           if (filters.audienceSize === "100k+"    && s < 100)             return false
         }
+        if (filters.activityStatus !== "any" && p.activityStatus !== filters.activityStatus) return false
+        if (filters.guestFriendlyMin > 0 && (p.guestFriendlyScore ?? 0) < filters.guestFriendlyMin) return false
         return true
       })
       .sort((a, b) => {

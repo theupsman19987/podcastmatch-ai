@@ -52,6 +52,18 @@ const ACTIVITY_LABEL: Record<DiscoveryPodcast["hostActivity"], string> = {
   monthly:  "Monthly",
 }
 
+/* ── Active status indicator ──────────────────────────────── */
+const STATUS_DOT: Record<string, string> = {
+  active:   "bg-[oklch(0.65_0.15_145)]",
+  hiatus:   "bg-[oklch(0.78_0.15_83)]",
+  inactive: "bg-muted-foreground/40",
+}
+const STATUS_LABEL: Record<string, string> = {
+  active:   "Active",
+  hiatus:   "On Hiatus",
+  inactive: "Inactive",
+}
+
 /* ── Visibility badge ─────────────────────────────────────── */
 const VIS_STYLES: Record<DiscoveryPodcast["visibilityPotential"], { label: string; cls: string }> = {
   "very-high": { label: "Very High Visibility",  cls: "bg-[oklch(0.78_0.15_83/0.10)] text-[var(--premium-gold)] border-[oklch(0.78_0.15_83/0.25)]" },
@@ -174,6 +186,12 @@ export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }:
             <span className={cn("h-1.5 w-1.5 rounded-full", ACTIVITY_DOT[podcast.hostActivity])} aria-hidden="true" />
             {ACTIVITY_LABEL[podcast.hostActivity]}
           </span>
+          {podcast.activityStatus && podcast.activityStatus !== "active" && (
+            <span className="flex items-center gap-1">
+              <span className={cn("h-1.5 w-1.5 rounded-full", STATUS_DOT[podcast.activityStatus])} aria-hidden="true" />
+              {STATUS_LABEL[podcast.activityStatus]}
+            </span>
+          )}
           <span className="flex items-center gap-1">
             <Users className="size-3" aria-hidden="true" />
             {podcast.audienceSize}K listeners
@@ -182,6 +200,12 @@ export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }:
             <TrendingUp className="size-2.5" aria-hidden="true" />
             {vis.label}
           </span>
+          {podcast.guestFriendlyScore !== undefined && (
+            <span className="flex items-center gap-1 rounded-full border border-[oklch(0.55_0.16_145/0.25)] bg-[oklch(0.55_0.16_145/0.10)] px-1.5 py-0.5 text-[oklch(0.70_0.16_145)]">
+              <Zap className="size-2.5" aria-hidden="true" />
+              {podcast.guestFriendlyScore}% guest friendly
+            </span>
+          )}
         </div>
 
         {/* Category tags */}

@@ -193,6 +193,35 @@ function FilterContent() {
         />
       </FilterSection>
 
+      {/* Active status */}
+      <FilterSection title="Active Status">
+        <SegmentControl
+          value={filters.activityStatus}
+          onChange={v => setFilter("activityStatus", v)}
+          options={[
+            { label: "Any",      value: "any"      },
+            { label: "Active",   value: "active"   },
+            { label: "Hiatus",   value: "hiatus"   },
+            { label: "Inactive", value: "inactive" },
+          ]}
+        />
+      </FilterSection>
+
+      {/* Guest friendly score */}
+      <FilterSection title="Guest Friendly Score">
+        <SegmentControl
+          value={String(filters.guestFriendlyMin)}
+          onChange={v => setFilter("guestFriendlyMin", Number(v))}
+          options={[
+            { label: "Any",  value: "0"  },
+            { label: "60%+", value: "60" },
+            { label: "75%+", value: "75" },
+            { label: "85%+", value: "85" },
+            { label: "90%+", value: "90" },
+          ]}
+        />
+      </FilterSection>
+
     </div>
   )
 }

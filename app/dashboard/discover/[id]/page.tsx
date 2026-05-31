@@ -8,6 +8,7 @@ import { HostActivity } from "@/components/podcast-profile/host-activity"
 import { AudienceAlignment } from "@/components/podcast-profile/audience-alignment"
 import { ProfileActions, MobileActionBar } from "@/components/podcast-profile/profile-actions"
 import { RelatedPodcasts } from "@/components/podcast-profile/related-podcasts"
+import { PodcastLinks } from "@/components/podcast-profile/podcast-links"
 
 /* ═══════════════════════════════════════════════════════════
    AI Match Details + Podcast Profile page.
@@ -91,6 +92,8 @@ export default async function PodcastProfilePage({
               audienceSegments={PROFILE_EXTENSION.audienceSegments}
               audienceSignals={PROFILE_EXTENSION.audienceSignals}
             />
+
+            <PodcastLinks podcast={podcast} />
 
           </div>
 
