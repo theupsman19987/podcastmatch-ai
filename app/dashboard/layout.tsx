@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
-import { SidebarProvider } from "@/components/dashboard/sidebar-context"
-import { DashboardShell } from "@/components/dashboard/dashboard-shell"
+import { SidebarProvider }   from "@/components/dashboard/sidebar-context"
+import { DashboardShell }    from "@/components/dashboard/dashboard-shell"
+import { FeedbackWidget }    from "@/components/beta/feedback-widget"
 
 export const metadata: Metadata = {
   title: "Dashboard — PodcastMatch AI",
@@ -18,6 +19,8 @@ export default function DashboardLayout({
       <DashboardShell>
         {children}
       </DashboardShell>
+      {/* Beta feedback widget — fixed bottom-right */}
+      <FeedbackWidget />
     </SidebarProvider>
   )
 }

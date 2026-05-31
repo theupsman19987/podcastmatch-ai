@@ -5,8 +5,8 @@ import { User, Camera, Globe, MapPin, MessageSquare, Briefcase, Film, AtSign } f
 import { SettingsCard, SectionHeader, FieldRow, TextInput, TextArea, Divider, SaveButton } from "../settings-ui"
 import { MOCK_USER } from "../settings-mock"
 import type { SaveState } from "../settings-ui"
+import { updateProfileSettings } from "@/lib/actions/settings"
 
-// re-export the type so the import resolves
 type SaveStateLoc = "idle" | "saving" | "saved"
 
 export function ProfileSettings() {
@@ -18,9 +18,11 @@ export function ProfileSettings() {
   const [social,   setSocial]   = useState(MOCK_USER.social)
   const [saveState, setSaveState] = useState<SaveStateLoc>("idle")
 
-  function handleSave() {
+  async function handleSave() {
     setSaveState("saving")
-    setTimeout(() => { setSaveState("saved"); setTimeout(() => setSaveState("idle"), 2000) }, 900)
+    await updateProfileSettings({ fullName: name, title, bio, website, location })
+    setSaveState("saved")
+    setTimeout(() => setSaveState("idle"), 2000)
   }
 
   function setSocialField(key: keyof typeof social, val: string) {

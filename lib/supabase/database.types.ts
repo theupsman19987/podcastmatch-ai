@@ -180,6 +180,114 @@ export interface Database {
         }
         Relationships: []
       }
+      analytics_events: {
+        Row: {
+          id:          string
+          user_id:     string | null
+          event:       string
+          properties:  Json
+          occurred_at: string
+        }
+        Insert: {
+          id?:         string
+          user_id?:    string | null
+          event:       string
+          properties?: Json
+          occurred_at?: string
+        }
+        Update: {
+          properties?: Json
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          id:                     string
+          user_id:                string
+          stripe_customer_id:     string
+          stripe_subscription_id: string
+          status:                 string
+          plan_id:                string
+          current_period_start:   string | null
+          current_period_end:     string | null
+          metadata:               Json
+          created_at:             string
+          updated_at:             string
+        }
+        Insert: {
+          id?:                     string
+          user_id:                 string
+          stripe_customer_id:      string
+          stripe_subscription_id:  string
+          status?:                 string
+          plan_id?:                string
+          current_period_start?:   string | null
+          current_period_end?:     string | null
+          metadata?:               Json
+          created_at?:             string
+          updated_at?:             string
+        }
+        Update: {
+          stripe_customer_id?:     string
+          stripe_subscription_id?: string
+          status?:                 string
+          plan_id?:                string
+          current_period_start?:   string | null
+          current_period_end?:     string | null
+          metadata?:               Json
+          updated_at?:             string
+        }
+        Relationships: []
+      }
+      beta_waitlist: {
+        Row: {
+          id:        string
+          email:     string
+          name:      string | null
+          role:      string | null
+          invited:   boolean
+          joined_at: string
+        }
+        Insert: {
+          id?:       string
+          email:     string
+          name?:     string | null
+          role?:     string | null
+          invited?:  boolean
+          joined_at?: string
+        }
+        Update: {
+          invited?: boolean
+        }
+        Relationships: []
+      }
+      feedback: {
+        Row: {
+          id:         string
+          user_id:    string | null
+          type:       string
+          message:    string
+          page:       string | null
+          metadata:   Json
+          resolved:   boolean
+          created_at: string
+        }
+        Insert: {
+          id?:        string
+          user_id?:   string | null
+          type?:      string
+          message:    string
+          page?:      string | null
+          metadata?:  Json
+          resolved?:  boolean
+          created_at?: string
+        }
+        Update: {
+          resolved?: boolean
+          metadata?: Json
+        }
+        Relationships: []
+      }
     }
     Views:     Record<string, never>
     Functions: Record<string, never>

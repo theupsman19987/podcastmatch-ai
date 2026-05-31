@@ -1,7 +1,9 @@
 "use client"
 
-import { useMemo } from "react"
-import { generateProfile } from "@/lib/profile/generate-profile"
+import { useState, useEffect } from "react"
+import { generateProfile }          from "@/lib/profile/generate-profile"
+import type { GeneratedProfile }    from "@/lib/profile/generate-profile"
+import { getDnaAssessment }         from "@/lib/actions/dna"
 import { ProfileHeader }            from "./profile-header"
 import { BrandIdentity }            from "./brand-identity"
 import { StrengthDashboard }        from "./strength-dashboard"
@@ -11,15 +13,29 @@ import { SpeakingTopics }           from "./speaking-topics"
 import { AudienceProfileSection }   from "./audience-profile-section"
 import { QuickActions }             from "./quick-actions"
 
+function loadFromLocalStorage() {
+  try {
+    const raw = localStorage.getItem("podmatch_creator_dna")
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
 export function ProfilePageClient() {
-  const profile = useMemo(() => {
+  /* Start with localStorage so the page never flashes empty */
+  const [profile, setProfile] = useState<GeneratedProfile>(() => {
     if (typeof window === "undefined") return generateProfile(null)
-    try {
-      const raw = localStorage.getItem("podmatch_creator_dna")
-      return generateProfile(raw ? JSON.parse(raw) : null)
-    } catch {
-      return generateProfile(null)
-    }
+    return generateProfile(loadFromLocalStorage())
+  })
+
+  useEffect(() => {
+    /* Try loading the more-complete Supabase version */
+    getDnaAssessment().then(result => {
+      if (result.data?.answers) {
+        setProfile(generateProfile(result.data.answers))
+      }
+    }).catch(() => { /* keep localStorage version */ })
   }, [])
 
   return (

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "motion/react"
 import { CheckCircle2, Sparkles } from "lucide-react"
 import { useDNA } from "./dna-context"
+import { completeDnaAssessment } from "@/lib/actions/dna"
 
 const ANALYSIS_STEPS = [
   "Mapping your expertise profile...",
@@ -21,9 +22,13 @@ export function DNAAnalysis() {
   const [revealed, setRevealed] = useState(0)
 
   useEffect(() => {
+    /* Persist to localStorage (instant, works without auth) */
     try {
       localStorage.setItem("podmatch_creator_dna", JSON.stringify(formData))
     } catch { /* ignore */ }
+
+    /* Persist to Supabase (durable, works across devices) */
+    completeDnaAssessment(formData).catch(() => { /* silent — localStorage is the fallback */ })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

@@ -1,10 +1,12 @@
 "use client"
 
-import { motion } from "motion/react"
-import { CreditCard, Check, Sparkles, Zap, Building2, Star } from "lucide-react"
+import { useState } from "react"
+import { motion }   from "motion/react"
+import { CreditCard, Check, Sparkles, Zap, Building2, Star, Loader2, ExternalLink } from "lucide-react"
 import { SettingsCard, SectionHeader } from "../settings-ui"
 import { PLANS, BILLING_SUMMARY, MOCK_USER } from "../settings-mock"
 import type { Plan } from "../settings-mock"
+import { BILLING_PLANS } from "@/lib/billing/plans"
 
 const PLAN_ICONS = {
   "free":           Star,
@@ -12,6 +14,69 @@ const PLAN_ICONS = {
   "visibility-pro": Zap,
   "enterprise":     Building2,
 } as const
+
+/* ── Upgrade / manage button ─────────────────────────────── */
+function UpgradeButton({ plan, isCurrent }: { plan: Plan; isCurrent: boolean }) {
+  const [loading, setLoading] = useState(false)
+
+  if (isCurrent) {
+    return (
+      <button disabled className="w-full py-2.5 rounded-xl text-xs font-bold border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 cursor-default">
+        ✓ Active
+      </button>
+    )
+  }
+
+  if (plan.id === "enterprise") {
+    return (
+      <a
+        href="mailto:hello@podmatch.ai?subject=Enterprise%20Plan%20Inquiry"
+        className="flex w-full items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border border-border/40 bg-card/40 text-muted-foreground hover:border-primary/30 hover:text-primary transition-colors"
+      >
+        {plan.cta} <ExternalLink className="size-3" aria-hidden="true" />
+      </a>
+    )
+  }
+
+  async function handleUpgrade() {
+    /* Find matching billing plan to get the Stripe price ID */
+    const billingPlan = BILLING_PLANS.find(p => p.id === plan.id)
+    if (!billingPlan?.stripePriceId) {
+      /* Stripe not configured — graceful fallback */
+      alert("Billing is not yet active. Check back soon!")
+      return
+    }
+
+    setLoading(true)
+    try {
+      const res  = await fetch("/api/stripe/checkout", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ priceId: billingPlan.stripePriceId }),
+      })
+      const json = await res.json() as { url?: string; error?: string }
+      if (json.url) {
+        window.location.href = json.url
+      } else {
+        alert(json.error ?? "Something went wrong. Please try again.")
+        setLoading(false)
+      }
+    } catch {
+      alert("Network error. Please try again.")
+      setLoading(false)
+    }
+  }
+
+  return (
+    <button
+      onClick={handleUpgrade}
+      disabled={loading}
+      className="flex w-full items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold border border-primary/40 bg-primary/15 text-primary hover:bg-primary/25 hover:border-primary/60 transition-all duration-150 disabled:opacity-60 disabled:cursor-wait"
+    >
+      {loading ? <><Loader2 className="size-3.5 animate-spin" aria-hidden="true" /> Processing…</> : plan.cta}
+    </button>
+  )
+}
 
 function PlanCard({ plan, isCurrent, index }: { plan: Plan; isCurrent: boolean; index: number }) {
   const Icon = PLAN_ICONS[plan.id]
@@ -64,20 +129,23 @@ function PlanCard({ plan, isCurrent, index }: { plan: Plan; isCurrent: boolean; 
         ))}
       </ul>
 
-      <button
-        disabled={isCurrent}
-        className={`w-full py-2.5 rounded-xl text-xs font-bold border transition-all duration-150 ${
-          isCurrent
-            ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400 cursor-default"
-            : plan.id === "enterprise"
-            ? "border-border/40 bg-card/40 text-muted-foreground hover:border-primary/30 hover:text-primary"
-            : "border-primary/40 bg-primary/15 text-primary hover:bg-primary/25 hover:border-primary/60"
-        }`}
-      >
-        {isCurrent ? "✓ Active" : plan.cta}
-      </button>
+      <UpgradeButton plan={plan} isCurrent={isCurrent} />
     </motion.div>
   )
+}
+
+async function openBillingPortal() {
+  try {
+    const res  = await fetch("/api/stripe/portal", { method: "POST" })
+    const json = await res.json() as { url?: string; error?: string }
+    if (json.url) {
+      window.location.href = json.url
+    } else {
+      alert(json.error ?? "Could not open billing portal. Contact support.")
+    }
+  } catch {
+    alert("Network error. Please try again.")
+  }
 }
 
 export function SubscriptionBilling() {
@@ -109,10 +177,16 @@ export function SubscriptionBilling() {
           </div>
 
           <div className="flex items-center gap-3 mt-4">
-            <button className="px-4 py-2 rounded-xl text-xs font-semibold border border-border/40 text-muted-foreground hover:border-primary/30 hover:text-primary transition-colors">
-              Update Payment Method
+            <button
+              onClick={openBillingPortal}
+              className="px-4 py-2 rounded-xl text-xs font-semibold border border-border/40 text-muted-foreground hover:border-primary/30 hover:text-primary transition-colors"
+            >
+              Manage Billing
             </button>
-            <button className="px-4 py-2 rounded-xl text-xs font-semibold border border-border/40 text-muted-foreground hover:border-destructive/40 hover:text-destructive transition-colors">
+            <button
+              onClick={openBillingPortal}
+              className="px-4 py-2 rounded-xl text-xs font-semibold border border-border/40 text-muted-foreground hover:border-destructive/40 hover:text-destructive transition-colors"
+            >
               Cancel Subscription
             </button>
           </div>
