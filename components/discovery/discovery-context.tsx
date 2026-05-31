@@ -16,6 +16,7 @@ import {
   MOCK_PODCASTS,
 } from "@/components/discovery/mock-data"
 import type { PodcastApiResponse } from "@/lib/podcasts/schema"
+import { createClient }            from "@/lib/supabase/client"
 
 /* ═══════════════════════════════════════════════════════════
    DiscoveryContext — single source of truth for the
@@ -86,7 +87,30 @@ export function DiscoveryProvider({ children }: { children: React.ReactNode }) {
   const [page,       setPage]      = useState(1)
   const [dataSource, setDataSource] = useState("mock")
 
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const debounceRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const supabaseRef  = useRef(createClient())
+  const podcastsRef  = useRef<DiscoveryPodcast[]>(MOCK_PODCASTS)
+
+  /* Keep podcastsRef in sync with state */
+  useEffect(() => { podcastsRef.current = podcasts }, [podcasts])
+
+  /* ── Load saved podcast IDs from Supabase on mount ─────── */
+  useEffect(() => {
+    async function loadSaved() {
+      const { data: { user } } = await supabaseRef.current.auth.getUser()
+      if (!user) return
+
+      const { data } = await supabaseRef.current
+        .from("saved_podcasts")
+        .select("podcast_id")
+        .eq("user_id", user.id)
+
+      if (!data?.length) return
+      const savedIds = new Set(data.map(r => r.podcast_id))
+      setPodcasts(prev => prev.map(p => savedIds.has(p.id) ? { ...p, saved: true } : p))
+    }
+    loadSaved()
+  }, [])
 
   /* ── API fetch ──────────────────────────────────────────── */
   const fetchPodcasts = useCallback(async (
@@ -229,8 +253,36 @@ export function DiscoveryProvider({ children }: { children: React.ReactNode }) {
   }, [podcasts, debouncedQuery, filters, sortBy])
 
   /* ── Toggle saved ───────────────────────────────────────── */
-  const toggleSaved = useCallback((id: string) => {
-    setPodcasts(prev => prev.map(p => p.id === id ? { ...p, saved: !p.saved } : p))
+  const toggleSaved = useCallback(async (id: string) => {
+    const podcast    = podcastsRef.current.find(p => p.id === id)
+    if (!podcast) return
+    const newSaved   = !podcast.saved
+
+    /* Optimistic update */
+    setPodcasts(prev => prev.map(p => p.id === id ? { ...p, saved: newSaved } : p))
+
+    /* Persist to Supabase (silent fail — local state already updated) */
+    const { data: { user } } = await supabaseRef.current.auth.getUser()
+    if (!user) return
+
+    if (!newSaved) {
+      await supabaseRef.current
+        .from("saved_podcasts")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("podcast_id", id)
+    } else {
+      await supabaseRef.current
+        .from("saved_podcasts")
+        .upsert(
+          {
+            user_id:      user.id,
+            podcast_id:   id,
+            podcast_data: JSON.parse(JSON.stringify(podcast)) as import("@/lib/supabase/database.types").Json,
+          },
+          { onConflict: "user_id,podcast_id" }
+        )
+    }
   }, [])
 
   const value: DiscoveryContextValue = {

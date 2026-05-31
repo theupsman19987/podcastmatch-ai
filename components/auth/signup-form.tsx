@@ -9,6 +9,7 @@ import { SocialLoginButtons } from "@/components/auth/social-login-buttons"
 import { AuthDivider } from "@/components/auth/auth-divider"
 import { ShimmerButton } from "@/components/ui/shimmer-button"
 import { cn } from "@/lib/utils"
+import { signUpAction } from "@/lib/actions/auth"
 
 /* ── Password strength ─────────────────────────────────────── */
 function getStrength(pw: string): { score: number; label: string; barClass: string; textClass: string } {
@@ -64,7 +65,7 @@ function PasswordStrengthBar({ password }: { password: string }) {
 }
 
 /* ── Validation ────────────────────────────────────────────── */
-type Fields = "fullName" | "email" | "password" | "confirmPassword" | "terms"
+type Fields = "fullName" | "email" | "password" | "confirmPassword" | "terms" | "form"
 type Errors = Partial<Record<Fields, string>>
 
 function validate(
@@ -107,9 +108,13 @@ export function SignupForm() {
     setErrors(errs)
     if (Object.keys(errs).length) return
     setIsLoading(true)
-    await new Promise(r => setTimeout(r, 1500)) // TODO: replace with real auth call
+    const result = await signUpAction(email.trim(), password, fullName.trim())
     setIsLoading(false)
-    setSuccess(true)
+    if (result.error) {
+      setErrors({ form: result.error })
+    } else {
+      setSuccess(true)
+    }
   }
 
   if (success) {
@@ -127,9 +132,12 @@ export function SignupForm() {
           <CheckCircle2 className="size-7 text-white" aria-hidden="true" />
         </div>
         <div className="flex flex-col gap-1.5">
-          <p className="text-base font-semibold text-foreground">Account created!</p>
-          <p className="text-sm text-muted-foreground">
-            Welcome to PodcastMatch AI. Setting up your dashboard…
+          <p className="text-base font-semibold text-foreground">Almost there!</p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            We&apos;ve sent a confirmation link to{" "}
+            <span className="font-medium text-foreground">{email}</span>.
+            <br />
+            Click it to activate your account.
           </p>
         </div>
       </motion.div>
@@ -169,6 +177,13 @@ export function SignupForm() {
       <div className="my-5">
         <AuthDivider label="or sign up with email" />
       </div>
+
+      {/* Form-level error */}
+      {errors.form && (
+        <p role="alert" className="mb-1 rounded-[var(--radius-md)] border border-red-500/20 bg-red-500/08 px-3 py-2 text-[12px] text-red-400">
+          {errors.form}
+        </p>
+      )}
 
       {/* Form */}
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">

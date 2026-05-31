@@ -8,8 +8,9 @@ import { AuthInput } from "@/components/auth/auth-input"
 import { SocialLoginButtons } from "@/components/auth/social-login-buttons"
 import { AuthDivider } from "@/components/auth/auth-divider"
 import { ShimmerButton } from "@/components/ui/shimmer-button"
+import { signInAction } from "@/lib/actions/auth"
 
-type Errors = Partial<Record<"email" | "password", string>>
+type Errors = Partial<Record<"email" | "password" | "form", string>>
 
 function validate(email: string, password: string): Errors {
   const e: Errors = {}
@@ -36,9 +37,13 @@ export function LoginForm() {
     setErrors(errs)
     if (Object.keys(errs).length) return
     setIsLoading(true)
-    await new Promise(r => setTimeout(r, 1400)) // TODO: replace with real auth call
-    setIsLoading(false)
-    setSuccess(true)
+    setSuccess(true)  // Optimistic — show success state while server redirects
+    const result = await signInAction(email.trim(), password)
+    if (result?.error) {
+      setIsLoading(false)
+      setSuccess(false)
+      setErrors({ form: result.error })
+    }
   }
 
   if (success) {
@@ -83,6 +88,13 @@ export function LoginForm() {
       <div className="my-5">
         <AuthDivider />
       </div>
+
+      {/* Form-level error */}
+      {errors.form && (
+        <p role="alert" className="mb-3 rounded-[var(--radius-md)] border border-red-500/20 bg-red-500/08 px-3 py-2 text-[12px] text-red-400">
+          {errors.form}
+        </p>
+      )}
 
       {/* Email + password form */}
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
