@@ -42,6 +42,12 @@ export interface DiscoveryPodcast {
   // Display
   coverIndex:          number          // 0–5 → COVER_GRADIENTS
   saved:               boolean
+  // Real data fields — populated when source is API (optional for mocks)
+  rssFeed?:            string          // primary dedup key
+  artwork?:            string          // artwork image URL from API
+  lastPublished?:      string          // ISO-8601 date
+  language?:           string          // BCP-47 e.g. "en"
+  source?:             string          // "mock" | "podcast-index" | "apple" | "spotify"
 }
 
 export interface DiscoveryFilters {

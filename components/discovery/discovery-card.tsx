@@ -103,23 +103,36 @@ export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }:
       {/* ── Cover ─────────────────────────────────────── */}
       <div
         className="relative h-36 w-full flex items-center justify-center overflow-hidden"
-        style={{ background: coverGradient }}
+        style={podcast.artwork ? undefined : { background: coverGradient }}
         aria-hidden="true"
       >
-        {/* Subtle texture overlay */}
-        <div className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage: "radial-gradient(circle, oklch(0.96 0 0 / 0.06) 1px, transparent 1px)",
-            backgroundSize: "20px 20px",
-          }}
-        />
+        {/* Real artwork image */}
+        {podcast.artwork ? (
+          <img
+            src={podcast.artwork}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <>
+            {/* Texture overlay for gradient covers */}
+            <div className="absolute inset-0 opacity-20"
+              style={{
+                backgroundImage: "radial-gradient(circle, oklch(0.96 0 0 / 0.06) 1px, transparent 1px)",
+                backgroundSize: "20px 20px",
+              }}
+            />
+            {/* Podcast initials */}
+            <span className="relative text-3xl font-black text-white/30 select-none tracking-tight">
+              {podcast.name.split(" ").map(w => w[0]).join("").slice(0, 3)}
+            </span>
+          </>
+        )}
+
         {/* Cover glow on hover */}
         <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/10" />
-
-        {/* Podcast initials */}
-        <span className="relative text-3xl font-black text-white/30 select-none tracking-tight">
-          {podcast.name.split(" ").map(w => w[0]).join("").slice(0, 3)}
-        </span>
 
         {/* Badges — top right */}
         {priorityBadges.length > 0 && (

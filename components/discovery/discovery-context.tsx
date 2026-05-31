@@ -15,33 +15,43 @@ import {
   DEFAULT_FILTERS,
   MOCK_PODCASTS,
 } from "@/components/discovery/mock-data"
+import type { PodcastApiResponse } from "@/lib/podcasts/schema"
 
 /* ═══════════════════════════════════════════════════════════
    DiscoveryContext — single source of truth for the
    AI Podcast Discovery Engine.
 
-   Swap MOCK_PODCASTS with a real API call here when ready —
-   every UI component reads from the same computed `results`.
+   Data flow:
+   1. Initial state: MOCK_PODCASTS (instant render, no flash)
+   2. On mount: fetch /api/podcasts → replace with API data
+   3. On search: fetch /api/podcasts?q=term → replace
+   4. Load More: fetch /api/podcasts?page=N → append
+
+   FUTURE AI INTEGRATION POINT:
+   Replace fetchPodcasts() API call with a server action or
+   AI-powered ranking endpoint when real scoring is ready.
    ═══════════════════════════════════════════════════════════ */
+
+const PAGE_SIZE = 40
 
 type SortMode = "match" | "audience" | "activity"
 type ViewMode = "grid" | "list"
 
 interface DiscoveryContextValue {
   /* Search */
-  query:          string
-  setQuery:       (q: string) => void
-  isSearching:    boolean
+  query:       string
+  setQuery:    (q: string) => void
+  isSearching: boolean
 
   /* Filters */
-  filters:            DiscoveryFilters
-  setFilter:          <K extends keyof DiscoveryFilters>(key: K, val: DiscoveryFilters[K]) => void
-  toggleCategory:     (cat: string) => void
-  resetFilters:       () => void
-  activeFilterCount:  number
-  filterDrawerOpen:   boolean
-  openFilterDrawer:   () => void
-  closeFilterDrawer:  () => void
+  filters:           DiscoveryFilters
+  setFilter:         <K extends keyof DiscoveryFilters>(key: K, val: DiscoveryFilters[K]) => void
+  toggleCategory:    (cat: string) => void
+  resetFilters:      () => void
+  activeFilterCount: number
+  filterDrawerOpen:  boolean
+  openFilterDrawer:  () => void
+  closeFilterDrawer: () => void
 
   /* View */
   viewMode:    ViewMode
@@ -49,25 +59,84 @@ interface DiscoveryContextValue {
   sortBy:      SortMode
   setSortBy:   (s: SortMode) => void
 
-  /* Results */
-  results:      DiscoveryPodcast[]
-  toggleSaved:  (id: string) => void
+  /* Results + pagination */
+  results:     DiscoveryPodcast[]
+  toggleSaved: (id: string) => void
+  isLoading:   boolean
+  hasMore:     boolean
+  loadMore:    () => void
+  dataSource:  string   // "mock" | "podcast-index" | etc.
 }
 
 const DiscoveryContext = createContext<DiscoveryContextValue | null>(null)
 
 export function DiscoveryProvider({ children }: { children: React.ReactNode }) {
-  const [query,           setQueryRaw]      = useState("")
-  const [debouncedQuery,  setDebouncedQuery] = useState("")
-  const [isSearching,     setIsSearching]   = useState(false)
-  const [filters,         setFilters]       = useState<DiscoveryFilters>(DEFAULT_FILTERS)
-  const [viewMode,        setViewMode]      = useState<ViewMode>("grid")
-  const [sortBy,          setSortBy]        = useState<SortMode>("match")
-  const [filterDrawerOpen,setFilterDrawer]  = useState(false)
-  const [podcasts,        setPodcasts]      = useState<DiscoveryPodcast[]>(MOCK_PODCASTS)
+  const [query,            setQueryRaw]      = useState("")
+  const [debouncedQuery,   setDebouncedQuery] = useState("")
+  const [isSearching,      setIsSearching]   = useState(false)
+  const [filters,          setFilters]       = useState<DiscoveryFilters>(DEFAULT_FILTERS)
+  const [viewMode,         setViewMode]      = useState<ViewMode>("grid")
+  const [sortBy,           setSortBy]        = useState<SortMode>("match")
+  const [filterDrawerOpen, setFilterDrawer]  = useState(false)
+
+  /* Podcast data state — start with mock for instant render */
+  const [podcasts,   setPodcasts]  = useState<DiscoveryPodcast[]>(MOCK_PODCASTS)
+  const [isLoading,  setIsLoading] = useState(false)
+  const [hasMore,    setHasMore]   = useState(false)
+  const [page,       setPage]      = useState(1)
+  const [dataSource, setDataSource] = useState("mock")
+
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  /* Debounce query — 400ms */
+  /* ── API fetch ──────────────────────────────────────────── */
+  const fetchPodcasts = useCallback(async (
+    q:      string,
+    pg:     number,
+    append: boolean
+  ) => {
+    setIsLoading(true)
+    try {
+      const params = new URLSearchParams({
+        q:        q.trim(),
+        page:     String(pg),
+        pageSize: String(PAGE_SIZE),
+      })
+      const res  = await fetch(`/api/podcasts?${params}`)
+      const json = await res.json() as PodcastApiResponse
+
+      if (append) {
+        setPodcasts(prev => {
+          const existingIds = new Set(prev.map(p => p.id))
+          const newOnes = json.data.filter(p => !existingIds.has(p.id))
+          return [...prev, ...newOnes]
+        })
+      } else {
+        setPodcasts(json.data)
+      }
+
+      setHasMore(pg < json.totalPages)
+      setPage(pg)
+      setDataSource(json.source)
+    } catch {
+      /* Keep existing data — never break the UI */
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
+
+  /* Initial load on mount */
+  useEffect(() => {
+    fetchPodcasts("", 1, false)
+  }, [fetchPodcasts])
+
+  /* Re-fetch when debounced query changes */
+  useEffect(() => {
+    if (debouncedQuery !== "") {
+      fetchPodcasts(debouncedQuery, 1, false)
+    }
+  }, [debouncedQuery, fetchPodcasts])
+
+  /* ── Debounce query ─────────────────────────────────────── */
   const setQuery = useCallback((q: string) => {
     setQueryRaw(q)
     if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -75,12 +144,16 @@ export function DiscoveryProvider({ children }: { children: React.ReactNode }) {
     debounceRef.current = setTimeout(() => {
       setDebouncedQuery(q)
       setIsSearching(false)
+      if (!q.trim()) {
+        // Empty search — reload initial set
+        fetchPodcasts("", 1, false)
+      }
     }, 420)
-  }, [])
+  }, [fetchPodcasts])
 
   useEffect(() => () => { if (debounceRef.current) clearTimeout(debounceRef.current) }, [])
 
-  /* Filter helpers */
+  /* ── Filter helpers ─────────────────────────────────────── */
   const setFilter = useCallback(<K extends keyof DiscoveryFilters>(
     key: K,
     val: DiscoveryFilters[K]
@@ -99,7 +172,8 @@ export function DiscoveryProvider({ children }: { children: React.ReactNode }) {
     setFilters(DEFAULT_FILTERS)
     setQueryRaw("")
     setDebouncedQuery("")
-  }, [])
+    fetchPodcasts("", 1, false)
+  }, [fetchPodcasts])
 
   const activeFilterCount = useMemo(() => {
     let n = filters.categories.length
@@ -113,7 +187,14 @@ export function DiscoveryProvider({ children }: { children: React.ReactNode }) {
     return n
   }, [filters])
 
-  /* Computed filtered + sorted results */
+  /* ── Load more ──────────────────────────────────────────── */
+  const loadMore = useCallback(() => {
+    if (!isLoading && hasMore) {
+      fetchPodcasts(debouncedQuery, page + 1, true)
+    }
+  }, [fetchPodcasts, debouncedQuery, isLoading, hasMore, page])
+
+  /* ── Client-side filter + sort on loaded data ───────────── */
   const results = useMemo<DiscoveryPodcast[]>(() => {
     const q = debouncedQuery.toLowerCase().trim()
 
@@ -147,7 +228,7 @@ export function DiscoveryProvider({ children }: { children: React.ReactNode }) {
       })
   }, [podcasts, debouncedQuery, filters, sortBy])
 
-  /* Toggle saved state */
+  /* ── Toggle saved ───────────────────────────────────────── */
   const toggleSaved = useCallback((id: string) => {
     setPodcasts(prev => prev.map(p => p.id === id ? { ...p, saved: !p.saved } : p))
   }, [])
@@ -170,6 +251,10 @@ export function DiscoveryProvider({ children }: { children: React.ReactNode }) {
     setSortBy,
     results,
     toggleSaved,
+    isLoading,
+    hasMore,
+    loadMore,
+    dataSource,
   }
 
   return (

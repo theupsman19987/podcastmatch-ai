@@ -118,14 +118,18 @@ export function DiscoveryResultsGrid() {
     results,
     query,
     isSearching,
+    isLoading,
+    hasMore,
+    loadMore,
     viewMode,
     setViewMode,
     toggleSaved,
     activeFilterCount,
     openFilterDrawer,
+    dataSource,
   } = useDiscovery()
 
-  const showLoading = isSearching
+  const showLoading = isSearching || (isLoading && results.length === 0)
 
   return (
     <div className="flex flex-1 flex-col gap-4 min-w-0">
@@ -150,8 +154,8 @@ export function DiscoveryResultsGrid() {
           )}
         </button>
 
-        {/* Result count */}
-        <div className="flex items-center gap-1.5">
+        {/* Result count + data source */}
+        <div className="flex items-center gap-2">
           <AnimatePresence mode="wait">
             {showLoading ? (
               <motion.span
@@ -178,6 +182,11 @@ export function DiscoveryResultsGrid() {
               </motion.span>
             )}
           </AnimatePresence>
+          {dataSource === "podcast-index" && !showLoading && (
+            <span className="rounded-full border border-[oklch(0.55_0.16_145/0.30)] bg-[oklch(0.55_0.16_145/0.08)] px-1.5 py-0.5 text-[9px] font-semibold text-[oklch(0.70_0.16_145)]">
+              LIVE DATA
+            </span>
+          )}
         </div>
 
         {/* Spacer */}
@@ -273,6 +282,35 @@ export function DiscoveryResultsGrid() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Load More ─────────────────────────────────── */}
+      {hasMore && !showLoading && results.length > 0 && (
+        <div className="flex justify-center pt-2">
+          <button
+            onClick={loadMore}
+            disabled={isLoading}
+            className={cn(
+              "flex items-center gap-2 rounded-[var(--radius-lg)] border px-5 py-2.5 text-[12px] font-semibold",
+              "transition-all duration-150",
+              isLoading
+                ? "border-border/40 bg-muted/20 text-muted-foreground cursor-wait"
+                : "border-primary/30 bg-primary/08 text-primary hover:bg-primary/15 hover:border-primary/50"
+            )}
+          >
+            {isLoading ? (
+              <>
+                <Sparkles className="size-3.5 animate-pulse" aria-hidden="true" />
+                Loading more…
+              </>
+            ) : (
+              <>
+                <Sparkles className="size-3.5" aria-hidden="true" />
+                Load More Podcasts
+              </>
+            )}
+          </button>
+        </div>
+      )}
     </div>
   )
 }
