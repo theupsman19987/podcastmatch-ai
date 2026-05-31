@@ -7,6 +7,7 @@ import { Bookmark, BookmarkCheck, ArrowRight, Users, Zap, TrendingUp, Sparkles, 
 import { cn } from "@/lib/utils"
 import { type DiscoveryPodcast, COVER_GRADIENTS } from "@/components/discovery/mock-data"
 import { AiScoreBadge } from "@/components/ui/ai-score-badge"
+import { OpportunityRankBadge } from "@/components/matching/opportunity-rank-badge"
 
 /* ═══════════════════════════════════════════════════════════
    DiscoveryCard — rich podcast result card for the discovery engine.
@@ -208,9 +209,10 @@ export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }:
           )}
         </div>
 
-        {/* Category tags */}
-        <div className="flex flex-wrap gap-1">
-          {podcast.categories.slice(0, 3).map(cat => (
+        {/* Category tags + opportunity rank */}
+        <div className="flex flex-wrap items-center gap-1">
+          <OpportunityRankBadge score={podcast.matchScore} size="xs" />
+          {podcast.categories.slice(0, 2).map(cat => (
             <span
               key={cat}
               className="rounded-md border border-border/40 bg-muted/20 px-2 py-0.5 text-[10px] font-medium text-muted-foreground/80"

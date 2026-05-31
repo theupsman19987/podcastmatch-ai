@@ -9,6 +9,10 @@ import { AudienceAlignment } from "@/components/podcast-profile/audience-alignme
 import { ProfileActions, MobileActionBar } from "@/components/podcast-profile/profile-actions"
 import { RelatedPodcasts } from "@/components/podcast-profile/related-podcasts"
 import { PodcastLinks } from "@/components/podcast-profile/podcast-links"
+import { WhyThisMatches } from "@/components/matching/why-this-matches"
+import { OutreachAngleCard } from "@/components/matching/outreach-angle"
+import { OpportunityRankBadge } from "@/components/matching/opportunity-rank-badge"
+import { computeMatch } from "@/lib/matching/match-engine"
 
 /* ═══════════════════════════════════════════════════════════
    AI Match Details + Podcast Profile page.
@@ -44,6 +48,7 @@ export default async function PodcastProfilePage({
 }) {
   const { id } = await params
   const podcast = MOCK_PODCASTS.find(p => p.id === id) ?? MOCK_PODCASTS[0]
+  const matchResult = computeMatch(podcast)
 
   /* Related: other podcasts with at least one shared category (excluding current) */
   const related = MOCK_PODCASTS
@@ -71,6 +76,10 @@ export default async function PodcastProfilePage({
               podcast={podcast}
               aiFactors={PROFILE_EXTENSION.aiFactors}
             />
+
+            <WhyThisMatches explanations={matchResult.whyThisMatches} />
+
+            <OutreachAngleCard angle={matchResult.outreachAngle} />
 
             <PodcastDetails
               podcast={podcast}

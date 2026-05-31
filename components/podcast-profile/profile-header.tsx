@@ -6,6 +6,7 @@ import { ArrowLeft, Users, Mic2, TrendingUp, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { type DiscoveryPodcast, COVER_GRADIENTS } from "@/components/discovery/mock-data"
 import { AiScoreBadge } from "@/components/ui/ai-score-badge"
+import { OpportunityRankBadge } from "@/components/matching/opportunity-rank-badge"
 
 /* ═══════════════════════════════════════════════════════════
    ProfileHeader — cinematic hero for the podcast detail page.
@@ -182,6 +183,7 @@ export function ProfileHeader({ podcast }: ProfileHeaderProps) {
                 className="flex flex-wrap justify-center gap-2 sm:justify-start"
               >
                 <AiScoreBadge score={podcast.matchScore} size="md" label="AI Match" />
+                <OpportunityRankBadge score={podcast.matchScore} size="md" />
 
                 <span className={cn(
                   "inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[11px] font-semibold",
