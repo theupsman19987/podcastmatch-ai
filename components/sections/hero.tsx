@@ -231,7 +231,9 @@ export function Hero() {
             animate={{ opacity: 1, x: 0, scale: 1, filter: "blur(0px)" }}
             transition={{ duration: 0.85, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
           >
-            <AIDashboardMockup />
+            <div className="scale-[0.78] origin-top-right">
+              <AIDashboardMockup />
+            </div>
           </motion.div>
           {/* ════ END RIGHT COLUMN ════ */}
 

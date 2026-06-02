@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils"
 
 /* ── Navigation structure ───────────────────────────────────── */
 const NAV_LINKS = [
+  { label: "Overview",         href: "/",              description: "Platform overview" },
   { label: "Find Podcasts",    href: "/find",          description: "Search 50K+ verified shows" },
   { label: "How It Works",     href: "/how-it-works",  description: "See the AI matching process" },
   { label: "Features",         href: "/features",      description: "Everything the platform offers" },
