@@ -96,12 +96,12 @@ export function Hero() {
 
       {/* ── CONTENT GRID ─────────────────────────────────────── */}
       <div className="container mx-auto w-full px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid items-center gap-12 lg:grid-cols-2 xl:gap-20">
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:gap-8 xl:gap-10">
 
           {/* ════════════════════════════════════════════════════
-              LEFT COLUMN — Messaging & CTAs
+              LEFT COLUMN — 45% — Messaging & CTAs
               ════════════════════════════════════════════════════ */}
-          <div className="flex max-w-[600px] flex-col gap-7">
+          <div className="flex w-full flex-col gap-7 lg:w-[45%]">
 
             {/* LAUNCH BADGE */}
             <motion.div {...fadeUp(0.1)}>
@@ -114,10 +114,7 @@ export function Hero() {
               </CardBadge>
             </motion.div>
 
-            {/* HEADLINE
-                SEO entities: podcast discovery, AI matching, podcast guest booking
-                Semantic hierarchy: <h1> with natural keyword density
-            */}
+            {/* HEADLINE */}
             <motion.div {...fadeUp(0.18)}>
               <h1 className="text-hero" data-speakable="hero-headline">
                 Get Booked on{" "}
@@ -129,12 +126,10 @@ export function Hero() {
               </h1>
             </motion.div>
 
-            {/* SUBHEADLINE
-                Semantic SEO: platform description, audience entities, differentiators
-            */}
+            {/* SUBHEADLINE */}
             <motion.p
               {...fadeUp(0.26)}
-              className="text-lg leading-relaxed text-muted-foreground max-w-[500px]"
+              className="text-lg leading-relaxed text-muted-foreground"
             >
               PodcastMatch AI analyzes your expertise, audience, and goals to surface
               verified podcast opportunities in your exact niche — then writes a
@@ -151,13 +146,11 @@ export function Hero() {
               {...fadeUp(0.34)}
               className="flex flex-col gap-3 sm:flex-row"
             >
-              {/* Primary — shimmer + premium glow */}
               <ShimmerButton variant="premium" size="xl" className="group">
                 Get AI Matches Free
                 <ArrowRight className="size-5 transition-transform duration-200 group-hover:translate-x-0.5" />
               </ShimmerButton>
 
-              {/* Secondary — outline with play icon */}
               <Button variant="outline" size="xl" className="group gap-3">
                 <span
                   className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full
@@ -172,7 +165,6 @@ export function Hero() {
             {/* TRUST ROW */}
             <motion.div {...fadeUp(0.44)} className="space-y-4">
 
-              {/* Social proof — avatar stack + text */}
               <div className="flex items-center gap-3">
                 <div className="flex -space-x-2">
                   {AVATAR_INITIALS.map((initials, i) => (
@@ -193,7 +185,6 @@ export function Hero() {
                 </p>
               </div>
 
-              {/* Stat pills */}
               <div className="flex flex-wrap gap-2.5">
                 {TRUST_STATS.map(({ icon: Icon, value, suffix, label, colorClass }, i) => (
                   <div
@@ -209,7 +200,6 @@ export function Hero() {
                 ))}
               </div>
 
-              {/* No-risk micro-copy */}
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="size-3.5 flex-shrink-0 text-[var(--premium-cyan)]" />
                 <span className="text-xs text-muted-foreground">
@@ -223,17 +213,15 @@ export function Hero() {
           {/* ════ END LEFT COLUMN ════ */}
 
           {/* ════════════════════════════════════════════════════
-              RIGHT COLUMN — AI Dashboard Mockup
+              RIGHT COLUMN — 55% — AI Dashboard Mockup
               ════════════════════════════════════════════════════ */}
           <motion.div
-            className="hidden lg:flex items-center justify-end"
+            className="hidden w-full lg:flex lg:w-[55%] items-center justify-center"
             initial={{ opacity: 0, x: 40, scale: 0.95, filter: "blur(10px)" }}
             animate={{ opacity: 1, x: 0, scale: 1, filter: "blur(0px)" }}
             transition={{ duration: 0.85, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="scale-[0.78] origin-top-right">
-              <AIDashboardMockup />
-            </div>
+            <AIDashboardMockup />
           </motion.div>
           {/* ════ END RIGHT COLUMN ════ */}
 
