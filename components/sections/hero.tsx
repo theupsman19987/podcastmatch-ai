@@ -101,7 +101,7 @@ export function Hero() {
           {/* ════════════════════════════════════════════════════
               LEFT COLUMN — 45% — Messaging & CTAs
               ════════════════════════════════════════════════════ */}
-          <div className="flex w-full flex-col gap-7 lg:w-[45%]">
+          <div className="flex w-full flex-col gap-7 lg:w-[44%] lg:shrink-0">
 
             {/* LAUNCH BADGE */}
             <motion.div {...fadeUp(0.1)}>
@@ -216,7 +216,7 @@ export function Hero() {
               RIGHT COLUMN — 55% — AI Dashboard Mockup
               ════════════════════════════════════════════════════ */}
           <motion.div
-            className="hidden w-full lg:flex lg:w-[55%] items-center justify-center"
+            className="hidden lg:flex lg:flex-1 items-center justify-center"
             initial={{ opacity: 0, x: 40, scale: 0.95, filter: "blur(10px)" }}
             animate={{ opacity: 1, x: 0, scale: 1, filter: "blur(0px)" }}
             transition={{ duration: 0.85, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
