@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils"
 /* ── Navigation structure ───────────────────────────────────── */
 const NAV_LINKS = [
   { label: "Overview",         href: "/",              description: "Platform overview" },
-  { label: "Find Podcasts",    href: "/find",          description: "Search 50K+ verified shows" },
+  { label: "Discover",          href: "/discover",      description: "AI-curated opportunities for you" },
   { label: "How It Works",     href: "/how-it-works",  description: "See the AI matching process" },
   { label: "Features",         href: "/features",      description: "Everything the platform offers" },
   { label: "Success Stories",  href: "/success",       description: "Creators who got booked" },
@@ -177,11 +177,11 @@ function NavLink({
       role="listitem"
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        "relative rounded-md px-3.5 py-2 text-sm transition-all duration-150",
+        "relative rounded-md px-3.5 py-2 text-[14px] font-bold transition-all duration-150",
         "hover:bg-[var(--glass-bg)] hover:text-foreground",
         isActive
-          ? "text-foreground font-medium"
-          : "text-muted-foreground font-normal"
+          ? "text-foreground"
+          : "text-muted-foreground"
       )}
     >
       {label}
