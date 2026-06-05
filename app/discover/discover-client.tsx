@@ -46,13 +46,10 @@ type BadgeType =
 type TrendingTab =
   | "Leadership"
   | "Entrepreneurship"
-  | "Personal Development"
+  | "Personal Dev"
   | "Faith"
   | "Recovery"
   | "Coaching"
-  | "Keynote Speaker"
-  | "Public Speaker"
-  | "Author"
 
 interface RecommendedPodcast {
   id: string
@@ -261,13 +258,10 @@ const OPPORTUNITY_CATEGORIES: OpportunityCategory[] = [
 const TRENDING_TABS: TrendingTab[] = [
   "Leadership",
   "Entrepreneurship",
-  "Personal Development",
+  "Personal Dev",
   "Faith",
   "Recovery",
   "Coaching",
-  "Keynote Speaker",
-  "Public Speaker",
-  "Author",
 ]
 
 const TRENDING_BY_TAB: Record<TrendingTab, TrendingShow[]> = {
@@ -283,29 +277,11 @@ const TRENDING_BY_TAB: Record<TrendingTab, TrendingShow[]> = {
     { name: "My First Million", host: "Sam & Shaan", growth: "+41%", listeners: "560K", matchScore: 84, tag: "Business" },
     { name: "Founder's Journal", host: "Alex Lieberman", growth: "+27%", listeners: "210K", matchScore: 82, tag: "Founders" },
   ],
-  "Personal Development": [
+  "Personal Dev": [
     { name: "Impact Theory", host: "Tom Bilyeu", growth: "+19%", listeners: "850K", matchScore: 89, tag: "Mindset" },
     { name: "The School of Greatness", host: "Lewis Howes", growth: "+11%", listeners: "780K", matchScore: 87, tag: "Success" },
     { name: "On Purpose", host: "Jay Shetty", growth: "+25%", listeners: "1.4M", matchScore: 85, tag: "Purpose" },
     { name: "Feel Better Live More", host: "Dr. Rangan Chatterjee", growth: "+16%", listeners: "640K", matchScore: 83, tag: "Wellness" },
-  ],
-  "Keynote Speaker": [
-    { name: "The Speaker Lab", host: "Grant Baldwin", growth: "+28%", listeners: "310K", matchScore: 94, tag: "Speaking" },
-    { name: "Speakernomics", host: "Grant Baldwin", growth: "+19%", listeners: "88K", matchScore: 91, tag: "Business" },
-    { name: "Backstage Pass", host: "Mike Ganino", growth: "+22%", listeners: "64K", matchScore: 89, tag: "Speaking" },
-    { name: "The Wealthy Speaker", host: "Jane Atkinson", growth: "+14%", listeners: "52K", matchScore: 92, tag: "Career" },
-  ],
-  "Public Speaker": [
-    { name: "Talk Like TED", host: "Carmine Gallo", growth: "+17%", listeners: "210K", matchScore: 90, tag: "Speaking" },
-    { name: "Speak Up with Laura Camacho", host: "Laura Camacho", growth: "+31%", listeners: "74K", matchScore: 93, tag: "Communication" },
-    { name: "The Public Speaker", host: "Lisa B. Marshall", growth: "+11%", listeners: "180K", matchScore: 87, tag: "Speaking" },
-    { name: "Communication Coach", host: "Alex Lyon", growth: "+24%", listeners: "96K", matchScore: 88, tag: "Skills" },
-  ],
-  "Author": [
-    { name: "The Creative Penn", host: "Joanna Penn", growth: "+16%", listeners: "220K", matchScore: 95, tag: "Writing" },
-    { name: "The Author Stack", host: "Tim Grahl", growth: "+22%", listeners: "58K", matchScore: 92, tag: "Authors" },
-    { name: "Your First Book", host: "Rob Kosberg", growth: "+18%", listeners: "42K", matchScore: 90, tag: "Publishing" },
-    { name: "The Bestseller Experiment", host: "Mark Stay & Mark Desvaux", growth: "+13%", listeners: "78K", matchScore: 88, tag: "Authors" },
   ],
   Faith: [
     { name: "Joel Osteen Podcast", host: "Joel Osteen", growth: "+8%", listeners: "2.1M", matchScore: 82, tag: "Faith" },
