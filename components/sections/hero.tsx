@@ -47,7 +47,7 @@ const AVATAR_INITIALS = ["JR", "ML", "SK", "AT"]
 export function Hero() {
   return (
     <section
-      className="relative flex min-h-[100dvh] items-center overflow-hidden"
+      className="relative flex min-h-[88dvh] items-center overflow-hidden"
       aria-label="PodcastMatch AI — AI-powered podcast guest booking platform"
     >
 
@@ -117,12 +117,10 @@ export function Hero() {
             {/* HEADLINE */}
             <motion.div {...fadeUp(0.18)}>
               <h1 className="text-hero" data-speakable="hero-headline">
-                Get Booked on{" "}
+                Get Discovered By The{" "}
                 <span className="gradient-text-primary text-glow-primary">
-                  Podcasts
+                  Right Podcasts
                 </span>
-                {" "}That Actually<br className="hidden sm:block" />
-                Move the Needle
               </h1>
             </motion.div>
 
@@ -131,14 +129,13 @@ export function Hero() {
               {...fadeUp(0.26)}
               className="text-lg leading-relaxed text-muted-foreground"
             >
-              PodcastMatch AI analyzes your expertise, audience, and goals to surface
-              verified podcast opportunities in your exact niche — then writes a
-              personalized pitch and tracks every booking automatically.
-              Built for{" "}
+              PodcastMatch AI helps{" "}
               <span className="text-foreground font-medium">
-                speakers, authors, coaches, and thought leaders
+                speakers, authors, coaches, and experts
               </span>
-              {" "}who refuse to be overlooked.
+              {" "}discover podcast opportunities that increase visibility, build
+              authority, grow audiences, and generate meaningful business
+              connections through intelligent AI matching.
             </motion.p>
 
             {/* CTA ROW */}

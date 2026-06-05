@@ -121,7 +121,7 @@
   --font-size-3xl:  1.875rem;   /* 30px */
   --font-size-4xl:  2.250rem;   /* 36px */
   --font-size-5xl:  3.000rem;   /* 48px */
-  --font-size-hero: clamp(1.875rem, 4.2vw, 3.6rem);
+  --font-size-hero: clamp(1.5rem, 2.8vw, 2.75rem);
   --font-size-h1:   clamp(2.00rem, 4vw, 3.75rem);
   --font-size-h2:   clamp(1.50rem, 3vw, 2.75rem);
   --font-size-h3:   clamp(1.25rem, 2vw, 1.875rem);
