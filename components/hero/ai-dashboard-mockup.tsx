@@ -6,7 +6,7 @@ import {
   ChevronRight,
   Sparkles,
 } from "lucide-react"
-import { Card } from "@/components/ui/card"
+import { Card, CardBadge } from "@/components/ui/card"
 import { NumberTicker } from "@/components/ui/number-ticker"
 
 const MOCK_MATCHES = [
