@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { resend, FROM, ADMIN } from "@/lib/resend"
+import { getResend, FROM, ADMIN } from "@/lib/resend"
 import {
   welcomeEmailHtml,
   welcomeEmailText,
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     /* Send both emails in parallel */
     await Promise.all([
       /* Welcome email → new user */
-      resend.emails.send({
+      getResend().emails.send({
         from:    FROM,
         to:      email,
         subject: `Welcome to PodcastMatch AI, ${firstName}! 🎙️`,
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
         text:    welcomeEmailText(firstName),
       }),
       /* Admin notification → Gmail */
-      resend.emails.send({
+      getResend().emails.send({
         from:    FROM,
         to:      ADMIN,
         subject: `🎉 New signup: ${name} (${email})`,

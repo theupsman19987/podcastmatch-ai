@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { resend, FROM, ADMIN } from "@/lib/resend"
+import { getResend, FROM, ADMIN } from "@/lib/resend"
 import {
   subscriberConfirmHtml,
   adminSubscriberHtml,
@@ -15,14 +15,14 @@ export async function POST(req: NextRequest) {
 
     await Promise.all([
       /* Confirmation → subscriber */
-      resend.emails.send({
+      getResend().emails.send({
         from:    FROM,
         to:      email,
         subject: "You're on the list — PodcastMatch AI 🎙️",
         html:    subscriberConfirmHtml(email),
       }),
       /* Notification → admin Gmail */
-      resend.emails.send({
+      getResend().emails.send({
         from:    FROM,
         to:      ADMIN,
         subject: `📬 New subscriber: ${email}`,
