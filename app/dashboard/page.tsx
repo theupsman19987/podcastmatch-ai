@@ -1,84 +1,52 @@
 import type { Metadata } from "next"
-import { QuickStatsRow } from "@/components/dashboard/quick-stats"
-import {
-  AIMatchInsightsWidget,
-  RecentOpportunitiesWidget,
-  AudienceAlignmentWidget,
-  VisibilityScoreWidget,
-  CreatorMomentumWidget,
-} from "@/components/dashboard/placeholder-modules"
+import { createClient } from "@/lib/supabase/server"
+import { DashboardHomeContent } from "./dashboard-client"
 
 export const metadata: Metadata = {
   title: "Dashboard — PodcastMatch AI",
 }
 
-/* ── Section header ───────────────────────────────────────── */
-function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }) {
+export default async function DashboardPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  /* ── Real user first name ──────────────────────────────── */
+  const rawName   = (user?.user_metadata?.full_name as string | undefined) ?? user?.email ?? ""
+  const firstName = rawName.split(" ")[0] || "there"
+  const userId    = user?.id ?? ""
+
+  const startOfDay = new Date()
+  startOfDay.setHours(0, 0, 0, 0)
+
+  /* ── DB queries (parallel) ─────────────────────────────── */
+  const [savedResult, matchResult, todayResult, profileResult] = await Promise.all([
+    supabase
+      .from("saved_podcasts")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", userId),
+    supabase
+      .from("match_history")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", userId),
+    supabase
+      .from("match_history")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .gte("created_at", startOfDay.toISOString()),
+    supabase
+      .from("creator_profiles")
+      .select("visibility_score")
+      .eq("user_id", userId)
+      .single(),
+  ])
+
   return (
-    <div className="mb-4 flex flex-col gap-0.5">
-      <h2 className="text-sm font-semibold text-foreground">{title}</h2>
-      {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
-    </div>
-  )
-}
-
-export default function DashboardPage() {
-  return (
-    <div className="flex flex-col gap-8 max-w-[1400px]">
-
-      {/* ── Welcome header ────────────────────────────────── */}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-h3 font-bold text-foreground">
-          Good morning, <span className="gradient-text-primary">Jane</span> 👋
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Your AI matching engine found <span className="font-semibold text-[var(--premium-cyan)]">12 new opportunities</span> since your last visit.
-        </p>
-      </div>
-
-      {/* ── Quick stats ───────────────────────────────────── */}
-      <section aria-labelledby="quick-stats-heading">
-        <h2 id="quick-stats-heading" className="sr-only">Quick stats</h2>
-        <QuickStatsRow />
-      </section>
-
-      {/* ── Main grid row 1: AI Insights + Visibility ─────── */}
-      <section aria-labelledby="ai-insights-heading">
-        <SectionHeader
-          title="AI Intelligence"
-          subtitle="Real-time matching powered by your profile"
-        />
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          {/* AI Match Insights — spans 2 cols */}
-          <div className="lg:col-span-2">
-            <AIMatchInsightsWidget />
-          </div>
-          {/* Visibility Score — 1 col */}
-          <VisibilityScoreWidget />
-        </div>
-      </section>
-
-      {/* ── Main grid row 2: Opportunities ────────────────── */}
-      <section aria-labelledby="opportunities-heading">
-        <SectionHeader
-          title="Recent Opportunities"
-          subtitle="Podcasts you've interacted with recently"
-        />
-        <RecentOpportunitiesWidget />
-      </section>
-
-      {/* ── Main grid row 3: Audience + Momentum ──────────── */}
-      <section aria-labelledby="insights-heading">
-        <SectionHeader
-          title="Creator Insights"
-          subtitle="How your brand and momentum are performing"
-        />
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <AudienceAlignmentWidget />
-          <CreatorMomentumWidget />
-        </div>
-      </section>
-
-    </div>
+    <DashboardHomeContent
+      firstName={firstName}
+      visibilityScore={profileResult.data?.visibility_score ?? 74}
+      savedCount={savedResult.count ?? 0}
+      matchCount={matchResult.count ?? 0}
+      newToday={todayResult.count ?? 0}
+    />
   )
 }
