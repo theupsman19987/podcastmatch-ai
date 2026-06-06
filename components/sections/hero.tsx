@@ -117,9 +117,10 @@ export function Hero() {
             {/* HEADLINE */}
             <motion.div {...fadeUp(0.18)}>
               <h1 className="text-hero" data-speakable="hero-headline">
-                Get Discovered By The{" "}
+                Get Discovered<br />
+                By The{" "}
                 <span className="gradient-text-primary text-glow-primary">
-                  Right Podcasts
+                  <br />Right Podcasts
                 </span>
               </h1>
             </motion.div>
