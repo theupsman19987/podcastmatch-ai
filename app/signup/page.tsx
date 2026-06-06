@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Mic2 } from "lucide-react"
+import { Mic2, ChevronLeft } from "lucide-react"
 import { AuthBackground } from "@/components/auth/auth-background"
 import { AuthBrandingPanel } from "@/components/auth/auth-branding"
 import { SignupForm } from "@/components/auth/signup-form"
@@ -30,6 +30,20 @@ export default function SignupPage() {
         {/* ── Right: form panel ───────────────────────────── */}
         <div className="flex w-full lg:w-[48%] xl:w-[45%] min-h-dvh items-start lg:items-center justify-center py-10 px-6 sm:px-10">
           <div className="w-full max-w-[420px]">
+
+            {/* Back to home */}
+            <Link
+              href="/"
+              className="group mb-8 inline-flex items-center gap-1.5 text-sm text-muted-foreground
+                         transition-all duration-150 hover:text-foreground"
+              aria-label="Back to home"
+            >
+              <ChevronLeft
+                className="size-4 transition-transform duration-150 group-hover:-translate-x-0.5"
+                aria-hidden="true"
+              />
+              Back
+            </Link>
 
             {/* Mobile logo — only shown below lg */}
             <Link

@@ -1,13 +1,14 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "motion/react"
 import Link from "next/link"
-import { Menu, ArrowRight } from "lucide-react"
+import { Menu, ArrowRight, LogOut } from "lucide-react"
 import { ShimmerButton } from "@/components/ui/shimmer-button"
 import { NavLogo } from "@/components/navigation/nav-logo"
 import { MobileMenu } from "@/components/navigation/mobile-menu"
+import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
 
 /* ── Navigation structure ───────────────────────────────────── */
@@ -25,7 +26,28 @@ const NAV_LINKS = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
+
+  /* Auth state — sync on mount and on every auth change */
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getSession().then(({ data }) => {
+      setIsLoggedIn(!!data.session)
+    })
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setIsLoggedIn(!!session)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleLogout = useCallback(async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push("/")
+    router.refresh()
+  }, [router])
 
   /* Scroll detection — passive for performance */
   useEffect(() => {
@@ -114,15 +136,29 @@ export function Navbar() {
             {/* AI live indicator — hidden on small screens */}
             <AIIndicator />
 
-            {/* Desktop CTA */}
+            {/* Desktop CTA / Logout */}
             <div className="hidden sm:block">
-              <ShimmerButton variant="premium" size="sm" className="group h-9 gap-1.5 px-4">
-                Start Matching
-                <ArrowRight
-                  className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
-                  aria-hidden="true"
-                />
-              </ShimmerButton>
+              {isLoggedIn ? (
+                <button
+                  onClick={handleLogout}
+                  className="flex h-9 items-center gap-1.5 rounded-lg border border-border/60 bg-muted/30 px-4
+                             text-sm font-medium text-muted-foreground
+                             transition-all duration-150
+                             hover:border-border hover:bg-muted/60 hover:text-foreground"
+                  aria-label="Sign out"
+                >
+                  <LogOut className="size-3.5" aria-hidden="true" />
+                  Log Out
+                </button>
+              ) : (
+                <ShimmerButton variant="premium" size="sm" className="group h-9 gap-1.5 px-4">
+                  Start Matching
+                  <ArrowRight
+                    className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
+                    aria-hidden="true"
+                  />
+                </ShimmerButton>
+              )}
             </div>
 
             {/* Mobile hamburger — visible below lg */}
