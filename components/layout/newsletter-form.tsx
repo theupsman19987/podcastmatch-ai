@@ -16,8 +16,15 @@ export function NewsletterForm({ className }: { className?: string }) {
     e.preventDefault()
     if (!email.trim()) return
     setState("loading")
-    // TODO: connect to email service (Resend / Mailchimp / ConvertKit)
-    await new Promise<void>(res => setTimeout(res, 900))
+    const res = await fetch("/api/email/subscribe", {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ email: email.trim(), source: "footer" }),
+    })
+    if (!res.ok) {
+      setState("idle")
+      return
+    }
     setState("success")
   }
 

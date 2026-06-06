@@ -10,6 +10,7 @@ import { AuthDivider } from "@/components/auth/auth-divider"
 import { ShimmerButton } from "@/components/ui/shimmer-button"
 import { cn } from "@/lib/utils"
 import { signUpAction } from "@/lib/actions/auth"
+import { trackClientEvent } from "@/lib/analytics/track"
 
 /* ── Password strength ─────────────────────────────────────── */
 function getStrength(pw: string): { score: number; label: string; barClass: string; textClass: string } {
@@ -113,6 +114,13 @@ export function SignupForm() {
     if (result.error) {
       setErrors({ form: result.error })
     } else {
+      trackClientEvent({ event: "user_registered", properties: { email: email.trim() } }).catch(() => {})
+      /* Fire welcome email — non-blocking, don't await */
+      fetch("/api/email/welcome", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ name: fullName.trim(), email: email.trim() }),
+      }).catch(() => {})
       setSuccess(true)
     }
   }
