@@ -1,147 +1,8 @@
 "use client"
 
-import * as React from "react"
 import { useRef } from "react"
 import { motion, useInView } from "motion/react"
-import {
-  Mic2,
-  TrendingUp,
-  Sparkles,
-  Users,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
 import { ConversionBanner } from "@/components/ui/conversion-banner"
-import { AiScoreBadge } from "@/components/ui/ai-score-badge"
-
-/* ── Floating proof cards ─────────────────────────────────
-   Positioned absolutely around the CTA content area.
-   Visible at xl+ only to avoid overlap on smaller screens.
-   Use aria-hidden — these are decorative momentum signals.
-   ──────────────────────────────────────────────────────── */
-
-function FloatingPodcastCard() {
-  return (
-    <div
-      className={cn(
-        "glass-strong flex flex-col gap-2.5 rounded-[var(--radius-xl)]",
-        "border border-border p-3.5 shadow-[var(--shadow-float)]",
-        "w-[185px]"
-      )}
-    >
-      <div className="flex items-center gap-2">
-        <div
-          className="flex h-7 w-7 flex-shrink-0 items-center justify-center
-                     rounded-md bg-primary/15"
-        >
-          <Mic2 className="size-3.5 text-primary" aria-hidden="true" />
-        </div>
-        <div className="min-w-0">
-          <p className="text-[11px] font-semibold text-foreground leading-tight truncate">
-            The Tim Ferriss Show
-          </p>
-          <p className="text-[10px] text-muted-foreground">7.1M listeners</p>
-        </div>
-      </div>
-      <AiScoreBadge score={94} size="sm" />
-    </div>
-  )
-}
-
-function FloatingInsightCard() {
-  return (
-    <div
-      className={cn(
-        "glass-strong flex items-center gap-2.5 rounded-[var(--radius-xl)]",
-        "border border-border p-3.5 shadow-[var(--shadow-float)]",
-        "w-[195px]"
-      )}
-    >
-      <div
-        className="flex h-8 w-8 flex-shrink-0 items-center justify-center
-                   rounded-md bg-primary/15"
-      >
-        <Sparkles className="size-3.5 text-primary" aria-hidden="true" />
-      </div>
-      <div>
-        <p className="text-[11px] font-semibold text-foreground leading-tight">
-          New Match Found
-        </p>
-        <p className="text-[10px] text-primary font-medium">
-          3 opportunities today
-        </p>
-      </div>
-    </div>
-  )
-}
-
-function FloatingMetricCard() {
-  return (
-    <div
-      className={cn(
-        "glass-strong flex items-center gap-2.5 rounded-[var(--radius-xl)]",
-        "border border-border p-3.5 shadow-[var(--shadow-float)]",
-        "w-[175px]"
-      )}
-    >
-      <div
-        className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md"
-        style={{ background: "oklch(0.78 0.15 83 / 0.15)" }}
-      >
-        <TrendingUp
-          className="size-3.5"
-          style={{ color: "var(--premium-gold)" }}
-          aria-hidden="true"
-        />
-      </div>
-      <div>
-        <p className="text-[11px] font-semibold text-foreground leading-tight">
-          Audience Match
-        </p>
-        <p
-          className="text-[10px] font-semibold"
-          style={{ color: "var(--premium-gold)" }}
-        >
-          94% alignment
-        </p>
-      </div>
-    </div>
-  )
-}
-
-function FloatingBookingCard() {
-  return (
-    <div
-      className={cn(
-        "glass-strong flex flex-col gap-2 rounded-[var(--radius-xl)]",
-        "border border-border p-3.5 shadow-[var(--shadow-float)]",
-        "w-[180px]"
-      )}
-    >
-      <div className="flex items-center gap-2">
-        <div
-          className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md"
-          style={{ background: "oklch(0.70 0.16 200 / 0.15)" }}
-        >
-          <Users
-            className="size-3.5"
-            style={{ color: "var(--premium-cyan)" }}
-            aria-hidden="true"
-          />
-        </div>
-        <p className="text-[11px] font-semibold text-foreground leading-tight">
-          Host Accepting
-        </p>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <span
-          className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[oklch(0.65_0.15_145)] animate-pulse"
-          aria-hidden="true"
-        />
-        <p className="text-[10px] text-muted-foreground">Booking window open</p>
-      </div>
-    </div>
-  )
-}
 
 /* ══════════════════════════════════════════════════════════
    FinalCtaSection
@@ -149,38 +10,6 @@ function FloatingBookingCard() {
 export function FinalCtaSection() {
   const ref     = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true })
-
-  /* Floating card entrance config */
-  const floaters = [
-    {
-      card:  <FloatingPodcastCard />,
-      pos:   "top-[18%] left-[3%]",
-      delay: 0.5,
-      float: "animate-float",
-      phase: "-0.5s",
-    },
-    {
-      card:  <FloatingInsightCard />,
-      pos:   "top-[10%] right-[3%]",
-      delay: 0.65,
-      float: "animate-float-alt",
-      phase: "-2s",
-    },
-    {
-      card:  <FloatingMetricCard />,
-      pos:   "bottom-[22%] left-[4%]",
-      delay: 0.55,
-      float: "animate-float-alt",
-      phase: "-3.5s",
-    },
-    {
-      card:  <FloatingBookingCard />,
-      pos:   "bottom-[18%] right-[4%]",
-      delay: 0.70,
-      float: "animate-float",
-      phase: "-1.5s",
-    },
-  ]
 
   return (
     <section
@@ -270,29 +99,6 @@ export function FinalCtaSection() {
         <ConversionBanner headingId="final-cta-heading" />
       </motion.div>
 
-      {/* ── FLOATING PROOF CARDS — xl+ only ──────────────── */}
-      {floaters.map((f, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, scale: 0.88 }}
-          animate={isInView ? { opacity: 1, scale: 1 } : {}}
-          transition={{
-            duration: 0.6,
-            ease: [0.16, 1, 0.3, 1],
-            delay: f.delay,
-          }}
-          className={cn(
-            "pointer-events-none absolute z-20",
-            "hidden xl:block",
-            f.float,
-            f.pos
-          )}
-          style={{ animationDelay: f.phase }}
-          aria-hidden="true"
-        >
-          {f.card}
-        </motion.div>
-      ))}
 
     </section>
   )

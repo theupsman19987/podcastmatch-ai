@@ -5,14 +5,8 @@ import {
   BrainCircuit,
   ChevronRight,
   Sparkles,
-  Zap,
-  Send,
-  Mic2,
 } from "lucide-react"
-import {
-  Card,
-  CardBadge,
-} from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { NumberTicker } from "@/components/ui/number-ticker"
 
 const MOCK_MATCHES = [
@@ -50,8 +44,7 @@ const AI_METRICS = [
 
 export function AIDashboardMockup() {
   return (
-    /* Outer shell — sized to give floating cards room to overflow */
-    <div className="relative w-full max-w-[480px] h-[560px]">
+    <div className="relative w-full max-w-[420px]">
 
       {/* ── AMBIENT BACKGROUND GLOW ─────────────────────────── */}
       <div
@@ -65,10 +58,8 @@ export function AIDashboardMockup() {
 
       {/* ══════════════════════════════════════════════════════
           MAIN DASHBOARD CARD
-          Floats with animate-float, has primary glow
           ══════════════════════════════════════════════════════ */}
       <motion.div
-        className="absolute left-[40px] top-[40px] right-0 bottom-0 animate-float"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
@@ -179,80 +170,6 @@ export function AIDashboardMockup() {
           </motion.div>
 
         </Card>
-      </motion.div>
-
-      {/* ══════════════════════════════════════════════════════
-          FLOATING MINI-CARD 1 — "New Match" (top-right)
-          Offset float phase, cyan glow
-          ══════════════════════════════════════════════════════ */}
-      <motion.div
-        className="absolute right-0 top-0 z-10 w-[176px] animate-float-alt"
-        initial={{ opacity: 0, y: -12, scale: 0.9 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <Card variant="glass" className="p-3.5 glow-cyan-lg shadow-[var(--shadow-float)]">
-          <div className="mb-2 flex items-center gap-2">
-            <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full
-                            bg-[oklch(0.70_0.16_200/0.15)]">
-              <Zap className="size-3 text-[var(--premium-cyan)]" />
-            </div>
-            <span className="text-xs font-semibold text-foreground">New Match!</span>
-          </div>
-          <p className="mb-2 text-[11px] leading-snug text-muted-foreground">
-            Tim Ferriss Show<br />
-            <span className="text-foreground font-medium">94% compatible</span>
-          </p>
-          <div className="flex items-center gap-1.5">
-            <div className="h-1 flex-1 overflow-hidden rounded-full bg-muted/50">
-              <div className="h-full w-[94%] rounded-full gradient-primary" />
-            </div>
-            <span className="text-[10px] font-semibold text-[var(--premium-cyan)]">94%</span>
-          </div>
-        </Card>
-      </motion.div>
-
-      {/* ══════════════════════════════════════════════════════
-          FLOATING MINI-CARD 2 — "Pitch Sent" (bottom-left)
-          Slower float phase, gold glow
-          ══════════════════════════════════════════════════════ */}
-      <motion.div
-        className="absolute -bottom-2 left-0 z-10 w-[172px] animate-float"
-        style={{ animationDelay: "-3s" }}
-        initial={{ opacity: 0, y: 12, scale: 0.9 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <Card variant="glass" className="p-3.5 glow-gold shadow-[var(--shadow-float)]">
-          <div className="mb-2 flex items-center gap-2">
-            <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full
-                            bg-[oklch(0.78_0.15_83/0.15)]">
-              <Send className="size-3 text-[var(--premium-gold)]" />
-            </div>
-            <span className="text-xs font-semibold text-foreground">Pitch Sent</span>
-            <CardBadge color="gold" className="ml-auto px-1.5 py-0 text-[9px]">Auto</CardBadge>
-          </div>
-          <p className="text-[11px] leading-snug text-muted-foreground">
-            How I Built This<br />
-            <span className="text-foreground font-medium">Avg reply: 2.4 days</span>
-          </p>
-        </Card>
-      </motion.div>
-
-      {/* ── STAT PILL (floating bottom-right) ─────────────── */}
-      <motion.div
-        className="absolute bottom-12 right-2 z-10"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <div className="glass flex items-center gap-1.5 rounded-full px-3 py-1.5 glow-subtle">
-          <Mic2 className="size-3 text-primary" />
-          <span className="text-xs font-semibold text-foreground">
-            <NumberTicker value={50} suffix="K+" duration={1400} delay={1000} />
-          </span>
-          <span className="text-[10px] text-muted-foreground">podcasts indexed</span>
-        </div>
       </motion.div>
 
     </div>
