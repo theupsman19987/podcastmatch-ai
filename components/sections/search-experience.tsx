@@ -8,14 +8,10 @@ import {
   Sparkles,
   Cpu,
   CheckCircle2,
-  Radio,
-  Clock,
-  Users,
   Activity,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { PodcastResultCard, type PodcastData } from "@/components/ui/podcast-result-card"
-import { AIInsightPanel } from "@/components/ui/ai-insight-panel"
 
 /* ── Search query cycle ─────────────────────────────────────── */
 const SEARCH_QUERIES: string[] = [
@@ -191,20 +187,8 @@ export function SearchExperienceSection() {
 
         <SectionHeader />
 
-        {/* 3-column layout: insight panels | simulator | insight panels */}
-        <div className="mt-14 flex items-start gap-5">
-
-          {/* ── LEFT insight panels (xl+ only) ──────────────── */}
-          <LeftInsightPanels />
-
-          {/* ── Main search simulator ───────────────────────── */}
-          <div className="flex-1 min-w-0">
-            <SearchSimulator />
-          </div>
-
-          {/* ── RIGHT insight panels (xl+ only) ─────────────── */}
-          <RightInsightPanels />
-
+        <div className="mt-14">
+          <SearchSimulator />
         </div>
       </div>
     </section>
@@ -248,89 +232,6 @@ function SectionHeader() {
         signals, and niche relevance to surface your highest-probability opportunities instantly.
       </p>
     </motion.div>
-  )
-}
-
-/* ── Left floating panels ───────────────────────────────────── */
-function LeftInsightPanels() {
-  const { ref, isInView } = useFadeInView()
-
-  return (
-    <div
-      ref={ref}
-      className="hidden xl:flex flex-col gap-3 w-44 flex-shrink-0"
-    >
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={isInView ? { opacity: 1, x: 0 } : {}}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-      >
-        <AIInsightPanel
-          icon={Radio}
-          title="AI Active Host Detected"
-          value="Books Weekly"
-          color="primary"
-          floatDelay="0s"
-        />
-      </motion.div>
-
-      <motion.div
-        className="mt-6"
-        initial={{ opacity: 0, x: -20 }}
-        animate={isInView ? { opacity: 1, x: 0 } : {}}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.55 }}
-      >
-        <AIInsightPanel
-          icon={Clock}
-          title="Booking Window Open"
-          value="Now Accepting Guests"
-          color="green"
-          floatDelay="-3.5s"
-        />
-      </motion.div>
-    </div>
-  )
-}
-
-/* ── Right floating panels ──────────────────────────────────── */
-function RightInsightPanels() {
-  const { ref, isInView } = useFadeInView()
-
-  return (
-    <div
-      ref={ref}
-      className="hidden xl:flex flex-col gap-3 w-44 flex-shrink-0"
-    >
-      <motion.div
-        className="mt-24"
-        initial={{ opacity: 0, x: 20 }}
-        animate={isInView ? { opacity: 1, x: 0 } : {}}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
-      >
-        <AIInsightPanel
-          icon={Users}
-          title="Audience Overlap Score"
-          value="94% Match"
-          color="gold"
-          floatDelay="-5s"
-        />
-      </motion.div>
-
-      <motion.div
-        className="mt-4"
-        initial={{ opacity: 0, x: 20 }}
-        animate={isInView ? { opacity: 1, x: 0 } : {}}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.65 }}
-      >
-        <AIInsightPanel
-          icon={Sparkles}
-          title="Creator Alignment"
-          value="Strong"
-          color="cyan"
-          floatDelay="-2s"
-        />
-      </motion.div>
-    </div>
   )
 }
 

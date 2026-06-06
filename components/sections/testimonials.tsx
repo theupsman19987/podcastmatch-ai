@@ -4,9 +4,6 @@ import * as React from "react"
 import { useRef } from "react"
 import { motion, useInView } from "motion/react"
 import {
-  TrendingUp,
-  Users,
-  Activity,
   Star,
   Sparkles,
   ArrowRight,
@@ -20,7 +17,6 @@ import {
   type TestimonialData,
   type CompactTestimonialData,
 } from "@/components/ui/testimonial-card"
-import { AIInsightPanel } from "@/components/ui/ai-insight-panel"
 import { Marquee } from "@/components/ui/marquee"
 import { NumberTicker } from "@/components/ui/number-ticker"
 import { Button } from "@/components/ui/button"
@@ -165,31 +161,6 @@ const TRUST_METRICS = [
   { value: 4.9,   suffix: "★", label: "Platform Rating",   prefix: "", decimalPlaces: 1 },
 ]
 
-/* ── Success insight panels ─────────────────────────────── */
-const SUCCESS_INSIGHTS = [
-  {
-    icon:       TrendingUp,
-    title:      "Average Bookings Per Month",
-    value:      "8.4 shows",
-    color:      "gold"    as const,
-    floatDelay: "0s",
-  },
-  {
-    icon:       Users,
-    title:      "New Audience Reached",
-    value:      "~180K listeners",
-    color:      "primary" as const,
-    floatDelay: "-2.5s",
-  },
-  {
-    icon:       Activity,
-    title:      "Guest Conversion Rate",
-    value:      "3.7× industry avg",
-    color:      "cyan"    as const,
-    floatDelay: "-4s",
-  },
-]
-
 /* ── Fade-in helper ─────────────────────────────────────── */
 function useFadeInView() {
   const ref = useRef<HTMLDivElement>(null)
@@ -245,7 +216,6 @@ export function TestimonialsSection() {
         <TrustMetrics />
         <FeaturedGrid />
         <MarqueeRows />
-        <SuccessPanels />
         <BottomCTA />
 
       </div>
@@ -386,39 +356,6 @@ function MarqueeRows() {
         ))}
       </Marquee>
     </motion.div>
-  )
-}
-
-/* ── Success insight panels ─────────────────────────────── */
-function SuccessPanels() {
-  const { ref, isInView } = useFadeInView()
-
-  return (
-    <div
-      ref={ref}
-      className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4"
-    >
-      {SUCCESS_INSIGHTS.map((insight, i) => (
-        <motion.div
-          key={insight.title}
-          initial={{ opacity: 0, y: 18 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{
-            duration: 0.5,
-            ease: [0.16, 1, 0.3, 1],
-            delay: 0.1 + i * 0.1,
-          }}
-        >
-          <AIInsightPanel
-            icon={insight.icon}
-            title={insight.title}
-            value={insight.value}
-            color={insight.color}
-            floatDelay={insight.floatDelay}
-          />
-        </motion.div>
-      ))}
-    </div>
   )
 }
 

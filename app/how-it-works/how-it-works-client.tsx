@@ -379,20 +379,6 @@ function Step1ProfileSection() {
               </div>
             </div>
 
-            {/* Floating insight pill */}
-            <motion.div
-              className="absolute -bottom-4 -right-4 flex items-center gap-2 rounded-full border border-primary/25 bg-card px-3 py-2 shadow-[var(--shadow-card)]"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={isInView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ delay: 0.8, duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
-            >
-              <BrainCircuit className="size-3.5 text-primary" aria-hidden="true" />
-              <span className="text-[11px] font-semibold text-foreground">AI analyzing your answers</span>
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
-              </span>
-            </motion.div>
           </motion.div>
 
         </div>

@@ -13,7 +13,6 @@ import {
   Trophy,
   Star,
   Users,
-  Activity,
   Sparkles,
   ArrowRight,
   Shield,
@@ -26,7 +25,6 @@ import {
   FeaturedPodcastCard,
   type FeaturedPodcastData,
 } from "@/components/ui/featured-podcast-card"
-import { AIInsightPanel } from "@/components/ui/ai-insight-panel"
 import { Button } from "@/components/ui/button"
 
 /* ── Featured podcast data ──────────────────────────────────── */
@@ -154,30 +152,6 @@ const TRUST_ITEMS = [
 ]
 
 /* ── Section insight panels ─────────────────────────────────── */
-const SECTION_INSIGHTS = [
-  {
-    icon:       TrendingUp,
-    title:      "Audience Growth Increasing",
-    value:      "+24% this week",
-    color:      "gold"    as const,
-    floatDelay: "0s",
-  },
-  {
-    icon:       Users,
-    title:      "Host Accepting New Guests",
-    value:      "3 spots remaining",
-    color:      "primary" as const,
-    floatDelay: "-3.5s",
-  },
-  {
-    icon:       Activity,
-    title:      "High Engagement Opportunity",
-    value:      "2.8× avg. rate",
-    color:      "cyan"    as const,
-    floatDelay: "-2s",
-  },
-]
-
 /* ── Fade-in helper ─────────────────────────────────────────── */
 function useFadeInView() {
   const ref = useRef<HTMLDivElement>(null)
@@ -232,7 +206,6 @@ export function FeaturedPodcastsSection() {
         <SectionHeader />
         <TrustPills />
         <PodcastShowcase />
-        <InsightsRow />
         <BottomCTA />
 
       </div>
@@ -364,39 +337,6 @@ function PodcastShowcase() {
         </p>
       </div>
 
-    </div>
-  )
-}
-
-/* ── AI Insight panels row ──────────────────────────────────── */
-function InsightsRow() {
-  const { ref, isInView } = useFadeInView()
-
-  return (
-    <div
-      ref={ref}
-      className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4"
-    >
-      {SECTION_INSIGHTS.map((insight, i) => (
-        <motion.div
-          key={insight.title}
-          initial={{ opacity: 0, y: 18 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{
-            duration: 0.5,
-            ease: [0.16, 1, 0.3, 1],
-            delay: 0.1 + i * 0.1,
-          }}
-        >
-          <AIInsightPanel
-            icon={insight.icon}
-            title={insight.title}
-            value={insight.value}
-            color={insight.color}
-            floatDelay={insight.floatDelay}
-          />
-        </motion.div>
-      ))}
     </div>
   )
 }

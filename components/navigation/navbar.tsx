@@ -151,7 +151,7 @@ export function Navbar() {
                   Log Out
                 </button>
               ) : (
-                <ShimmerButton variant="premium" size="sm" className="group h-9 gap-1.5 px-4">
+                <ShimmerButton variant="premium" size="sm" className="group h-9 gap-1.5 px-4" onClick={() => router.push("/signup")}>
                   Start Matching
                   <ArrowRight
                     className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
