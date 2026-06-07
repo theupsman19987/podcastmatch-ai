@@ -1,82 +1,96 @@
 -- ═══════════════════════════════════════════════════════════════════════════
---  PodcastMatch AI — Phase 7: Analytics, Billing & Beta Tables
---  Run AFTER 001_initial_schema.sql
+--  Migration 002: Analytics & Billing
+--  Tables: analytics_events, subscriptions, beta_waitlist, feedback
+--
+--  Run in Supabase Dashboard → SQL Editor → New Query → Run
+--  STATUS: Must be run before beta launch.
+--  Depends on: 001_initial.sql (auth.users must exist)
 -- ═══════════════════════════════════════════════════════════════════════════
 
--- ── 1. Analytics Events ──────────────────────────────────────────────────────
--- Lightweight in-app event log. No third-party required.
+-- ─── analytics_events ────────────────────────────────────────────────────────
+-- user_id is nullable: anonymous events are tracked before login.
 
-create table if not exists public.analytics_events (
-  id          uuid        default gen_random_uuid() primary key,
-  user_id     uuid        references auth.users on delete set null,
-  event       text        not null,
-  properties  jsonb       not null default '{}',
-  occurred_at timestamptz not null default now()
+CREATE TABLE IF NOT EXISTS analytics_events (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id     UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  event       TEXT NOT NULL,
+  properties  JSONB NOT NULL DEFAULT '{}',
+  occurred_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Index for per-user queries and event-type aggregation
-create index if not exists analytics_events_user_idx    on public.analytics_events (user_id);
-create index if not exists analytics_events_event_idx   on public.analytics_events (event);
-create index if not exists analytics_events_time_idx    on public.analytics_events (occurred_at desc);
+ALTER TABLE analytics_events ENABLE ROW LEVEL SECURITY;
 
--- RLS: users can read their own events; write is server-only (service role)
-alter table public.analytics_events enable row level security;
-create policy "analytics: read own events"
-  on public.analytics_events for select
-  using (auth.uid() = user_id);
+CREATE POLICY "analytics_select_own"
+  ON analytics_events FOR SELECT
+  USING (auth.uid() = user_id);
 
--- ── 2. Subscriptions ─────────────────────────────────────────────────────────
--- Synced from Stripe webhooks. One row per user.
+CREATE POLICY "analytics_insert_any"
+  ON analytics_events FOR INSERT
+  WITH CHECK (true);
 
-create table if not exists public.subscriptions (
-  id                     uuid        default gen_random_uuid() primary key,
-  user_id                uuid        references auth.users on delete cascade not null,
-  stripe_customer_id     text        not null,
-  stripe_subscription_id text        not null,
-  status                 text        not null default 'inactive',   -- active | trialing | past_due | cancelled
-  plan_id                text        not null default 'free',
-  current_period_start   timestamptz,
-  current_period_end     timestamptz,
-  metadata               jsonb       not null default '{}',
-  created_at             timestamptz default now() not null,
-  updated_at             timestamptz default now() not null,
-  unique (user_id)
+-- ─── subscriptions (Stripe subscription sync) ────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS subscriptions (
+  id                     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id                UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  stripe_customer_id     TEXT,
+  stripe_subscription_id TEXT,
+  status                 TEXT NOT NULL DEFAULT 'free',
+  plan_id                TEXT NOT NULL DEFAULT 'free',
+  current_period_start   TIMESTAMPTZ,
+  current_period_end     TIMESTAMPTZ,
+  metadata               JSONB NOT NULL DEFAULT '{}',
+  created_at             TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at             TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (user_id)
 );
 
-alter table public.subscriptions enable row level security;
-create policy "subscriptions: read own"
-  on public.subscriptions for select
-  using (auth.uid() = user_id);
+ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
 
--- ── 3. Beta Waitlist ─────────────────────────────────────────────────────────
+CREATE POLICY "subscriptions_select_own"
+  ON subscriptions FOR SELECT
+  USING (auth.uid() = user_id);
 
-create table if not exists public.beta_waitlist (
-  id         uuid        default gen_random_uuid() primary key,
-  email      text        not null unique,
-  name       text,
-  role       text,
-  invited    boolean     not null default false,
-  joined_at  timestamptz default now() not null
+-- Webhook route uses service role key which bypasses RLS — no additional
+-- INSERT/UPDATE policy required for the Stripe webhook handler.
+
+-- ─── beta_waitlist ───────────────────────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS beta_waitlist (
+  id        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email     TEXT NOT NULL,
+  name      TEXT,
+  role      TEXT,
+  invited   BOOLEAN NOT NULL DEFAULT false,
+  joined_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (email)
 );
 
--- Public write-only (upsert via service role); no reads from client
-alter table public.beta_waitlist enable row level security;
--- No select policy — only readable by admins via service role
+ALTER TABLE beta_waitlist ENABLE ROW LEVEL SECURITY;
 
--- ── 4. Feedback ──────────────────────────────────────────────────────────────
+CREATE POLICY "waitlist_insert_any"
+  ON beta_waitlist FOR INSERT
+  WITH CHECK (true);
 
-create table if not exists public.feedback (
-  id         uuid        default gen_random_uuid() primary key,
-  user_id    uuid        references auth.users on delete set null,
-  type       text        not null default 'general',  -- bug | feature | general
-  message    text        not null,
-  page       text,
-  metadata   jsonb       not null default '{}',
-  resolved   boolean     not null default false,
-  created_at timestamptz default now() not null
+-- ─── feedback ────────────────────────────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS feedback (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  type       TEXT NOT NULL,
+  message    TEXT NOT NULL,
+  page       TEXT,
+  metadata   JSONB NOT NULL DEFAULT '{}',
+  resolved   BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-alter table public.feedback enable row level security;
-create policy "feedback: read own"
-  on public.feedback for select
-  using (auth.uid() = user_id);
+ALTER TABLE feedback ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "feedback_insert_any"
+  ON feedback FOR INSERT
+  WITH CHECK (true);
+
+CREATE POLICY "feedback_select_own"
+  ON feedback FOR SELECT
+  USING (auth.uid() = user_id);

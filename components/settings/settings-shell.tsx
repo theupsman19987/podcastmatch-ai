@@ -14,6 +14,26 @@ import { SecurityCenter }       from "./sections/security-center"
 import { DangerZone }           from "./sections/danger-zone"
 import type { SettingsSectionId } from "./settings-mock"
 
+export interface InitialUserData {
+  fullName:    string
+  email:       string
+  username:    string
+  memberSince: string
+  title:       string
+  bio:         string
+  website:     string
+  location:    string
+  social: {
+    twitter:   string
+    linkedin:  string
+    youtube:   string
+    instagram: string
+  }
+  plan:        "free" | "creator-pro" | "visibility-pro" | "enterprise"
+  planStatus:  string
+  nextBilling: string | null
+}
+
 const SECTION_TITLES: Record<SettingsSectionId, string> = {
   "profile":         "Profile Settings",
   "creator-prefs":   "Creator Preferences",
@@ -25,20 +45,20 @@ const SECTION_TITLES: Record<SettingsSectionId, string> = {
   "danger-zone":     "Danger Zone",
 }
 
-function ActiveSection({ id }: { id: SettingsSectionId }) {
+function ActiveSection({ id, initialData }: { id: SettingsSectionId; initialData?: InitialUserData }) {
   switch (id) {
-    case "profile":         return <ProfileSettings />
-    case "creator-prefs":   return <CreatorPreferences />
-    case "account":         return <AccountSettings />
-    case "notifications":   return <NotificationCenter />
-    case "subscription":    return <SubscriptionBilling />
-    case "billing-history": return <BillingHistory />
-    case "security":        return <SecurityCenter />
-    case "danger-zone":     return <DangerZone />
+    case "profile":         return <ProfileSettings     initialData={initialData} />
+    case "creator-prefs":   return <CreatorPreferences  />
+    case "account":         return <AccountSettings     initialData={initialData} />
+    case "notifications":   return <NotificationCenter  />
+    case "subscription":    return <SubscriptionBilling initialData={initialData} />
+    case "billing-history": return <BillingHistory      />
+    case "security":        return <SecurityCenter      />
+    case "danger-zone":     return <DangerZone          />
   }
 }
 
-export function SettingsShell() {
+export function SettingsShell({ initialData }: { initialData?: InitialUserData }) {
   const [active, setActive] = useState<SettingsSectionId>("profile")
 
   return (
@@ -75,7 +95,7 @@ export function SettingsShell() {
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.2 }}
             >
-              <ActiveSection id={active} />
+              <ActiveSection id={active} initialData={initialData} />
             </motion.div>
           </AnimatePresence>
         </div>

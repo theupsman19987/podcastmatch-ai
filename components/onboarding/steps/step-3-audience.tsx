@@ -34,7 +34,7 @@ export function Step3Audience() {
 
       <div className="space-y-6">
         <div>
-          <SectionLabel>11. Who benefits most from your message?</SectionLabel>
+          <SectionLabel>7. Who benefits most from your message?</SectionLabel>
           <StepTextarea
             value={formData.s3_audienceBenefits}
             onChange={v => setField("s3_audienceBenefits", v)}
@@ -44,7 +44,7 @@ export function Step3Audience() {
         </div>
 
         <div>
-          <SectionLabel>12. What age group do you primarily serve?</SectionLabel>
+          <SectionLabel>8. What age group do you primarily serve?</SectionLabel>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
             {AGE_GROUPS.map(({ label, description }) => (
               <SelectionCard
@@ -59,7 +59,7 @@ export function Step3Audience() {
         </div>
 
         <div>
-          <SectionLabel>13. What audience challenge are you most equipped to address?</SectionLabel>
+          <SectionLabel>9. What audience challenge are you most equipped to address?</SectionLabel>
           <StepTextarea
             value={formData.s3_audienceChallenge}
             onChange={v => setField("s3_audienceChallenge", v)}
@@ -69,7 +69,7 @@ export function Step3Audience() {
         </div>
 
         <div>
-          <SectionLabel>14. What type of audience engages most with your content?</SectionLabel>
+          <SectionLabel>10. What type of audience engages most with your content?</SectionLabel>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {AUDIENCE_TYPES.map(({ emoji, label, description }) => (
               <SelectionCard
@@ -85,7 +85,7 @@ export function Step3Audience() {
         </div>
 
         <div>
-          <SectionLabel>15. What audience outcome do you help create?</SectionLabel>
+          <SectionLabel>11. What audience outcome do you help create?</SectionLabel>
           <StepTextarea
             value={formData.s3_audienceOutcome}
             onChange={v => setField("s3_audienceOutcome", v)}

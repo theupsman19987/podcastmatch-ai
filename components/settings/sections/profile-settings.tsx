@@ -3,19 +3,19 @@
 import { useState } from "react"
 import { User, Camera, Globe, MapPin, MessageSquare, Briefcase, Film, AtSign } from "lucide-react"
 import { SettingsCard, SectionHeader, FieldRow, TextInput, TextArea, Divider, SaveButton } from "../settings-ui"
-import { MOCK_USER } from "../settings-mock"
+import type { InitialUserData } from "../settings-shell"
 import type { SaveState } from "../settings-ui"
 import { updateProfileSettings } from "@/lib/actions/settings"
 
 type SaveStateLoc = "idle" | "saving" | "saved"
 
-export function ProfileSettings() {
-  const [name,     setName]     = useState(MOCK_USER.name)
-  const [title,    setTitle]    = useState(MOCK_USER.title)
-  const [bio,      setBio]      = useState(MOCK_USER.bio)
-  const [website,  setWebsite]  = useState(MOCK_USER.website)
-  const [location, setLocation] = useState(MOCK_USER.location)
-  const [social,   setSocial]   = useState(MOCK_USER.social)
+export function ProfileSettings({ initialData }: { initialData?: InitialUserData }) {
+  const [name,     setName]     = useState(initialData?.fullName ?? "")
+  const [title,    setTitle]    = useState(initialData?.title    ?? "")
+  const [bio,      setBio]      = useState(initialData?.bio      ?? "")
+  const [website,  setWebsite]  = useState(initialData?.website  ?? "")
+  const [location, setLocation] = useState(initialData?.location ?? "")
+  const [social,   setSocial]   = useState(initialData?.social   ?? { twitter: "", linkedin: "", youtube: "", instagram: "" })
   const [saveState, setSaveState] = useState<SaveStateLoc>("idle")
 
   async function handleSave() {
@@ -49,8 +49,8 @@ export function ProfileSettings() {
               </button>
             </div>
             <div>
-              <p className="text-sm font-semibold text-foreground">{name}</p>
-              <p className="text-xs text-muted-foreground mb-2">{title}</p>
+              <p className="text-sm font-semibold text-foreground">{name || "Your name"}</p>
+              <p className="text-xs text-muted-foreground mb-2">{title || "Your title"}</p>
               <button className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-border/40 text-muted-foreground hover:border-primary/30 hover:text-primary transition-colors">
                 Upload Photo
               </button>

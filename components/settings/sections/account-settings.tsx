@@ -3,11 +3,11 @@
 import { useState } from "react"
 import { KeyRound, Mail, AtSign, Lock, Smartphone, Eye, EyeOff } from "lucide-react"
 import { SettingsCard, SectionHeader, FieldRow, TextInput, Toggle, Divider } from "../settings-ui"
-import { MOCK_USER } from "../settings-mock"
+import type { InitialUserData } from "../settings-shell"
 
-export function AccountSettings() {
-  const [email,      setEmail]    = useState(MOCK_USER.email)
-  const [username,   setUsername] = useState(MOCK_USER.username)
+export function AccountSettings({ initialData }: { initialData?: InitialUserData }) {
+  const [email,      setEmail]    = useState(initialData?.email    ?? "")
+  const [username,   setUsername] = useState(initialData?.username ?? "")
   const [showPass,   setShowPass] = useState(false)
   const [twoFactor,  setTwoFactor]= useState(false)
   const [editEmail,  setEditEmail]= useState(false)
@@ -96,7 +96,6 @@ export function AccountSettings() {
                 Change
               </button>
             </div>
-            <p className="text-[10px] text-muted-foreground mt-1.5">Last changed 45 days ago</p>
           </FieldRow>
 
           <Divider />
@@ -131,10 +130,10 @@ export function AccountSettings() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-bold text-foreground">Member Since</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{MOCK_USER.memberSince}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{initialData?.memberSince ?? "—"}</p>
             </div>
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-primary/10 border border-primary/20 text-primary uppercase tracking-wider">
-              {MOCK_USER.plan}
+              {initialData?.plan ?? "free"}
             </span>
           </div>
         </div>

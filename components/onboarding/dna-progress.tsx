@@ -4,7 +4,7 @@ import { motion } from "motion/react"
 import { TOTAL_STEPS } from "./dna-context"
 
 const STEP_LABELS = [
-  "Your Story",
+  "Your Goals",
   "Your Expertise",
   "Your Audience",
   "Communication Style",

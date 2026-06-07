@@ -4,15 +4,11 @@ import { createContext, useContext, useState, useCallback, type ReactNode } from
 
 export const TOTAL_STEPS = 7
 
-export type ArrayField = "s1_podcastMotivation" | "s5_podcastCategories" | "s5_podcastFormats" | "s5_opportunitiesSeeking"
+export type ArrayField = "s1_podcastMotivation" | "s5_podcastCategories" | "s5_podcastFormats"
 
 export interface DNAFormData {
-  // Step 1 — Your Story
-  s1_lifeExperience: string
-  s1_challengeOvercome: string
-  s1_personalTransformation: string
+  // Step 1 — Your Goals
   s1_podcastMotivation: string[]
-  s1_messageImpact: string
 
   // Step 2 — Your Expertise
   s2_primaryTopic: string
@@ -31,16 +27,11 @@ export interface DNAFormData {
   // Step 4 — Communication Style
   s4_speakingStyle: string
   s4_teachingStyle: string
-  s4_emotionalResponse: string
-  s4_communicationDescription: string
   s4_uniqueVoice: string
 
-  // Step 5 — Podcast Interests
+  // Step 5 — Podcast Compatibility
   s5_podcastCategories: string[]
-  s5_hostConversations: string
-  s5_audienceSize: string
   s5_podcastFormats: string[]
-  s5_opportunitiesSeeking: string[]
 
   // Step 6 — Visibility & Experience
   s6_previousPodcasts: string
@@ -50,24 +41,14 @@ export interface DNAFormData {
   s6_readiness: string
 
   // Step 7 — Creator Positioning
-  s7_title: string
   s7_missionCategory: string
-  s7_audienceTransformation: string
-  s7_knownFor: string
   s7_creatorArchetype: string
-  s7_influenceType: string
-  s7_longTermGoal: string
-  s7_uniqueStory: string
   s7_centralMessage: string
   s7_oneRememberedThing: string
 }
 
 const INITIAL: DNAFormData = {
-  s1_lifeExperience: "",
-  s1_challengeOvercome: "",
-  s1_personalTransformation: "",
   s1_podcastMotivation: [],
-  s1_messageImpact: "",
   s2_primaryTopic: "",
   s2_speakForHour: "",
   s2_problemSolved: "",
@@ -80,27 +61,16 @@ const INITIAL: DNAFormData = {
   s3_audienceOutcome: "",
   s4_speakingStyle: "",
   s4_teachingStyle: "",
-  s4_emotionalResponse: "",
-  s4_communicationDescription: "",
   s4_uniqueVoice: "",
   s5_podcastCategories: [],
-  s5_hostConversations: "",
-  s5_audienceSize: "",
   s5_podcastFormats: [],
-  s5_opportunitiesSeeking: [],
   s6_previousPodcasts: "",
   s6_publicSpeaking: "",
   s6_publishedWork: "",
   s6_socialMediaActivity: "",
   s6_readiness: "",
-  s7_title: "",
   s7_missionCategory: "",
-  s7_audienceTransformation: "",
-  s7_knownFor: "",
   s7_creatorArchetype: "",
-  s7_influenceType: "",
-  s7_longTermGoal: "",
-  s7_uniqueStory: "",
   s7_centralMessage: "",
   s7_oneRememberedThing: "",
 }

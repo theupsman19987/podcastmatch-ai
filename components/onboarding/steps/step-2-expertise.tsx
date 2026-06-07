@@ -42,7 +42,7 @@ export function Step2Expertise() {
 
       <div className="space-y-6">
         <div>
-          <SectionLabel>6. Which topic best represents your primary expertise?</SectionLabel>
+          <SectionLabel>2. Which topic best represents your primary expertise?</SectionLabel>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
             {TOPICS.map(({ emoji, label }) => (
               <SelectionCard
@@ -57,7 +57,7 @@ export function Step2Expertise() {
         </div>
 
         <div>
-          <SectionLabel>7. What subject could you speak about for an hour without preparation?</SectionLabel>
+          <SectionLabel>3. What subject could you speak about for an hour without preparation?</SectionLabel>
           <StepTextarea
             value={formData.s2_speakForHour}
             onChange={v => setField("s2_speakForHour", v)}
@@ -67,7 +67,7 @@ export function Step2Expertise() {
         </div>
 
         <div>
-          <SectionLabel>8. What problem do you help people solve?</SectionLabel>
+          <SectionLabel>4. What problem do you help people solve?</SectionLabel>
           <StepTextarea
             value={formData.s2_problemSolved}
             onChange={v => setField("s2_problemSolved", v)}
@@ -77,7 +77,7 @@ export function Step2Expertise() {
         </div>
 
         <div>
-          <SectionLabel>9. What results have you personally achieved in this area?</SectionLabel>
+          <SectionLabel>5. What results have you personally achieved in this area?</SectionLabel>
           <StepTextarea
             value={formData.s2_personalResults}
             onChange={v => setField("s2_personalResults", v)}
@@ -87,7 +87,7 @@ export function Step2Expertise() {
         </div>
 
         <div>
-          <SectionLabel>10. Which expertise category best describes you?</SectionLabel>
+          <SectionLabel>6. Which expertise category best describes you?</SectionLabel>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {CATEGORIES.map(({ emoji, label, description }) => (
               <SelectionCard

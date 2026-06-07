@@ -18,7 +18,7 @@ export function NavLogo() {
       </span>
 
       {/* Wordmark */}
-      <span className="text-sm font-bold tracking-tight text-foreground">
+      <span className="text-[16px] font-bold tracking-tight text-foreground">
         PodcastMatch{" "}
         <span className="gradient-text-primary">AI</span>
       </span>

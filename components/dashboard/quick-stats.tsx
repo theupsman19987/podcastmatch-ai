@@ -4,74 +4,71 @@ import { motion } from "motion/react"
 import { Sparkles, Bookmark, Send, Mic2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-/* ═══════════════════════════════════════════════════════════
-   QuickStatsRow — 4 animated KPI cards at the top of dashboard.
-   Placeholder values. Slot real data in later.
-   ═══════════════════════════════════════════════════════════ */
+interface QuickStatsProps {
+  savedCount:  number
+  matchCount:  number
+  newToday:    number
+}
 
-const STATS = [
-  {
-    label:       "AI Matches",
-    value:       "847",
-    delta:       "+12 today",
-    deltaUp:     true,
-    icon:        Sparkles,
-    accent:      "cyan",
-    iconBg:      "bg-[oklch(0.70_0.16_200/0.10)]",
-    iconColor:   "text-[var(--premium-cyan)]",
-    valueClass:  "gradient-text-cyan",
-    borderHover: "hover:border-[oklch(0.70_0.16_200/0.30)]",
-    glowHover:   "hover:shadow-[var(--shadow-card),var(--glow-cyan)]",
-  },
-  {
-    label:       "Saved",
-    value:       "23",
-    delta:       "+3 this week",
-    deltaUp:     true,
-    icon:        Bookmark,
-    accent:      "primary",
-    iconBg:      "bg-primary/10",
-    iconColor:   "text-primary",
-    valueClass:  "gradient-text-primary",
-    borderHover: "hover:border-primary/30",
-    glowHover:   "hover:shadow-[var(--shadow-card),var(--glow-subtle)]",
-  },
-  {
-    label:       "Outreach Sent",
-    value:       "8",
-    delta:       "5 responses",
-    deltaUp:     true,
-    icon:        Send,
-    accent:      "gold",
-    iconBg:      "bg-[oklch(0.78_0.15_83/0.10)]",
-    iconColor:   "text-[var(--premium-gold)]",
-    valueClass:  "gradient-text-gold",
-    borderHover: "hover:border-[oklch(0.78_0.15_83/0.30)]",
-    glowHover:   "hover:shadow-[var(--shadow-card),var(--glow-gold)]",
-  },
-  {
-    label:       "Interviews Booked",
-    value:       "2",
-    delta:       "1 this month",
-    deltaUp:     true,
-    icon:        Mic2,
-    accent:      "green",
-    iconBg:      "bg-[oklch(0.55_0.16_145/0.10)]",
-    iconColor:   "text-[oklch(0.70_0.16_145)]",
-    valueClass:  "text-[oklch(0.70_0.16_145)]",
-    borderHover: "hover:border-[oklch(0.55_0.16_145/0.30)]",
-    glowHover:   "hover:shadow-[var(--shadow-card),0_0_20px_oklch(0.55_0.16_145/0.20)]",
-  },
-]
+export function QuickStatsRow({ savedCount, matchCount, newToday }: QuickStatsProps) {
+  const stats = [
+    {
+      label:       "AI Matches",
+      value:       matchCount > 0 ? String(matchCount) : "0",
+      delta:       newToday > 0 ? `+${newToday} today` : "scanning...",
+      deltaUp:     newToday > 0,
+      icon:        Sparkles,
+      iconBg:      "bg-[oklch(0.70_0.16_200/0.10)]",
+      iconColor:   "text-[var(--premium-cyan)]",
+      valueClass:  "gradient-text-cyan",
+      borderHover: "hover:border-[oklch(0.70_0.16_200/0.30)]",
+      glowHover:   "hover:shadow-[var(--shadow-card),var(--glow-cyan)]",
+    },
+    {
+      label:       "Saved",
+      value:       String(savedCount),
+      delta:       savedCount === 1 ? "1 opportunity tracked" : `${savedCount} tracked`,
+      deltaUp:     savedCount > 0,
+      icon:        Bookmark,
+      iconBg:      "bg-primary/10",
+      iconColor:   "text-primary",
+      valueClass:  "gradient-text-primary",
+      borderHover: "hover:border-primary/30",
+      glowHover:   "hover:shadow-[var(--shadow-card),var(--glow-subtle)]",
+    },
+    {
+      label:       "Outreach Sent",
+      value:       "0",
+      delta:       "pipeline coming soon",
+      deltaUp:     true,
+      icon:        Send,
+      iconBg:      "bg-[oklch(0.78_0.15_83/0.10)]",
+      iconColor:   "text-[var(--premium-gold)]",
+      valueClass:  "gradient-text-gold",
+      borderHover: "hover:border-[oklch(0.78_0.15_83/0.30)]",
+      glowHover:   "hover:shadow-[var(--shadow-card),var(--glow-gold)]",
+    },
+    {
+      label:       "Interviews Booked",
+      value:       "0",
+      delta:       "pipeline coming soon",
+      deltaUp:     true,
+      icon:        Mic2,
+      iconBg:      "bg-[oklch(0.55_0.16_145/0.10)]",
+      iconColor:   "text-[oklch(0.70_0.16_145)]",
+      valueClass:  "text-[oklch(0.70_0.16_145)]",
+      borderHover: "hover:border-[oklch(0.55_0.16_145/0.30)]",
+      glowHover:   "hover:shadow-[var(--shadow-card),0_0_20px_oklch(0.55_0.16_145/0.20)]",
+    },
+  ]
 
-export function QuickStatsRow() {
   return (
     <div
       className="grid grid-cols-2 gap-3 xl:grid-cols-4"
       role="list"
       aria-label="Dashboard quick stats"
     >
-      {STATS.map((stat, i) => (
+      {stats.map((stat, i) => (
         <motion.div
           key={stat.label}
           role="listitem"
@@ -108,9 +105,9 @@ export function QuickStatsRow() {
             <p className="text-sm font-semibold text-foreground">{stat.label}</p>
             <p className={cn(
               "mt-0.5 text-[11px]",
-              stat.deltaUp ? "text-[oklch(0.70_0.16_145)]" : "text-destructive"
+              stat.deltaUp ? "text-[oklch(0.70_0.16_145)]" : "text-muted-foreground"
             )}>
-              {stat.deltaUp ? "↑ " : "↓ "}{stat.delta}
+              {stat.deltaUp ? "↑ " : ""}{stat.delta}
             </p>
           </div>
         </motion.div>

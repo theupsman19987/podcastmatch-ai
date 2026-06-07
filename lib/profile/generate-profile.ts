@@ -218,7 +218,7 @@ function computeCategoryAlignments(d: DNAFormData): CategoryAlignment[] {
 
 function computeInsights(d: DNAFormData, cats: CategoryAlignment[], vpScore: number): ProfileInsight[] {
   const top = cats[0]
-  const style = d.s4_speakingStyle || d.s4_communicationDescription || "communication"
+  const style = d.s4_speakingStyle || "communication"
   const audience = d.s3_audienceType || d.s3_ageGroup || "your target audience"
   return [
     {
@@ -265,11 +265,7 @@ function computeTopics(d: DNAFormData): string[] {
 // ─── Mock DNA (fallback when no assessment has been taken) ───────────────────
 
 export const MOCK_DNA: DNAFormData = {
-  s1_lifeExperience: "A decade-long journey through building and rebuilding that shaped my entire philosophy on success.",
-  s1_challengeOvercome: "Burnout and complete identity loss that ultimately led me to discover my true purpose and mission.",
-  s1_personalTransformation: "Going from corporate executive to freedom-based entrepreneur, speaker, and author.",
   s1_podcastMotivation: ["Share an important message", "Build authority & credibility", "Find ideal clients"],
-  s1_messageImpact: "I want listeners to feel seen, empowered, and ready to take the next bold step in their lives.",
   s2_primaryTopic: "Personal Development",
   s2_speakForHour: "The psychology of high performance and sustainable success without sacrificing health or relationships.",
   s2_problemSolved: "I help high achievers escape burnout cycles and build sustainable success systems that actually last.",
@@ -282,27 +278,16 @@ export const MOCK_DNA: DNAFormData = {
   s3_audienceOutcome: "A sustainable success blueprint they can apply immediately to reclaim their energy and results.",
   s4_speakingStyle: "Inspirational",
   s4_teachingStyle: "Stories and examples",
-  s4_emotionalResponse: "Inspired to take action",
-  s4_communicationDescription: "Warm and relatable",
   s4_uniqueVoice: "I combine neuroscience with personal experience to make high performance feel achievable, not intimidating.",
   s5_podcastCategories: ["Personal Development", "Leadership", "Health & Wellness", "Business"],
-  s5_hostConversations: "Deep-dive intellectual",
-  s5_audienceSize: "10K – 50K listeners",
   s5_podcastFormats: ["Long-form interview (60+ min)", "Story-driven narrative"],
-  s5_opportunitiesSeeking: ["Guest appearances", "Repeat / recurring appearances"],
   s6_previousPodcasts: "Yes, multiple times",
   s6_publicSpeaking: "Yes, regularly",
   s6_publishedWork: "Multiple of the above",
   s6_socialMediaActivity: "Active — several times a week",
   s6_readiness: "Ready immediately",
-  s7_title: "Coach",
   s7_missionCategory: "Empower individuals",
-  s7_audienceTransformation: "From burned out to energized",
-  s7_knownFor: "The go-to expert on sustainable high performance and burnout prevention for ambitious professionals.",
   s7_creatorArchetype: "The Mentor",
-  s7_influenceType: "Thought leadership",
-  s7_longTermGoal: "TED Talk or flagship keynote",
-  s7_uniqueStory: "I lived the burnout story — built a company, lost myself, then rebuilt everything on a new foundation.",
   s7_centralMessage: "Sustainable success is not a compromise — it is the only strategy that works long-term.",
   s7_oneRememberedThing: "You can have everything you have been chasing — just not by burning yourself out to get it.",
 }
@@ -320,18 +305,18 @@ export function generateProfile(raw: unknown): GeneratedProfile {
   const cats = computeCategoryAlignments(d)
 
   return {
-    title:            d.s7_title || "Creator",
+    title:            d.s2_expertiseCategory || "Creator",
     category:         d.s2_primaryTopic || "Personal Development",
     visibilityScore:  visibilityScore(d),
     aiAlignmentScore: alignmentScore(d),
     audienceType:     d.s3_audienceType || d.s3_ageGroup || "Professionals & Leaders",
     creatorArchetype: d.s7_creatorArchetype || "The Expert",
 
-    missionStatement: d.s7_centralMessage || d.s7_knownFor || "Helping others achieve transformative results through authentic expertise and lived experience.",
+    missionStatement: d.s7_centralMessage || "Helping others achieve transformative results through authentic expertise and lived experience.",
     coreMessage:      d.s7_oneRememberedThing || d.s7_centralMessage || "Your message has the power to change lives. Let us amplify it.",
     primaryExpertise: d.s2_primaryTopic || "Personal Development",
     audienceServed:   d.s3_audienceType || (d.s3_audienceBenefits.slice(0, 80)) || "Professionals seeking growth",
-    creatorPositioning: d.s7_knownFor || (d.s7_uniqueStory.slice(0, 120)) || "A unique authoritative voice in your field.",
+    creatorPositioning: (d.s7_centralMessage.slice(0, 120)) || (d.s7_oneRememberedThing.slice(0, 120)) || "A unique authoritative voice in your field.",
 
     audienceMatchStrength: am,
     topicAuthority:        ta,
@@ -346,6 +331,6 @@ export function generateProfile(raw: unknown): GeneratedProfile {
     primaryAudience:   d.s3_audienceType || "Professionals & Leaders",
     secondaryAudience: d.s3_ageGroup || "Ages 25–44",
     audienceChallenges: d.s3_audienceChallenge || "Navigating complex professional and personal growth challenges.",
-    audienceOutcomes:   d.s3_audienceOutcome || d.s1_messageImpact || "Clarity, direction, and the confidence to take decisive action.",
+    audienceOutcomes:   d.s3_audienceOutcome || "Clarity, direction, and the confidence to take decisive action.",
   }
 }

@@ -6,6 +6,9 @@ import { motion, AnimatePresence } from "motion/react"
 import { CheckCircle2, Sparkles } from "lucide-react"
 import { useDNA } from "./dna-context"
 import { completeDnaAssessment } from "@/lib/actions/dna"
+import { saveCreatorProfile }    from "@/lib/actions/profile"
+import { generateProfile }       from "@/lib/profile/generate-profile"
+import { trackClientEvent }      from "@/lib/analytics/track"
 
 const ANALYSIS_STEPS = [
   "Mapping your expertise profile...",
@@ -27,8 +30,15 @@ export function DNAAnalysis() {
       localStorage.setItem("podmatch_creator_dna", JSON.stringify(formData))
     } catch { /* ignore */ }
 
-    /* Persist to Supabase (durable, works across devices) */
-    completeDnaAssessment(formData).catch(() => { /* silent — localStorage is the fallback */ })
+    /* Persist DNA answers to Supabase */
+    completeDnaAssessment(formData).catch(() => {})
+
+    /* Generate and persist the creator profile */
+    const profile = generateProfile(formData)
+    saveCreatorProfile(profile).catch(() => {})
+
+    /* Track completion event */
+    trackClientEvent({ event: "dna_completed" }).catch(() => {})
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

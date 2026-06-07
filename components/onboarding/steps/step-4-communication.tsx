@@ -21,26 +21,6 @@ const TEACHING_STYLES = [
   { label: "Metaphors and analogies",      description: "I translate complex ideas into simple images" },
 ]
 
-const EMOTIONAL_RESPONSES = [
-  "Inspired to take action",
-  "Educated and informed",
-  "Empowered and capable",
-  "Challenged and disrupted",
-  "Motivated and energized",
-  "Deeply understood",
-  "Hopeful and optimistic",
-  "Confident and clear",
-]
-
-const COMM_DESCRIPTIONS = [
-  { label: "Clear and direct",         description: "Straight to the point, no ambiguity" },
-  { label: "Warm and relatable",       description: "Approachable, human, and inclusive" },
-  { label: "Bold and provocative",     description: "Willing to challenge and stir thinking" },
-  { label: "Deep and thoughtful",      description: "Nuanced, reflective, and considered" },
-  { label: "Energetic and dynamic",    description: "High-energy, expressive, and electric" },
-  { label: "Calm and measured",        description: "Steady presence that commands attention" },
-]
-
 export function Step4Communication() {
   const { formData, setField, next, back } = useDNA()
   const canNext = formData.s4_speakingStyle !== ""
@@ -54,7 +34,7 @@ export function Step4Communication() {
 
       <div className="space-y-6">
         <div>
-          <SectionLabel>16. How would you describe your speaking style?</SectionLabel>
+          <SectionLabel>12. How would you describe your speaking style?</SectionLabel>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {SPEAKING_STYLES.map(({ emoji, label, description }) => (
               <SelectionCard
@@ -70,7 +50,7 @@ export function Step4Communication() {
         </div>
 
         <div>
-          <SectionLabel>17. Which best describes how you teach?</SectionLabel>
+          <SectionLabel>13. Which best describes how you teach?</SectionLabel>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {TEACHING_STYLES.map(({ label, description }) => (
               <SelectionCard
@@ -85,43 +65,7 @@ export function Step4Communication() {
         </div>
 
         <div>
-          <SectionLabel>18. What emotional response do you want audiences to experience?</SectionLabel>
-          <div className="flex flex-wrap gap-2">
-            {EMOTIONAL_RESPONSES.map(r => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setField("s4_emotionalResponse", r)}
-                className={`px-3.5 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
-                  formData.s4_emotionalResponse === r
-                    ? "bg-primary/15 border-primary/50 text-primary shadow-[0_0_8px_oklch(var(--primary)/0.15)]"
-                    : "bg-card/50 border-border/40 text-muted-foreground hover:border-border/70 hover:text-foreground/80"
-                }`}
-              >
-                {formData.s4_emotionalResponse === r && <span className="mr-1 text-xs">✓</span>}
-                {r}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <SectionLabel>19. How do people typically describe your communication style?</SectionLabel>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {COMM_DESCRIPTIONS.map(({ label, description }) => (
-              <SelectionCard
-                key={label}
-                label={label}
-                description={description}
-                selected={formData.s4_communicationDescription === label}
-                onClick={() => setField("s4_communicationDescription", label)}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <SectionLabel>20. What makes your voice different from others in your field?</SectionLabel>
+          <SectionLabel>14. What makes your voice different from others in your field?</SectionLabel>
           <StepTextarea
             value={formData.s4_uniqueVoice}
             onChange={v => setField("s4_uniqueVoice", v)}

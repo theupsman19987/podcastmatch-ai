@@ -4,9 +4,11 @@ import { useState } from "react"
 import { motion }   from "motion/react"
 import { CreditCard, Check, Sparkles, Zap, Building2, Star, Loader2, ExternalLink } from "lucide-react"
 import { SettingsCard, SectionHeader } from "../settings-ui"
-import { PLANS, BILLING_SUMMARY, MOCK_USER } from "../settings-mock"
+import { PLANS } from "../settings-mock"
 import type { Plan } from "../settings-mock"
+import type { InitialUserData } from "../settings-shell"
 import { BILLING_PLANS } from "@/lib/billing/plans"
+import { trackClientEvent } from "@/lib/analytics/track"
 
 const PLAN_ICONS = {
   "free":           Star,
@@ -14,6 +16,13 @@ const PLAN_ICONS = {
   "visibility-pro": Zap,
   "enterprise":     Building2,
 } as const
+
+const PLAN_DISPLAY_NAMES: Record<string, string> = {
+  "free":           "Free",
+  "creator-pro":    "Creator Pro",
+  "visibility-pro": "Visibility Pro",
+  "enterprise":     "Enterprise",
+}
 
 /* ── Upgrade / manage button ─────────────────────────────── */
 function UpgradeButton({ plan, isCurrent }: { plan: Plan; isCurrent: boolean }) {
@@ -39,15 +48,15 @@ function UpgradeButton({ plan, isCurrent }: { plan: Plan; isCurrent: boolean }) 
   }
 
   async function handleUpgrade() {
-    /* Find matching billing plan to get the Stripe price ID */
     const billingPlan = BILLING_PLANS.find(p => p.id === plan.id)
     if (!billingPlan?.stripePriceId) {
-      /* Stripe not configured — graceful fallback */
       alert("Billing is not yet active. Check back soon!")
       return
     }
 
     setLoading(true)
+    trackClientEvent({ event: "checkout_started", properties: { plan: plan.id } }).catch(() => {})
+
     try {
       const res  = await fetch("/api/stripe/checkout", {
         method:  "POST",
@@ -148,8 +157,19 @@ async function openBillingPortal() {
   }
 }
 
-export function SubscriptionBilling() {
-  const currentPlan = MOCK_USER.plan
+export function SubscriptionBilling({ initialData }: { initialData?: InitialUserData }) {
+  const currentPlan  = initialData?.plan ?? "free"
+  const planStatus   = initialData?.planStatus ?? "free"
+  const nextBilling  = initialData?.nextBilling ?? "—"
+  const planName     = PLAN_DISPLAY_NAMES[currentPlan] ?? "Free"
+  const statusLabel  = planStatus.charAt(0).toUpperCase() + planStatus.slice(1)
+
+  const summaryItems = [
+    { label: "Current Plan",   value: planName      },
+    { label: "Status",         value: statusLabel   },
+    { label: "Next Billing",   value: nextBilling   },
+    { label: "Payment Method", value: "Billing portal" },
+  ] as const
 
   return (
     <div className="flex flex-col gap-5">
@@ -163,12 +183,7 @@ export function SubscriptionBilling() {
           />
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {([
-              { label: "Current Plan",     value: BILLING_SUMMARY.plan          },
-              { label: "Amount",           value: BILLING_SUMMARY.amount + "/mo" },
-              { label: "Next Billing",     value: BILLING_SUMMARY.nextBilling   },
-              { label: "Payment Method",   value: BILLING_SUMMARY.paymentMethod },
-            ] as const).map(({ label, value }) => (
+            {summaryItems.map(({ label, value }) => (
               <div key={label} className="p-3.5 rounded-xl border border-border/30 bg-card/40">
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-1">{label}</p>
                 <p className="text-sm font-semibold text-foreground leading-snug">{value}</p>

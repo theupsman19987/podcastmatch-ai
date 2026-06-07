@@ -17,6 +17,7 @@ import {
 } from "@/components/discovery/mock-data"
 import type { PodcastApiResponse } from "@/lib/podcasts/schema"
 import { createClient }            from "@/lib/supabase/client"
+import { trackClientEvent }        from "@/lib/analytics/track"
 
 /* ═══════════════════════════════════════════════════════════
    DiscoveryContext — single source of truth for the
@@ -168,7 +169,9 @@ export function DiscoveryProvider({ children }: { children: React.ReactNode }) {
     debounceRef.current = setTimeout(() => {
       setDebouncedQuery(q)
       setIsSearching(false)
-      if (!q.trim()) {
+      if (q.trim()) {
+        trackClientEvent({ event: "discovery_searched", properties: { query: q.trim() } }).catch(() => {})
+      } else {
         // Empty search — reload initial set
         fetchPodcasts("", 1, false)
       }

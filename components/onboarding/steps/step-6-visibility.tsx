@@ -58,7 +58,7 @@ export function Step6Visibility() {
 
       <div className="space-y-6">
         <div>
-          <SectionLabel>26. Have you previously appeared on podcasts?</SectionLabel>
+          <SectionLabel>17. Have you previously appeared on podcasts?</SectionLabel>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {PODCAST_EXPERIENCE.map(({ label, description }) => (
               <SelectionCard
@@ -73,7 +73,7 @@ export function Step6Visibility() {
         </div>
 
         <div>
-          <SectionLabel>27. Have you spoken publicly before?</SectionLabel>
+          <SectionLabel>18. Have you spoken publicly before?</SectionLabel>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {SPEAKING_EXPERIENCE.map(({ label, description }) => (
               <SelectionCard
@@ -88,7 +88,7 @@ export function Step6Visibility() {
         </div>
 
         <div>
-          <SectionLabel>28. Do you have a published book, program, course, or framework?</SectionLabel>
+          <SectionLabel>19. Do you have a published book, program, course, or framework?</SectionLabel>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {PUBLISHED_WORK.map(({ label, description }) => (
               <SelectionCard
@@ -103,7 +103,7 @@ export function Step6Visibility() {
         </div>
 
         <div>
-          <SectionLabel>29. How active are you on social media?</SectionLabel>
+          <SectionLabel>20. How active are you on social media?</SectionLabel>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {SOCIAL_ACTIVITY.map(({ label, description }) => (
               <SelectionCard
@@ -118,7 +118,7 @@ export function Step6Visibility() {
         </div>
 
         <div>
-          <SectionLabel>30. How ready are you to pursue podcast opportunities right now?</SectionLabel>
+          <SectionLabel>21. How ready are you to pursue podcast opportunities right now?</SectionLabel>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {READINESS.map(({ label, description }) => (
               <SelectionCard
