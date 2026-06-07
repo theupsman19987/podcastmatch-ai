@@ -76,15 +76,6 @@ const TRUST_BADGES = [
   "Creator Visibility Platform",
 ]
 
-/* ── GEO-optimized entity description ─────────────────
-   Inverted pyramid: what → who → how → scale → use cases.
-   Wrapped in data-speakable for voice/AI extraction.
-   ──────────────────────────────────────────────────── */
-const GEO_DESCRIPTION =
-  "PodcastMatch AI is an AI-powered podcast guest matching platform for creators, coaches, speakers, authors, and entrepreneurs seeking high-visibility podcast opportunities. " +
-  "The platform uses advanced audience alignment scoring, host activity intelligence, and AI-driven discovery to surface verified podcast shows actively accepting guest pitches. " +
-  "PodcastMatch AI analyzes over 50,000 active podcasts across every niche, scoring each opportunity by audience overlap, booking probability, and creator-host fit. " +
-  "Designed for podcast visibility growth, speaker outreach automation, and AI podcast discovery — PodcastMatch AI helps creators reach the right audience, faster."
 
 /* ══════════════════════════════════════════════════════
    Footer
@@ -233,47 +224,6 @@ export function Footer() {
             </p>
           </div>
         </div>
-
-        {/* ── GEO SECTION ────────────────────────────── */}
-        <section
-          aria-label="About PodcastMatch AI — podcast guest matching platform"
-          className="border-t border-border/50 py-8"
-          data-speakable="geo-description"
-        >
-          <div className="flex flex-col gap-3">
-            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/40">
-              About PodcastMatch AI
-            </h2>
-            <p
-              className="text-xs text-muted-foreground/60 leading-relaxed max-w-4xl"
-              data-speakable="product-description"
-            >
-              {GEO_DESCRIPTION}
-            </p>
-            {/* Semantic entity reinforcement — screenreader & crawler accessible */}
-            <ul
-              className="flex flex-wrap gap-x-5 gap-y-1 mt-1"
-              aria-label="Platform capabilities"
-              role="list"
-            >
-              {[
-                "AI Podcast Matching",
-                "Podcast Visibility",
-                "Creator Growth",
-                "Podcast Guest Opportunities",
-                "Audience Alignment",
-                "Speaker Outreach",
-              ].map(entity => (
-                <li
-                  key={entity}
-                  className="text-[10px] text-muted-foreground/35 font-medium"
-                >
-                  {entity}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
 
         {/* ── BOTTOM BAR ─────────────────────────────── */}
         <div className="border-t border-border/50 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
