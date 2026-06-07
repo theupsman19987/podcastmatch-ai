@@ -191,7 +191,7 @@ function SectionHeader() {
         }}
       >
         <Gift className="size-3.5 flex-shrink-0" aria-hidden="true" />
-        14-Day Free Trial on Every Plan &nbsp;·&nbsp; No Credit Card Required
+        30-Day Free Trial on Every Plan &nbsp;·&nbsp; No Credit Card Required
       </div>
 
       <h2
@@ -367,7 +367,7 @@ function PricingNote() {
 
       <p className="text-center text-[11px] text-muted-foreground/40">
         Pricing shown in USD. Annual billing applied as a single annual payment.
-        All plans include a 14-day free trial.
+        All plans include a 30-day free trial.
       </p>
     </motion.div>
   )

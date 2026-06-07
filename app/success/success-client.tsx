@@ -917,7 +917,7 @@ function SuccessHero() {
             className="text-hero mx-auto max-w-3xl text-center"
           >
             Real People.{" "}
-            <span className="gradient-text-gold text-glow-gold">Real Visibility.</span>
+            <span className="gradient-text-gold">Real Visibility.</span>
             {" "}Real Opportunities.
           </motion.h1>
 
@@ -1440,7 +1440,7 @@ function SuccessCTASection() {
             className="text-4xl font-black text-foreground sm:text-5xl"
           >
             Ready To Become The{" "}
-            <span className="gradient-text-gold text-glow-gold">
+            <span className="gradient-text-gold">
               Next Success Story?
             </span>
           </motion.h2>

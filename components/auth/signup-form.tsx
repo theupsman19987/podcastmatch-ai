@@ -109,19 +109,12 @@ export function SignupForm() {
     setErrors(errs)
     if (Object.keys(errs).length) return
     setIsLoading(true)
+    setSuccess(true)  // optimistic — server redirects on success
     const result = await signUpAction(email.trim(), password, fullName.trim())
-    setIsLoading(false)
-    if (result.error) {
+    if (result?.error) {
+      setIsLoading(false)
+      setSuccess(false)
       setErrors({ form: result.error })
-    } else {
-      trackClientEvent({ event: "user_registered", properties: { email: email.trim() } }).catch(() => {})
-      /* Fire welcome email — non-blocking, don't await */
-      fetch("/api/email/welcome", {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ name: fullName.trim(), email: email.trim() }),
-      }).catch(() => {})
-      setSuccess(true)
     }
   }
 
@@ -140,12 +133,9 @@ export function SignupForm() {
           <CheckCircle2 className="size-7 text-white" aria-hidden="true" />
         </div>
         <div className="flex flex-col gap-1.5">
-          <p className="text-base font-semibold text-foreground">Almost there!</p>
+          <p className="text-base font-semibold text-foreground">Account created!</p>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            We&apos;ve sent a confirmation link to{" "}
-            <span className="font-medium text-foreground">{email}</span>.
-            <br />
-            Click it to activate your account.
+            Redirecting you to your dashboard…
           </p>
         </div>
       </motion.div>
@@ -169,7 +159,7 @@ export function SignupForm() {
         }}
       >
         <Gift className="size-3" aria-hidden="true" />
-        14-Day Free Trial · No Credit Card Required
+        30-Day Free Trial · No Credit Card Required
       </div>
 
       {/* Heading */}
@@ -305,7 +295,7 @@ export function SignupForm() {
             </>
           ) : (
             <>
-              Start 14-Day Free Trial
+              Start 30-Day Free Trial
               <ArrowRight className="size-4" aria-hidden="true" />
             </>
           )}

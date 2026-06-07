@@ -50,7 +50,7 @@ export const BILLING_PLANS: BillingPlan[] = [
     period:       "/month",
     stripePriceId: process.env.STRIPE_PRICE_CREATOR_PRO ?? null,
     popular:      true,
-    cta:          "Start 14-Day Trial",
+    cta:          "Start 30-Day Trial",
     features: [
       "Unlimited podcast discoveries",
       "AI match scores + explanations",

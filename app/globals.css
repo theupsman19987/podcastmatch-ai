@@ -299,9 +299,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .gradient-text-gold {
   background: linear-gradient(135deg, var(--premium-gold-muted) 0%, var(--premium-gold) 50%, oklch(0.90 0.12 83) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  -webkit-text-fill-color: #000000;
+  color: #000000;
+  border-radius: 3px;
+  padding: 0 0.12em;
 }
 
 .gradient-text-cyan {

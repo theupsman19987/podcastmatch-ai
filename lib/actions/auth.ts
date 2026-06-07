@@ -20,7 +20,7 @@ export async function signUpAction(
   email: string,
   password: string,
   fullName: string
-): Promise<{ error?: string; needsConfirmation?: boolean }> {
+): Promise<{ error?: string }> {
   const supabase      = await createClient()
   const headersList   = await headers()
   const origin        = headersList.get("origin") ?? ""
@@ -35,7 +35,7 @@ export async function signUpAction(
   })
 
   if (error) return { error: error.message }
-  return { needsConfirmation: true }
+  redirect("/dashboard")
 }
 
 /* ── Sign Out ────────────────────────────────────────────── */

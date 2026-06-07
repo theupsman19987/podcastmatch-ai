@@ -56,7 +56,7 @@ export function ConversionBanner({
   headline        = "Your Voice Belongs",
   headlineAccent  = "On Bigger Stages",
   subheadline     = "PodcastMatch AI matches you with verified podcast opportunities perfectly aligned to your niche, your message, and your audience. Thousands of hosts are booking guests right now — let the AI find yours.",
-  ctaLabel        = "Start Your 14-Day Free Trial",
+  ctaLabel        = "Start Your 30-Day Free Trial",
   secondaryLabel  = "See How It Works",
   showTrust       = true,
   variant         = "hero",

@@ -193,7 +193,7 @@ export function PricingCard({ data, billing, onCtaClick, className }: PricingCar
             {data.ctaLabel}
           </Button>
           <p className="text-center text-[11px] text-muted-foreground/55">
-            14-day free trial &nbsp;·&nbsp; No credit card required
+            30-day free trial &nbsp;·&nbsp; No credit card required
           </p>
         </div>
 

@@ -311,8 +311,8 @@ const GUARANTEES = [
   },
   {
     icon: Zap,
-    label: "14-Day Free Trial",
-    description: "Try Professional free for 14 days. No credit card required to start.",
+    label: "30-Day Free Trial",
+    description: "Try Professional free for 30 days. No credit card required to start.",
   },
   {
     icon: Award,
@@ -1041,7 +1041,7 @@ function FinalCTASection({ billing }: { billing: BillingPeriod }) {
             className="flex flex-wrap items-center justify-center gap-5 text-xs text-muted-foreground"
           >
             {[
-              "14-day free trial",
+              "30-day free trial",
               "No credit card required",
               "Cancel anytime",
               "Free forever plan available",

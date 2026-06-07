@@ -1338,7 +1338,7 @@ function HowItWorksCTASection() {
             className="text-h2 mb-6"
           >
             Ready To Discover Your{" "}
-            <span className="gradient-text-gold text-glow-primary">
+            <span className="gradient-text-gold">
               Visibility Score?
             </span>
           </h2>
