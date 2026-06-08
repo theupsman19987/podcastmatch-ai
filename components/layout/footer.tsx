@@ -1,58 +1,14 @@
 import * as React from "react"
 import Link from "next/link"
-import { Mic2, Sparkles, ExternalLink } from "lucide-react"
+import { Mic2 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { NewsletterForm } from "@/components/layout/newsletter-form"
 
-/* ── Navigation data ───────────────────────────────────
-   All hrefs are placeholders (#) until inner pages exist.
-   The anchor text is entity-optimized for AI/SEO crawlers.
-   ──────────────────────────────────────────────────── */
-const NAV_COLUMNS = [
-  {
-    label: "Platform",
-    links: [
-      { label: "AI Podcast Matching",          href: "#" },
-      { label: "Podcast Discovery Platform",   href: "#" },
-      { label: "Audience Alignment Scoring",   href: "#" },
-      { label: "Host Activity Insights",       href: "#" },
-      { label: "Creator Visibility Analytics", href: "#" },
-      { label: "Opportunity Queue",            href: "#" },
-    ],
-  },
-  {
-    label: "Features",
-    links: [
-      { label: "Creator Visibility Tools",     href: "#" },
-      { label: "Podcast Outreach Intelligence",href: "#" },
-      { label: "AI Match Scoring",             href: "#" },
-      { label: "Pitch Personalization",        href: "#" },
-      { label: "Booking Probability Scoring",  href: "#" },
-      { label: "Multi-Profile Management",     href: "#" },
-    ],
-  },
-  {
-    label: "Resources",
-    links: [
-      { label: "Speaker Podcast Growth Guide", href: "#" },
-      { label: "Podcast Guest Opportunities",  href: "#" },
-      { label: "Podcast Audience Research",    href: "#" },
-      { label: "Creator Success Stories",      href: "#" },
-      { label: "AI Discovery Updates",         href: "#" },
-      { label: "Help Center",                  href: "#" },
-    ],
-  },
-  {
-    label: "Company",
-    links: [
-      { label: "About PodcastMatch AI",  href: "#" },
-      { label: "Pricing",                href: "#pricing" },
-      { label: "Careers",                href: "#" },
-      { label: "Press & Media",          href: "#" },
-      { label: "Affiliate Program",      href: "#" },
-      { label: "Contact Us",             href: "#" },
-    ],
-  },
+const NAV_LINKS = [
+  { label: "Discover",        href: "/discover"      },
+  { label: "How It Works",    href: "/how-it-works"  },
+  { label: "Features",        href: "/features"      },
+  { label: "Success Stories", href: "/success"       },
+  { label: "Pricing",         href: "/pricing"       },
 ]
 
 const LEGAL_LINKS = [
@@ -61,21 +17,6 @@ const LEGAL_LINKS = [
   { label: "Cookie Policy",    href: "#" },
   { label: "GDPR",             href: "#" },
 ]
-
-const SOCIAL_LINKS = [
-  { label: "Twitter / X", href: "#" },
-  { label: "LinkedIn",    href: "#" },
-  { label: "Instagram",   href: "#" },
-  { label: "YouTube",     href: "#" },
-]
-
-const TRUST_BADGES = [
-  "AI-Powered Discovery",
-  "Smart Podcast Matching",
-  "Audience Alignment Intelligence",
-  "Creator Visibility Platform",
-]
-
 
 /* ══════════════════════════════════════════════════════
    Footer
@@ -111,13 +52,11 @@ export function Footer() {
 
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 
-        {/* ── MAIN COLUMNS ───────────────────────────── */}
-        <div className="py-14 grid grid-cols-2 lg:grid-cols-6 gap-10 lg:gap-8">
+        {/* ── MAIN ROW ───────────────────────────────── */}
+        <div className="py-14 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-10">
 
-          {/* Brand column ──────────────────────────── */}
-          <div className="col-span-2 flex flex-col gap-5">
-
-            {/* Logo */}
+          {/* Brand ──────────────────────────────────── */}
+          <div className="flex flex-col gap-3">
             <Link href="/" className="flex items-center gap-2.5 group" aria-label="PodcastMatch AI home">
               <div
                 className={cn(
@@ -133,126 +72,37 @@ export function Footer() {
                 <span className="gradient-text-primary">AI</span>
               </span>
             </Link>
-
-            {/* Tagline + description */}
             <p className="text-sm text-muted-foreground leading-relaxed max-w-[240px]">
               AI-powered podcast visibility for creators who refuse to stay invisible.
             </p>
-
-            {/* Trust badge */}
-            <div
-              className="self-start inline-flex items-center gap-1.5 rounded-full
-                         border border-primary/20 bg-primary/8 px-3 py-1.5
-                         text-[11px] font-semibold text-primary"
-            >
-              <Sparkles className="size-3" aria-hidden="true" />
-              AI-Powered Discovery
-            </div>
-
-            {/* Social links */}
-            <nav aria-label="Social media links">
-              <ul className="flex flex-wrap gap-x-4 gap-y-1.5" role="list">
-                {SOCIAL_LINKS.map(link => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="flex items-center gap-1 text-xs text-muted-foreground/65
-                                 transition-colors duration-150 hover:text-foreground"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${link.label} — opens in new tab`}
-                    >
-                      {link.label}
-                      <ExternalLink className="size-2.5" aria-hidden="true" />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
           </div>
 
-          {/* Nav columns ─────────────────────────────── */}
-          {NAV_COLUMNS.map(col => (
-            <nav
-              key={col.label}
-              className="flex flex-col gap-4"
-              aria-label={`${col.label} navigation`}
-            >
-              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/50">
-                {col.label}
-              </h3>
-              <ul className="flex flex-col gap-2.5" role="list">
-                {col.links.map(link => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-muted-foreground transition-colors
-                                 duration-150 hover:text-foreground"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          ))}
+          {/* Nav links ──────────────────────────────── */}
+          <nav aria-label="Site navigation">
+            <ul className="flex flex-wrap gap-x-8 gap-y-3" role="list">
+              {NAV_LINKS.map(link => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-muted-foreground transition-colors duration-150 hover:text-foreground"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-        </div>
-
-        {/* ── NEWSLETTER STRIP ───────────────────────── */}
-        <div
-          className={cn(
-            "rounded-[var(--radius-xl)] border border-border",
-            "bg-muted/15 backdrop-blur-sm",
-            "px-6 py-6 mb-10",
-            "flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
-          )}
-        >
-          <div className="flex flex-col gap-1 max-w-xs">
-            <p className="text-sm font-semibold text-foreground">
-              Stay Ahead of Every Booking Window
-            </p>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Get AI-curated podcast opportunities, creator tips, and host insights delivered weekly.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-2 w-full sm:w-auto">
-            <NewsletterForm />
-            <p className="text-[11px] text-muted-foreground/45">
-              No spam. Unsubscribe anytime.
-            </p>
-          </div>
         </div>
 
         {/* ── BOTTOM BAR ─────────────────────────────── */}
         <div className="border-t border-border/50 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
 
-          {/* Copyright */}
-          <p className="text-xs text-muted-foreground/50 order-3 sm:order-1">
+          <p className="text-xs text-muted-foreground/50 order-2 sm:order-1">
             © {new Date().getFullYear()} PodcastMatch AI. All rights reserved.
           </p>
 
-          {/* Trust badges */}
-          <div
-            className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1
-                       order-1 sm:order-2"
-            role="list"
-            aria-label="Platform trust attributes"
-          >
-            {TRUST_BADGES.map(badge => (
-              <span
-                key={badge}
-                className="text-[10px] font-medium text-muted-foreground/35"
-                role="listitem"
-              >
-                {badge}
-              </span>
-            ))}
-          </div>
-
-          {/* Legal links */}
-          <nav aria-label="Legal links" className="order-2 sm:order-3">
+          <nav aria-label="Legal links" className="order-1 sm:order-2">
             <ul className="flex items-center gap-4" role="list">
               {LEGAL_LINKS.map((link, i) => (
                 <li key={link.label} className="flex items-center gap-4">

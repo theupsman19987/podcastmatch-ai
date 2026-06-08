@@ -299,8 +299,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .gradient-text-gold {
   background: linear-gradient(135deg, var(--premium-gold-muted) 0%, var(--premium-gold) 50%, oklch(0.90 0.12 83) 100%);
-  -webkit-text-fill-color: var(--primary);
-  color: var(--primary);
+  -webkit-text-fill-color: oklch(0.45 0.22 255);
+  color: oklch(0.45 0.22 255);
   border-radius: 3px;
   padding: 0 0.12em;
 }
