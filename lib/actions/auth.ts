@@ -3,6 +3,7 @@
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin"
 
 /* ── Sign In ─────────────────────────────────────────────── */
 export async function signInAction(
@@ -25,7 +26,7 @@ export async function signUpAction(
   const headersList   = await headers()
   const origin        = headersList.get("origin") ?? ""
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -35,6 +36,18 @@ export async function signUpAction(
   })
 
   if (error) return { error: error.message }
+
+  // If Supabase returned no session the account is unconfirmed.
+  // Force-confirm via admin then sign in so the user lands on the dashboard.
+  if (!data.session) {
+    if (data.user) {
+      const admin = createAdminClient()
+      await admin.auth.admin.updateUserById(data.user.id, { email_confirm: true })
+    }
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+    if (signInError) return { error: signInError.message }
+  }
+
   redirect("/dashboard")
 }
 
