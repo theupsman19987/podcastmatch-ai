@@ -15,9 +15,15 @@ import { motion } from "motion/react"
 export function DashboardShell({
   children,
   title,
+  firstName,
+  initials,
+  avatarUrl,
 }: {
-  children: React.ReactNode
-  title?:   string
+  children:   React.ReactNode
+  title?:     string
+  firstName?: string
+  initials?:  string
+  avatarUrl?: string | null
 }) {
   const { collapsed } = useSidebar()
 
@@ -37,7 +43,7 @@ export function DashboardShell({
         animate={{ marginLeft: 0 }}
         className="relative z-10 flex min-w-0 flex-1 flex-col"
       >
-        <DashboardTopbar title={title} />
+        <DashboardTopbar title={title} firstName={firstName} initials={initials} avatarUrl={avatarUrl} />
 
         <main
           id="main-content"

@@ -22,12 +22,19 @@ function loadFromLocalStorage() {
   }
 }
 
-export function ProfilePageClient() {
+interface Props {
+  firstName?:       string
+  initials?:        string
+  initialAvatarUrl?: string | null
+}
+
+export function ProfilePageClient({ firstName, initials, initialAvatarUrl }: Props) {
   /* Start with localStorage so the page never flashes empty */
   const [profile, setProfile] = useState<GeneratedProfile>(() => {
     if (typeof window === "undefined") return generateProfile(null)
     return generateProfile(loadFromLocalStorage())
   })
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(initialAvatarUrl ?? null)
 
   useEffect(() => {
     /* Try loading the more-complete Supabase version */
@@ -40,7 +47,13 @@ export function ProfilePageClient() {
 
   return (
     <div className="flex flex-col gap-6 px-4 py-6 md:px-6 lg:px-8 max-w-screen-xl mx-auto w-full">
-      <ProfileHeader profile={profile} />
+      <ProfileHeader
+        profile={profile}
+        firstName={firstName}
+        initials={initials}
+        avatarUrl={avatarUrl}
+        onAvatarChange={setAvatarUrl}
+      />
       <BrandIdentity profile={profile} />
       <StrengthDashboard profile={profile} />
       <AIInsightsPanel profile={profile} />

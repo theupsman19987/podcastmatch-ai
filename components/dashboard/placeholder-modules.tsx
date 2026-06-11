@@ -237,7 +237,7 @@ export function VisibilityScoreWidget() {
           transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
           className="relative"
         >
-          <span className="text-5xl font-bold gradient-text-primary text-glow-primary">74</span>
+          <span className="text-5xl font-bold gradient-text-primary text-glow-primary">45</span>
           <span className="absolute -right-6 bottom-2 text-sm font-medium text-muted-foreground">/100</span>
         </motion.div>
 
@@ -252,7 +252,7 @@ export function VisibilityScoreWidget() {
             <motion.div
               className="h-full rounded-full gradient-primary"
               initial={{ width: 0 }}
-              animate={{ width: "74%" }}
+              animate={{ width: "45%" }}
               transition={{ delay: 0.4, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
               style={{ boxShadow: "var(--glow-subtle)" }}
             />

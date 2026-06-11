@@ -12,9 +12,21 @@ import { useSidebar } from "@/components/dashboard/sidebar-context"
              AI status | notifications | profile dropdown.
    ═══════════════════════════════════════════════════════════ */
 
-export function DashboardTopbar({ title = "Dashboard" }: { title?: string }) {
+export function DashboardTopbar({
+  title = "Dashboard",
+  firstName,
+  initials,
+  avatarUrl,
+}: {
+  title?:     string
+  firstName?: string
+  initials?:  string
+  avatarUrl?: string | null
+}) {
   const { openMobile } = useSidebar()
   const [profileOpen, setProfileOpen] = useState(false)
+  const displayName    = firstName || "Account"
+  const displayInitials = initials || "?"
 
   return (
     <header
@@ -117,10 +129,13 @@ export function DashboardTopbar({ title = "Dashboard" }: { title?: string }) {
                        bg-muted/40 px-2 text-sm transition-all duration-150
                        hover:border-border hover:bg-muted/60"
           >
-            <div className="flex h-5 w-5 items-center justify-center rounded-full gradient-primary text-[9px] font-bold text-white" aria-hidden="true">
-              JD
+            <div className="flex h-5 w-5 items-center justify-center rounded-full gradient-primary text-[9px] font-bold text-white overflow-hidden shrink-0" aria-hidden="true">
+              {avatarUrl
+                ? <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
+                : displayInitials
+              }
             </div>
-            <span className="hidden text-[12px] font-medium text-foreground sm:block">Jane</span>
+            <span className="hidden text-[12px] font-medium text-foreground sm:block">{displayName}</span>
             <ChevronDown className={cn("size-3 text-muted-foreground transition-transform duration-150", profileOpen && "rotate-180")} aria-hidden="true" />
           </button>
 

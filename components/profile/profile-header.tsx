@@ -1,7 +1,10 @@
 "use client"
 
+import { useRef, useState } from "react"
 import { motion } from "motion/react"
-import { Mic2, Sparkles, TrendingUp } from "lucide-react"
+import { Camera, Sparkles, TrendingUp, Loader2 } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
+import { saveAvatarUrl } from "@/lib/actions/user-profile"
 import type { GeneratedProfile } from "@/lib/profile/generate-profile"
 
 function ScoreArc({ score, label, color = "primary" }: { score: number; label: string; color?: "primary" | "gold" }) {
@@ -37,9 +40,58 @@ function ScoreArc({ score, label, color = "primary" }: { score: number; label: s
   )
 }
 
-interface Props { profile: GeneratedProfile }
+interface Props {
+  profile:        GeneratedProfile
+  firstName?:     string
+  initials?:      string
+  avatarUrl?:     string | null
+  onAvatarChange?: (url: string) => void
+}
 
-export function ProfileHeader({ profile }: Props) {
+export function ProfileHeader({ profile, firstName, initials, avatarUrl, onAvatarChange }: Props) {
+  const fileRef   = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
+  const [error,     setError]     = useState<string | null>(null)
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith("image/")) { setError("Please select an image file."); return }
+    if (file.size > 2 * 1024 * 1024)     { setError("Image must be under 2 MB.");    return }
+
+    setError(null)
+    setUploading(true)
+
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { setError("Not signed in."); return }
+
+      const ext  = file.name.split(".").pop() ?? "jpg"
+      const path = `${user.id}/avatar.${ext}`
+
+      const { error: uploadErr } = await supabase.storage
+        .from("avatars")
+        .upload(path, file, { upsert: true, contentType: file.type })
+
+      if (uploadErr) { setError("Upload failed — try again."); return }
+
+      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path)
+      const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`
+
+      const { error: saveErr } = await saveAvatarUrl(publicUrl)
+      if (saveErr) { setError("Saved image but couldn't update profile."); return }
+
+      onAvatarChange?.(publicUrl)
+    } finally {
+      setUploading(false)
+      if (fileRef.current) fileRef.current.value = ""
+    }
+  }
+
+  const displayName = firstName || profile.title || "Creator"
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -53,11 +105,41 @@ export function ProfileHeader({ profile }: Props) {
       <div className="relative p-6 md:p-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
 
-          {/* Avatar */}
-          <div className="relative shrink-0">
-            <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-[0_0_28px_oklch(var(--primary)/0.15)]">
-              <Mic2 className="w-9 h-9 md:w-10 md:h-10 text-primary" />
+          {/* Avatar with upload */}
+          <div className="relative shrink-0 group">
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-[0_0_28px_oklch(var(--primary)/0.15)] overflow-hidden">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={displayName} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-2xl md:text-3xl font-bold gradient-text-primary select-none">
+                  {initials || displayName.slice(0, 2).toUpperCase()}
+                </span>
+              )}
             </div>
+
+            {/* Upload overlay */}
+            <button
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              aria-label="Upload profile photo"
+              className="absolute inset-0 rounded-2xl flex items-center justify-center
+                         bg-black/50 opacity-0 group-hover:opacity-100
+                         transition-opacity duration-200 cursor-pointer"
+            >
+              {uploading
+                ? <Loader2 className="w-5 h-5 text-white animate-spin" />
+                : <Camera className="w-5 h-5 text-white" />
+              }
+            </button>
+
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="sr-only"
+              onChange={handleFileChange}
+            />
+
             <div className="absolute -bottom-1.5 -right-1.5 flex items-center gap-1 bg-primary/15 border border-primary/30 rounded-full px-2 py-0.5">
               <Sparkles className="w-2.5 h-2.5 text-primary" />
               <span className="text-[9px] font-bold text-primary uppercase tracking-wider">AI</span>
@@ -66,6 +148,9 @@ export function ProfileHeader({ profile }: Props) {
 
           {/* Info */}
           <div className="flex-1 min-w-0">
+            {error && (
+              <p className="mb-2 text-[11px] text-destructive">{error}</p>
+            )}
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <span className="text-xs font-bold text-primary uppercase tracking-widest">Creator Profile</span>
               <span className="w-1 h-1 rounded-full bg-border/60 inline-block" />
