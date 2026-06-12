@@ -1,7 +1,7 @@
 "use client"
 
 import { useDNA } from "../dna-context"
-import { StepCard, StepHeader, SectionLabel, MultiCard, TagPill, StepTextarea, StepNav } from "../dna-inputs"
+import { StepCard, StepHeader, SectionLabel, SelectionCard, MultiCard, TagPill, StepTextarea, StepNav } from "../dna-inputs"
 
 const TOPICS = [
   { emoji: "💼", label: "Business & Entrepreneurship" },
