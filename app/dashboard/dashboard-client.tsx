@@ -19,6 +19,8 @@ import {
   Radio,
   UserCheck,
   Clock,
+  Dna,
+  ChevronRight,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -39,6 +41,47 @@ function useSectionView() {
   return { ref, isInView }
 }
 
+/* ── DNA assessment banner ────────────────────────────────── */
+function DNABanner() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="relative overflow-hidden rounded-2xl border border-primary/30 bg-primary/6 px-5 py-4 md:px-6"
+    >
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+      <div className="absolute right-0 top-0 h-full w-48 bg-gradient-to-l from-primary/6 to-transparent pointer-events-none" />
+
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/12 border border-primary/20">
+            <Dna className="w-5 h-5 text-primary" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-foreground leading-snug">
+              Take your Creator DNA Assessment
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
+              Unlock your real visibility score, AI matches, and full creator profile — takes about 5 minutes.
+            </p>
+          </div>
+        </div>
+        <Link
+          href="/onboarding/creator-dna"
+          className={cn(
+            "inline-flex shrink-0 items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold",
+            "bg-primary text-primary-foreground shadow-[var(--glow-subtle)]",
+            "transition-all duration-150 hover:opacity-90 hover:shadow-[var(--glow-primary)]"
+          )}
+        >
+          Start Assessment <ChevronRight className="w-4 h-4" aria-hidden="true" />
+        </Link>
+      </div>
+    </motion.div>
+  )
+}
+
 /* ── Score status ─────────────────────────────────────────── */
 function getScoreStatus(score: number) {
   if (score >= 90) return { label: "Expert",      color: "text-[var(--premium-gold)]",  bg: "bg-[oklch(0.78_0.15_83/0.15)]",  border: "border-[oklch(0.78_0.15_83/0.30)]"  }
@@ -55,6 +98,7 @@ export interface DashboardHomeProps {
   savedCount:      number
   matchCount:      number
   newToday:        number
+  hasDna:          boolean
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -743,6 +787,7 @@ export function DashboardHomeContent({
   savedCount,
   matchCount,
   newToday,
+  hasDna,
 }: DashboardHomeProps) {
   return (
     <div className="flex flex-col gap-8 max-w-[1400px]">
@@ -767,6 +812,9 @@ export function DashboardHomeContent({
           }
         </p>
       </div>
+
+      {/* ── DNA assessment CTA (only if not taken yet) ────── */}
+      {!hasDna && <DNABanner />}
 
       {/* ── Section 1: Visibility Score Hero ──────────────── */}
       <VisibilityScoreHero score={visibilityScore} />

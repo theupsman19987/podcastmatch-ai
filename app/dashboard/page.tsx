@@ -19,7 +19,7 @@ export default async function DashboardPage() {
   startOfDay.setHours(0, 0, 0, 0)
 
   /* ── DB queries (parallel) ─────────────────────────────── */
-  const [savedResult, matchResult, todayResult, profileResult] = await Promise.all([
+  const [savedResult, matchResult, todayResult, profileResult, dnaResult] = await Promise.all([
     supabase
       .from("saved_podcasts")
       .select("*", { count: "exact", head: true })
@@ -38,6 +38,11 @@ export default async function DashboardPage() {
       .select("visibility_score")
       .eq("user_id", userId)
       .single(),
+    supabase
+      .from("dna_assessments")
+      .select("completed", { count: "exact", head: true })
+      .eq("user_id", userId)
+      .eq("completed", true),
   ])
 
   return (
@@ -47,6 +52,7 @@ export default async function DashboardPage() {
       savedCount={savedResult.count ?? 0}
       matchCount={matchResult.count ?? 0}
       newToday={todayResult.count ?? 0}
+      hasDna={(dnaResult.count ?? 0) > 0}
     />
   )
 }
