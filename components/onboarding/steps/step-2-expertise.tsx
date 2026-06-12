@@ -1,7 +1,7 @@
 "use client"
 
 import { useDNA } from "../dna-context"
-import { StepCard, StepHeader, SectionLabel, SelectionCard, TagPill, StepTextarea, StepNav } from "../dna-inputs"
+import { StepCard, StepHeader, SectionLabel, MultiCard, TagPill, StepTextarea, StepNav } from "../dna-inputs"
 
 const TOPICS = [
   { emoji: "💼", label: "Business & Entrepreneurship" },
@@ -31,7 +31,7 @@ const CATEGORIES = [
 
 export function Step2Expertise() {
   const { formData, setField, toggleArrayField, next, back } = useDNA()
-  const canNext = formData.s2_primaryTopic !== ""
+  const canNext = formData.s2_primaryTopic.length > 0
 
   return (
     <StepCard>
@@ -42,15 +42,15 @@ export function Step2Expertise() {
 
       <div className="space-y-6">
         <div>
-          <SectionLabel>2. Which topic best represents your primary expertise?</SectionLabel>
+          <SectionLabel>2. Which topics best represent your primary expertise? — pick up to 2</SectionLabel>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
             {TOPICS.map(({ emoji, label }) => (
-              <SelectionCard
+              <MultiCard
                 key={label}
                 emoji={emoji}
                 label={label}
-                selected={formData.s2_primaryTopic === label}
-                onClick={() => setField("s2_primaryTopic", label)}
+                selected={formData.s2_primaryTopic.includes(label)}
+                onClick={() => toggleArrayField("s2_primaryTopic", label, 2)}
               />
             ))}
           </div>

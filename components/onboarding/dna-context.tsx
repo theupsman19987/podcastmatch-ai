@@ -6,6 +6,7 @@ export const TOTAL_STEPS = 7
 
 export type ArrayField =
   | "s1_podcastMotivation"
+  | "s2_primaryTopic"
   | "s2_speakForHour"
   | "s4_speakingStyle"
   | "s5_podcastCategories"
@@ -18,7 +19,7 @@ export interface DNAFormData {
   s1_podcastMotivation: string[]
 
   // Step 2 — Your Expertise
-  s2_primaryTopic: string
+  s2_primaryTopic: string[]
   s2_speakForHour: string[]
   s2_problemSolved: string
   s2_personalResults: string
@@ -56,7 +57,7 @@ export interface DNAFormData {
 
 const INITIAL: DNAFormData = {
   s1_podcastMotivation: [],
-  s2_primaryTopic: "",
+  s2_primaryTopic: [],
   s2_speakForHour: [],
   s2_problemSolved: "",
   s2_personalResults: "",

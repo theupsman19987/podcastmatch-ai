@@ -83,7 +83,7 @@ function alignmentScore(d: DNAFormData) {
   if (d.s4_uniqueVoice.length > 20) s += 7
   if (d.s7_missionCategory.length > 0) s += 7
   if (d.s7_creatorArchetype) s += 5
-  if (d.s2_primaryTopic) s += 5
+  if (d.s2_primaryTopic.length > 0) s += 5
   if (d.s3_audienceType) s += 5
   return clamp(s, 50, 97)
 }
@@ -101,7 +101,7 @@ function audienceMatchScore(d: DNAFormData) {
 
 function topicAuthorityScore(d: DNAFormData) {
   let s = 48
-  if (d.s2_primaryTopic) s += 8
+  if (d.s2_primaryTopic.length > 0) s += 8
   if (d.s2_speakForHour.length > 0) s += 8
   if (d.s2_problemSolved.length > 30) s += 8
   if (d.s2_personalResults.length > 30) s += 8
@@ -182,7 +182,7 @@ function computeCategoryAlignments(d: DNAFormData): CategoryAlignment[] {
   const scores: Record<string, number> = {}
   ALIGNMENT_CATS.forEach(c => { scores[c] = 32 })
 
-  const boosts = TOPIC_BOOSTS[d.s2_primaryTopic]
+  const boosts = TOPIC_BOOSTS[d.s2_primaryTopic[0] ?? ""]
   if (boosts) {
     scores[boosts[0]] = (scores[boosts[0]] ?? 32) + 40
     scores[boosts[1]] = (scores[boosts[1]] ?? 32) + 22
@@ -254,7 +254,7 @@ function computeInsights(d: DNAFormData, cats: CategoryAlignment[], vpScore: num
 
 function computeTopics(d: DNAFormData): string[] {
   const topics = new Set<string>()
-  if (d.s2_primaryTopic) topics.add(d.s2_primaryTopic.replace(" & ", " & ").split(" & ")[0])
+  d.s2_primaryTopic.forEach(t => topics.add(t.split(" & ")[0]))
   d.s5_podcastCategories.slice(0, 5).forEach(c => topics.add(c))
   if (d.s7_missionCategory.some(m => m.includes("Empower"))) topics.add("Personal Empowerment")
   if (d.s7_missionCategory.some(m => m.includes("Disrupt"))) topics.add("Innovation")
@@ -266,7 +266,7 @@ function computeTopics(d: DNAFormData): string[] {
 
 export const MOCK_DNA: DNAFormData = {
   s1_podcastMotivation: ["Share an important message", "Build authority & credibility", "Find ideal clients"],
-  s2_primaryTopic: "Personal Development",
+  s2_primaryTopic: ["Personal Development", "Health & Wellness"],
   s2_speakForHour: ["Personal Development", "Health & Wellness"],
   s2_problemSolved: "I help high achievers escape burnout cycles and build sustainable success systems that actually last.",
   s2_personalResults: "Built a 7-figure coaching practice, spoken at 50+ events, authored 2 books, built a 120K following.",
@@ -306,7 +306,7 @@ export function generateProfile(raw: unknown): GeneratedProfile {
 
   return {
     title:            d.s2_expertiseCategory || "Creator",
-    category:         d.s2_primaryTopic || "Personal Development",
+    category:         d.s2_primaryTopic.join(" & ") || "Personal Development",
     visibilityScore:  visibilityScore(d),
     aiAlignmentScore: alignmentScore(d),
     audienceType:     d.s3_audienceType || d.s3_ageGroup || "Professionals & Leaders",
@@ -314,7 +314,7 @@ export function generateProfile(raw: unknown): GeneratedProfile {
 
     missionStatement: d.s7_centralMessage.join(". ") || "Helping others achieve transformative results through authentic expertise and lived experience.",
     coreMessage:      d.s7_oneRememberedThing || d.s7_centralMessage.join(". ") || "Your message has the power to change lives. Let us amplify it.",
-    primaryExpertise: d.s2_primaryTopic || "Personal Development",
+    primaryExpertise: d.s2_primaryTopic.join(" & ") || "Personal Development",
     audienceServed:   d.s3_audienceType || (d.s3_audienceBenefits.slice(0, 80)) || "Professionals seeking growth",
     creatorPositioning: (d.s7_centralMessage.join(". ").slice(0, 120)) || (d.s7_oneRememberedThing.slice(0, 120)) || "A unique authoritative voice in your field.",
 
