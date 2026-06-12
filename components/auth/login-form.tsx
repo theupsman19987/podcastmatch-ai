@@ -20,7 +20,7 @@ function validate(email: string, password: string): Errors {
   return e
 }
 
-export function LoginForm() {
+export function LoginForm({ message }: { message?: string }) {
   const [email,     setEmail]     = useState("")
   const [password,  setPassword]  = useState("")
   const [errors,    setErrors]    = useState<Errors>({})
@@ -75,6 +75,16 @@ export function LoginForm() {
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
     >
+      {/* Password reset success banner */}
+      {message === "password_updated" && (
+        <div className="mb-5 flex items-start gap-2.5 rounded-[var(--radius-md)] border border-emerald-500/25 bg-emerald-500/08 px-3.5 py-3">
+          <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-400" aria-hidden="true" />
+          <p className="text-[13px] text-emerald-300">
+            Password updated — sign in with your new password below.
+          </p>
+        </div>
+      )}
+
       {/* Heading */}
       <div className="mb-6 flex flex-col gap-1.5">
         <h1 className="text-2xl font-bold text-foreground tracking-tight">Welcome back</h1>

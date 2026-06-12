@@ -11,7 +11,14 @@ export const metadata: Metadata = {
     "Sign in to your PodcastMatch AI account and start discovering AI-matched podcast opportunities for creators, speakers, and authors.",
 }
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ message?: string; error?: string }>
+}) {
+  const params = await searchParams
+  const message = params.message
+
   return (
     <main
       id="main-content"
@@ -60,7 +67,7 @@ export default function LoginPage() {
               </span>
             </Link>
 
-            <LoginForm />
+            <LoginForm message={message} />
 
           </div>
         </div>
