@@ -144,27 +144,43 @@ interface StepTextareaProps {
   onChange: (v: string) => void
   placeholder: string
   rows?: number
-  maxLength?: number
+  wordLimit?: number
 }
 
-export function StepTextarea({ value, onChange, placeholder, rows = 4, maxLength = 400 }: StepTextareaProps) {
+function countWords(s: string) {
+  return s.trim() === "" ? 0 : s.trim().split(/\s+/).length
+}
+
+export function StepTextarea({ value, onChange, placeholder, rows = 4, wordLimit = 400 }: StepTextareaProps) {
+  const words = countWords(value)
+  const over  = words > wordLimit
+
+  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    const next = e.target.value
+    if (countWords(next) <= wordLimit) onChange(next)
+  }
+
   return (
     <div className="relative">
       <textarea
         value={value}
-        onChange={e => onChange(e.target.value)}
+        onChange={handleChange}
         placeholder={placeholder}
         rows={rows}
-        maxLength={maxLength}
         className={cn(
-          "w-full resize-none rounded-xl border border-border/40 bg-card/50 backdrop-blur-sm",
+          "w-full resize-none rounded-xl border bg-card/50 backdrop-blur-sm",
           "px-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground/60",
-          "focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20",
-          "transition-all duration-200 leading-relaxed"
+          "focus:outline-none focus:ring-1 transition-all duration-200 leading-relaxed",
+          over
+            ? "border-destructive/60 focus:border-destructive/80 focus:ring-destructive/20"
+            : "border-border/40 focus:border-primary/50 focus:ring-primary/20"
         )}
       />
-      <span className="absolute bottom-3 right-4 text-xs text-muted-foreground/50">
-        {value.length}/{maxLength}
+      <span className={cn(
+        "absolute bottom-3 right-4 text-xs",
+        over ? "text-destructive" : "text-muted-foreground/50"
+      )}>
+        {words}/{wordLimit} words
       </span>
     </div>
   )
