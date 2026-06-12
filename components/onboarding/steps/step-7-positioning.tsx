@@ -1,7 +1,7 @@
 "use client"
 
 import { useDNA } from "../dna-context"
-import { StepCard, StepHeader, SectionLabel, SelectionCard, MultiCard, StepNav } from "../dna-inputs"
+import { StepCard, StepHeader, SectionLabel, SelectionCard, MultiCard, StepTextarea, StepNav } from "../dna-inputs"
 
 const MISSIONS = [
   { label: "Empower individuals",      description: "Help people unlock their potential" },
