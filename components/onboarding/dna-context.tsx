@@ -4,7 +4,14 @@ import { createContext, useContext, useState, useCallback, type ReactNode } from
 
 export const TOTAL_STEPS = 7
 
-export type ArrayField = "s1_podcastMotivation" | "s5_podcastCategories" | "s5_podcastFormats"
+export type ArrayField =
+  | "s1_podcastMotivation"
+  | "s2_speakForHour"
+  | "s4_speakingStyle"
+  | "s5_podcastCategories"
+  | "s5_podcastFormats"
+  | "s7_missionCategory"
+  | "s7_centralMessage"
 
 export interface DNAFormData {
   // Step 1 — Your Goals
@@ -12,7 +19,7 @@ export interface DNAFormData {
 
   // Step 2 — Your Expertise
   s2_primaryTopic: string
-  s2_speakForHour: string
+  s2_speakForHour: string[]
   s2_problemSolved: string
   s2_personalResults: string
   s2_expertiseCategory: string
@@ -25,7 +32,7 @@ export interface DNAFormData {
   s3_audienceOutcome: string
 
   // Step 4 — Communication Style
-  s4_speakingStyle: string
+  s4_speakingStyle: string[]
   s4_teachingStyle: string
   s4_uniqueVoice: string
 
@@ -41,16 +48,16 @@ export interface DNAFormData {
   s6_readiness: string
 
   // Step 7 — Creator Positioning
-  s7_missionCategory: string
+  s7_missionCategory: string[]
   s7_creatorArchetype: string
-  s7_centralMessage: string
+  s7_centralMessage: string[]
   s7_oneRememberedThing: string
 }
 
 const INITIAL: DNAFormData = {
   s1_podcastMotivation: [],
   s2_primaryTopic: "",
-  s2_speakForHour: "",
+  s2_speakForHour: [],
   s2_problemSolved: "",
   s2_personalResults: "",
   s2_expertiseCategory: "",
@@ -59,7 +66,7 @@ const INITIAL: DNAFormData = {
   s3_audienceChallenge: "",
   s3_audienceType: "",
   s3_audienceOutcome: "",
-  s4_speakingStyle: "",
+  s4_speakingStyle: [],
   s4_teachingStyle: "",
   s4_uniqueVoice: "",
   s5_podcastCategories: [],
@@ -69,9 +76,9 @@ const INITIAL: DNAFormData = {
   s6_publishedWork: "",
   s6_socialMediaActivity: "",
   s6_readiness: "",
-  s7_missionCategory: "",
+  s7_missionCategory: [],
   s7_creatorArchetype: "",
-  s7_centralMessage: "",
+  s7_centralMessage: [],
   s7_oneRememberedThing: "",
 }
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { useDNA } from "../dna-context"
-import { StepCard, StepHeader, SectionLabel, SelectionCard, StepTextarea, StepNav } from "../dna-inputs"
+import { StepCard, StepHeader, SectionLabel, SelectionCard, MultiCard, StepNav } from "../dna-inputs"
 
 const MISSIONS = [
   { label: "Empower individuals",      description: "Help people unlock their potential" },
@@ -25,9 +25,20 @@ const ARCHETYPES = [
   { emoji: "🤝", label: "The Connector",    description: "You bridge communities and amplify others" },
 ]
 
+const CENTRAL_MESSAGES = [
+  { label: "Sustainable success requires aligned systems",          description: "Success built on structure, not hustle" },
+  { label: "Transformation is possible for anyone willing to act",  description: "Change is a decision, not a circumstance" },
+  { label: "Authenticity is the most powerful competitive edge",    description: "Who you are is your greatest differentiator" },
+  { label: "The gap between knowing and doing is where growth lives", description: "Action closes the loop that knowledge opens" },
+  { label: "Leadership starts within before it scales outward",     description: "Inner alignment precedes external impact" },
+  { label: "True health connects mind, body, and purpose",         description: "Wellness is a whole-person practice" },
+  { label: "Your story is your most valuable brand asset",         description: "Lived experience creates irreplaceable authority" },
+  { label: "Community and connection outperform competition",       description: "The strongest brands are built on trust and belonging" },
+]
+
 export function Step7Positioning() {
-  const { formData, setField, back, finish } = useDNA()
-  const canFinish = formData.s7_missionCategory !== "" || formData.s7_centralMessage.trim().length >= 10
+  const { formData, toggleArrayField, setField, back, finish } = useDNA()
+  const canFinish = formData.s7_missionCategory.length > 0 || formData.s7_centralMessage.length > 0
 
   return (
     <StepCard>
@@ -38,15 +49,15 @@ export function Step7Positioning() {
 
       <div className="space-y-6">
         <div>
-          <SectionLabel>22. Which category best reflects your mission?</SectionLabel>
+          <SectionLabel>22. Which categories best reflect your mission? — pick up to 2</SectionLabel>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {MISSIONS.map(({ label, description }) => (
-              <SelectionCard
+              <MultiCard
                 key={label}
                 label={label}
                 description={description}
-                selected={formData.s7_missionCategory === label}
-                onClick={() => setField("s7_missionCategory", label)}
+                selected={formData.s7_missionCategory.includes(label)}
+                onClick={() => toggleArrayField("s7_missionCategory", label, 2)}
               />
             ))}
           </div>
@@ -69,13 +80,18 @@ export function Step7Positioning() {
         </div>
 
         <div>
-          <SectionLabel>24. What is the central message behind your work?</SectionLabel>
-          <StepTextarea
-            value={formData.s7_centralMessage}
-            onChange={v => setField("s7_centralMessage", v)}
-            placeholder="If your entire body of work could be summed up in one core idea or belief, what would it be..."
-            rows={3}
-          />
+          <SectionLabel>24. What is the central message behind your work? — pick up to 2</SectionLabel>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {CENTRAL_MESSAGES.map(({ label, description }) => (
+              <MultiCard
+                key={label}
+                label={label}
+                description={description}
+                selected={formData.s7_centralMessage.includes(label)}
+                onClick={() => toggleArrayField("s7_centralMessage", label, 2)}
+              />
+            ))}
+          </div>
         </div>
 
         <div>

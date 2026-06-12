@@ -1,7 +1,7 @@
 "use client"
 
 import { useDNA } from "../dna-context"
-import { StepCard, StepHeader, SectionLabel, SelectionCard, StepTextarea, StepNav } from "../dna-inputs"
+import { StepCard, StepHeader, SectionLabel, SelectionCard, MultiCard, StepTextarea, StepNav } from "../dna-inputs"
 
 const SPEAKING_STYLES = [
   { emoji: "💬", label: "Conversational",      description: "Natural, casual, and deeply relatable" },
@@ -22,8 +22,8 @@ const TEACHING_STYLES = [
 ]
 
 export function Step4Communication() {
-  const { formData, setField, next, back } = useDNA()
-  const canNext = formData.s4_speakingStyle !== ""
+  const { formData, setField, toggleArrayField, next, back } = useDNA()
+  const canNext = formData.s4_speakingStyle.length > 0
 
   return (
     <StepCard>
@@ -34,16 +34,16 @@ export function Step4Communication() {
 
       <div className="space-y-6">
         <div>
-          <SectionLabel>12. How would you describe your speaking style?</SectionLabel>
+          <SectionLabel>12. How would you describe your speaking style? — pick up to 2</SectionLabel>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {SPEAKING_STYLES.map(({ emoji, label, description }) => (
-              <SelectionCard
+              <MultiCard
                 key={label}
                 emoji={emoji}
                 label={label}
                 description={description}
-                selected={formData.s4_speakingStyle === label}
-                onClick={() => setField("s4_speakingStyle", label)}
+                selected={formData.s4_speakingStyle.includes(label)}
+                onClick={() => toggleArrayField("s4_speakingStyle", label, 2)}
               />
             ))}
           </div>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useDNA } from "../dna-context"
-import { StepCard, StepHeader, SectionLabel, SelectionCard, StepTextarea, StepNav } from "../dna-inputs"
+import { StepCard, StepHeader, SectionLabel, SelectionCard, TagPill, StepTextarea, StepNav } from "../dna-inputs"
 
 const TOPICS = [
   { emoji: "💼", label: "Business & Entrepreneurship" },
@@ -30,7 +30,7 @@ const CATEGORIES = [
 ]
 
 export function Step2Expertise() {
-  const { formData, setField, next, back } = useDNA()
+  const { formData, setField, toggleArrayField, next, back } = useDNA()
   const canNext = formData.s2_primaryTopic !== ""
 
   return (
@@ -57,13 +57,17 @@ export function Step2Expertise() {
         </div>
 
         <div>
-          <SectionLabel>3. What subject could you speak about for an hour without preparation?</SectionLabel>
-          <StepTextarea
-            value={formData.s2_speakForHour}
-            onChange={v => setField("s2_speakForHour", v)}
-            placeholder="The topic you know so deeply you could go on forever without notes..."
-            rows={3}
-          />
+          <SectionLabel>3. What subjects could you speak about for an hour without preparation? — pick up to 2</SectionLabel>
+          <div className="flex flex-wrap gap-2">
+            {TOPICS.map(({ label }) => (
+              <TagPill
+                key={label}
+                label={label}
+                selected={formData.s2_speakForHour.includes(label)}
+                onClick={() => toggleArrayField("s2_speakForHour", label, 2)}
+              />
+            ))}
+          </div>
         </div>
 
         <div>

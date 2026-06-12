@@ -17,7 +17,7 @@ export async function saveAvatarUrl(avatarUrl: string): Promise<{ error?: string
 }
 
 export async function getUserProfile(): Promise<{
-  data?: { fullName: string | null; avatarUrl: string | null }
+  data?: { fullName: string | null; avatarUrl: string | null; bio: string | null }
   error?: string
 }> {
   const supabase = await createClient()
@@ -26,10 +26,24 @@ export async function getUserProfile(): Promise<{
 
   const { data, error } = await supabase
     .from("profiles")
-    .select("full_name, avatar_url")
+    .select("full_name, avatar_url, bio")
     .eq("id", user.id)
     .single()
 
   if (error) return { error: error.message }
-  return { data: { fullName: data.full_name, avatarUrl: data.avatar_url } }
+  return { data: { fullName: data.full_name, avatarUrl: data.avatar_url, bio: data.bio } }
+}
+
+export async function saveBio(bio: string): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: "Not authenticated" }
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ bio, updated_at: new Date().toISOString() })
+    .eq("id", user.id)
+
+  if (error) return { error: error.message }
+  return {}
 }

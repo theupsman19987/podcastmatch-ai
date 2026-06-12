@@ -21,15 +21,17 @@ export default async function ProfilePage() {
     .join("") || "?"
 
   const profileResult = user
-    ? await supabase.from("profiles").select("avatar_url").eq("id", user.id).single()
+    ? await supabase.from("profiles").select("avatar_url, bio").eq("id", user.id).single()
     : null
   const avatarUrl = profileResult?.data?.avatar_url ?? null
+  const bio       = profileResult?.data?.bio ?? null
 
   return (
     <ProfilePageClient
       firstName={firstName}
       initials={initials}
       initialAvatarUrl={avatarUrl}
+      initialBio={bio}
     />
   )
 }

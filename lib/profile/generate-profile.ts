@@ -78,10 +78,10 @@ function visibilityScore(d: DNAFormData) {
 
 function alignmentScore(d: DNAFormData) {
   let s = 50
-  if (d.s7_centralMessage.length > 30) s += 10
+  if (d.s7_centralMessage.join(" ").length > 10) s += 10
   if (d.s7_oneRememberedThing.length > 20) s += 8
   if (d.s4_uniqueVoice.length > 20) s += 7
-  if (d.s7_missionCategory) s += 7
+  if (d.s7_missionCategory.length > 0) s += 7
   if (d.s7_creatorArchetype) s += 5
   if (d.s2_primaryTopic) s += 5
   if (d.s3_audienceType) s += 5
@@ -102,7 +102,7 @@ function audienceMatchScore(d: DNAFormData) {
 function topicAuthorityScore(d: DNAFormData) {
   let s = 48
   if (d.s2_primaryTopic) s += 8
-  if (d.s2_speakForHour.length > 30) s += 8
+  if (d.s2_speakForHour.length > 0) s += 8
   if (d.s2_problemSolved.length > 30) s += 8
   if (d.s2_personalResults.length > 30) s += 8
   if (d.s2_expertiseCategory.includes("Thought Leader") || d.s2_expertiseCategory.includes("Executive")) s += 10
@@ -131,7 +131,7 @@ function podcastCompatScore(d: DNAFormData) {
   else if (d.s6_previousPodcasts.includes("few")) s += 8
   else if (d.s6_previousPodcasts.includes("once")) s += 4
   if (["Conversational", "Storytelling", "Inspirational"].some(x => d.s4_speakingStyle.includes(x))) s += 10
-  else if (d.s4_speakingStyle) s += 6
+  else if (d.s4_speakingStyle.length > 0) s += 6
   if (d.s4_teachingStyle) s += 5
   if (d.s5_podcastFormats.length > 0) s += 5
   if (d.s6_publicSpeaking.includes("regularly")) s += 8
@@ -193,13 +193,13 @@ function computeCategoryAlignments(d: DNAFormData): CategoryAlignment[] {
     if (mapped) scores[mapped] = Math.min((scores[mapped] ?? 32) + 18, 95)
   })
 
-  if (d.s7_missionCategory.includes("Empower") || d.s7_missionCategory.includes("Inspire")) {
+  if (d.s7_missionCategory.some(m => m.includes("Empower") || m.includes("Inspire"))) {
     scores["Personal Development"] = Math.min((scores["Personal Development"] ?? 32) + 10, 95)
   }
-  if (d.s7_missionCategory.includes("Grow") || d.s7_missionCategory.includes("Disrupt")) {
+  if (d.s7_missionCategory.some(m => m.includes("Grow") || m.includes("Disrupt"))) {
     scores["Business & Entrepreneurship"] = Math.min((scores["Business & Entrepreneurship"] ?? 32) + 10, 95)
   }
-  if (d.s7_missionCategory.includes("Heal") || d.s7_missionCategory.includes("community")) {
+  if (d.s7_missionCategory.some(m => m.includes("Heal") || m.includes("community"))) {
     scores["Health & Recovery"] = Math.min((scores["Health & Recovery"] ?? 32) + 10, 95)
   }
 
@@ -218,7 +218,7 @@ function computeCategoryAlignments(d: DNAFormData): CategoryAlignment[] {
 
 function computeInsights(d: DNAFormData, cats: CategoryAlignment[], vpScore: number): ProfileInsight[] {
   const top = cats[0]
-  const style = d.s4_speakingStyle || "communication"
+  const style = d.s4_speakingStyle[0] || "communication"
   const audience = d.s3_audienceType || d.s3_ageGroup || "your target audience"
   return [
     {
@@ -256,9 +256,9 @@ function computeTopics(d: DNAFormData): string[] {
   const topics = new Set<string>()
   if (d.s2_primaryTopic) topics.add(d.s2_primaryTopic.replace(" & ", " & ").split(" & ")[0])
   d.s5_podcastCategories.slice(0, 5).forEach(c => topics.add(c))
-  if (d.s7_missionCategory.includes("Empower")) topics.add("Personal Empowerment")
-  if (d.s7_missionCategory.includes("Disrupt")) topics.add("Innovation")
-  if (d.s7_missionCategory.includes("Heal")) topics.add("Healing & Recovery")
+  if (d.s7_missionCategory.some(m => m.includes("Empower"))) topics.add("Personal Empowerment")
+  if (d.s7_missionCategory.some(m => m.includes("Disrupt"))) topics.add("Innovation")
+  if (d.s7_missionCategory.some(m => m.includes("Heal"))) topics.add("Healing & Recovery")
   return Array.from(topics).slice(0, 7)
 }
 
@@ -267,7 +267,7 @@ function computeTopics(d: DNAFormData): string[] {
 export const MOCK_DNA: DNAFormData = {
   s1_podcastMotivation: ["Share an important message", "Build authority & credibility", "Find ideal clients"],
   s2_primaryTopic: "Personal Development",
-  s2_speakForHour: "The psychology of high performance and sustainable success without sacrificing health or relationships.",
+  s2_speakForHour: ["Personal Development", "Health & Wellness"],
   s2_problemSolved: "I help high achievers escape burnout cycles and build sustainable success systems that actually last.",
   s2_personalResults: "Built a 7-figure coaching practice, spoken at 50+ events, authored 2 books, built a 120K following.",
   s2_expertiseCategory: "Thought Leader",
@@ -276,7 +276,7 @@ export const MOCK_DNA: DNAFormData = {
   s3_audienceChallenge: "They are high achievers caught in the hustle trap — succeeding on the outside but burning out inside.",
   s3_audienceType: "Corporate professionals & executives",
   s3_audienceOutcome: "A sustainable success blueprint they can apply immediately to reclaim their energy and results.",
-  s4_speakingStyle: "Inspirational",
+  s4_speakingStyle: ["Inspirational", "Storytelling"],
   s4_teachingStyle: "Stories and examples",
   s4_uniqueVoice: "I combine neuroscience with personal experience to make high performance feel achievable, not intimidating.",
   s5_podcastCategories: ["Personal Development", "Leadership", "Health & Wellness", "Business"],
@@ -286,9 +286,9 @@ export const MOCK_DNA: DNAFormData = {
   s6_publishedWork: "Multiple of the above",
   s6_socialMediaActivity: "Active — several times a week",
   s6_readiness: "Ready immediately",
-  s7_missionCategory: "Empower individuals",
+  s7_missionCategory: ["Empower individuals", "Inspire action"],
   s7_creatorArchetype: "The Mentor",
-  s7_centralMessage: "Sustainable success is not a compromise — it is the only strategy that works long-term.",
+  s7_centralMessage: ["Sustainable success requires aligned systems", "Leadership starts within before it scales outward"],
   s7_oneRememberedThing: "You can have everything you have been chasing — just not by burning yourself out to get it.",
 }
 
@@ -312,11 +312,11 @@ export function generateProfile(raw: unknown): GeneratedProfile {
     audienceType:     d.s3_audienceType || d.s3_ageGroup || "Professionals & Leaders",
     creatorArchetype: d.s7_creatorArchetype || "The Expert",
 
-    missionStatement: d.s7_centralMessage || "Helping others achieve transformative results through authentic expertise and lived experience.",
-    coreMessage:      d.s7_oneRememberedThing || d.s7_centralMessage || "Your message has the power to change lives. Let us amplify it.",
+    missionStatement: d.s7_centralMessage.join(". ") || "Helping others achieve transformative results through authentic expertise and lived experience.",
+    coreMessage:      d.s7_oneRememberedThing || d.s7_centralMessage.join(". ") || "Your message has the power to change lives. Let us amplify it.",
     primaryExpertise: d.s2_primaryTopic || "Personal Development",
     audienceServed:   d.s3_audienceType || (d.s3_audienceBenefits.slice(0, 80)) || "Professionals seeking growth",
-    creatorPositioning: (d.s7_centralMessage.slice(0, 120)) || (d.s7_oneRememberedThing.slice(0, 120)) || "A unique authoritative voice in your field.",
+    creatorPositioning: (d.s7_centralMessage.join(". ").slice(0, 120)) || (d.s7_oneRememberedThing.slice(0, 120)) || "A unique authoritative voice in your field.",
 
     audienceMatchStrength: am,
     topicAuthority:        ta,

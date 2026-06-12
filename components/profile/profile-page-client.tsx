@@ -5,6 +5,7 @@ import { generateProfile }          from "@/lib/profile/generate-profile"
 import type { GeneratedProfile }    from "@/lib/profile/generate-profile"
 import { getDnaAssessment }         from "@/lib/actions/dna"
 import { ProfileHeader }            from "./profile-header"
+import { ProfileBio }               from "./profile-bio"
 import { BrandIdentity }            from "./brand-identity"
 import { StrengthDashboard }        from "./strength-dashboard"
 import { AIInsightsPanel }          from "./ai-insights-panel"
@@ -26,9 +27,10 @@ interface Props {
   firstName?:       string
   initials?:        string
   initialAvatarUrl?: string | null
+  initialBio?:      string | null
 }
 
-export function ProfilePageClient({ firstName, initials, initialAvatarUrl }: Props) {
+export function ProfilePageClient({ firstName, initials, initialAvatarUrl, initialBio }: Props) {
   /* Start with localStorage so the page never flashes empty */
   const [profile, setProfile] = useState<GeneratedProfile>(() => {
     if (typeof window === "undefined") return generateProfile(null)
@@ -54,6 +56,7 @@ export function ProfilePageClient({ firstName, initials, initialAvatarUrl }: Pro
         avatarUrl={avatarUrl}
         onAvatarChange={setAvatarUrl}
       />
+      <ProfileBio initialBio={initialBio} />
       <BrandIdentity profile={profile} />
       <StrengthDashboard profile={profile} />
       <AIInsightsPanel profile={profile} />
