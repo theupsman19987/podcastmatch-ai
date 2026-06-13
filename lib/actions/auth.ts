@@ -58,31 +58,6 @@ export async function signOutAction(): Promise<void> {
   redirect("/login")
 }
 
-/* ── Password Reset ──────────────────────────────────────── */
-export async function resetPasswordAction(
-  email: string
-): Promise<{ error?: string; success?: boolean }> {
-  const supabase    = await createClient()
-  const headersList = await headers()
-
-  // origin header is present for all browser form submissions.
-  // Fall back to x-forwarded-host when running behind Coolify's proxy
-  // and origin is absent, so redirectTo is never a bare relative path.
-  const origin = headersList.get("origin") ?? (() => {
-    const host  = headersList.get("x-forwarded-host") ?? headersList.get("host") ?? ""
-    const proto = headersList.get("x-forwarded-proto") ?? "https"
-    return host ? `${proto}://${host}` : ""
-  })()
-  const base = origin.replace(/\/$/, "")
-
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${base}/reset-password`,
-  })
-
-  if (error) return { error: error.message }
-  return { success: true }
-}
-
 /* ── Update Password (after reset link) ─────────────────── */
 export async function updatePasswordAction(
   password: string

@@ -4,9 +4,9 @@ import { useState } from "react"
 import Link         from "next/link"
 import { motion }   from "motion/react"
 import { ArrowRight, Loader2, CheckCircle2, ArrowLeft } from "lucide-react"
-import { AuthInput }   from "@/components/auth/auth-input"
+import { AuthInput }    from "@/components/auth/auth-input"
 import { ShimmerButton } from "@/components/ui/shimmer-button"
-import { resetPasswordAction } from "@/lib/actions/auth"
+import { createClient }  from "@/lib/supabase/client"
 
 export function ForgotPasswordForm() {
   const [email,     setEmail]     = useState("")
@@ -24,11 +24,18 @@ export function ForgotPasswordForm() {
     }
 
     setIsLoading(true)
-    const result = await resetPasswordAction(email.trim())
+    // resetPasswordForEmail must run in the browser so the PKCE code verifier
+    // is stored in browser storage. exchangeCodeForSession on /reset-password
+    // reads from the same storage on the same origin — no mismatch possible.
+    const supabase = createClient()
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+      email.trim(),
+      { redirectTo: `${window.location.origin}/reset-password` }
+    )
     setIsLoading(false)
 
-    if (result.error) {
-      setError(result.error)
+    if (resetError) {
+      setError(resetError.message)
     } else {
       setSuccess(true)
     }
