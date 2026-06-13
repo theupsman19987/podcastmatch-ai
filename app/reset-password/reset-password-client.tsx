@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useSearchParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { motion } from "motion/react"
 import { ArrowRight, ArrowLeft, Loader2, AlertCircle } from "lucide-react"
@@ -10,7 +10,6 @@ import { AuthInput } from "@/components/auth/auth-input"
 import { ShimmerButton } from "@/components/ui/shimmer-button"
 
 export function ResetPasswordClient() {
-  const searchParams = useSearchParams()
   const router = useRouter()
 
   const [stage, setStage] = useState<"exchanging" | "form" | "error">("exchanging")
@@ -21,28 +20,46 @@ export function ResetPasswordClient() {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    const code = searchParams.get("code")
-    if (!code) {
-      setStageError("No reset code found. Please request a new password reset link.")
+    // GoTrue redirects expired/invalid tokens with #error=... in the fragment.
+    const hash = window.location.hash
+    if (hash.includes("error=")) {
+      const p = new URLSearchParams(hash.slice(1))
+      setStageError(
+        p.get("error_description") ?? "Reset link is invalid or has expired."
+      )
       setStage("error")
       return
     }
 
-    // Exchange the PKCE code for a recovery session using the browser client.
-    // This must happen client-side so GoTrue can issue a session the browser owns
-    // directly — server-side exchange produces a session the browser never fully
-    // inherits, which causes updateUser to fail silently.
-    createClient()
-      .auth.exchangeCodeForSession(code)
-      .then(({ error }) => {
-        if (error) {
-          setStageError(error.message)
-          setStage("error")
-        } else {
-          setStage("form")
-        }
-      })
-  }, [searchParams])
+    // @supabase/ssr createBrowserClient sets detectSessionInUrl: true.
+    // On init it auto-exchanges ?code= (PKCE) or #access_token= (implicit),
+    // strips ?code= from the URL, then fires PASSWORD_RECOVERY.
+    // We must NOT call exchangeCodeForSession manually — that races the auto-exchange
+    // and triggers a re-render with code=null once the URL is cleared.
+    const supabase = createClient()
+
+    // INITIAL_SESSION fires after _initialize completes (before PASSWORD_RECOVERY).
+    // PASSWORD_RECOVERY fires via setTimeout(0) inside _initialize, arriving
+    // slightly after INITIAL_SESSION. We wait 100 ms so PASSWORD_RECOVERY wins
+    // when the code is valid; otherwise we surface the error.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") {
+        setStage("form")
+      } else if (event === "INITIAL_SESSION") {
+        setTimeout(() => {
+          setStage(prev => {
+            if (prev === "exchanging") {
+              setStageError("No reset code found. Please request a new password reset link.")
+              return "error"
+            }
+            return prev
+          })
+        }, 100)
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   async function handleSubmit(evt: React.FormEvent) {
     evt.preventDefault()
