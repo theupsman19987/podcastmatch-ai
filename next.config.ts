@@ -72,6 +72,18 @@ const nextConfig: NextConfig = {
     ]
   },
 
+  /* ── Supabase proxy ─────────────────────────────────────────── */
+  // Browser calls https://podcastmatchai.com/sb/* (same-origin, no mixed-content).
+  // Next.js server-side rewrites to Kong over plain HTTP — browser never sees it.
+  async rewrites() {
+    return [
+      {
+        source:      "/sb/:path*",
+        destination: "http://supabasekong-nzt6wv9k32n45xzst6vd5mmk.72.62.168.96.sslip.io/:path*",
+      },
+    ]
+  },
+
   /* ── Redirects ──────────────────────────────────────────────── */
   async redirects() {
     return [
