@@ -38,10 +38,17 @@ export function ResetPasswordClient() {
     // and triggers a re-render with code=null once the URL is cleared.
     const supabase = createClient()
 
+    // Expose auth on window so e2e tests can call verifyOtp on the same instance.
+    // Safe: the auth object holds no more than what's already in localStorage.
+    if (typeof window !== "undefined") {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(window as any).__sbAuth = supabase.auth
+    }
+
     // INITIAL_SESSION fires after _initialize completes (before PASSWORD_RECOVERY).
     // PASSWORD_RECOVERY fires via setTimeout(0) inside _initialize, arriving
-    // slightly after INITIAL_SESSION. We wait 100 ms so PASSWORD_RECOVERY wins
-    // when the code is valid; otherwise we surface the error.
+    // slightly after INITIAL_SESSION. We wait 3 s so PKCE exchange can complete
+    // before we declare the link invalid.
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") {
         setStage("form")
@@ -54,7 +61,7 @@ export function ResetPasswordClient() {
             }
             return prev
           })
-        }, 100)
+        }, 3000)  // 3s: allows async PKCE exchange to complete before declaring the link invalid
       }
     })
 
