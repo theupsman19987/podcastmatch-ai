@@ -2,6 +2,7 @@
 
 import React, { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "motion/react"
 import { ArrowRight, Loader2, CheckCircle2, Gift } from "lucide-react"
 import { AuthInput } from "@/components/auth/auth-input"
@@ -9,7 +10,7 @@ import { SocialLoginButtons } from "@/components/auth/social-login-buttons"
 import { AuthDivider } from "@/components/auth/auth-divider"
 import { ShimmerButton } from "@/components/ui/shimmer-button"
 import { cn } from "@/lib/utils"
-import { signUpAction } from "@/lib/actions/auth"
+import { createClient } from "@/lib/supabase/client"
 import { trackClientEvent } from "@/lib/analytics/track"
 
 /* ── Password strength ─────────────────────────────────────── */
@@ -90,6 +91,7 @@ function validate(
    SignupForm
    ══════════════════════════════════════════════════════════════ */
 export function SignupForm() {
+  const router                                = useRouter()
   const [fullName,        setFullName]        = useState("")
   const [email,           setEmail]           = useState("")
   const [password,        setPassword]        = useState("")
@@ -109,13 +111,30 @@ export function SignupForm() {
     setErrors(errs)
     if (Object.keys(errs).length) return
     setIsLoading(true)
-    setSuccess(true)  // optimistic — server redirects on success
-    const result = await signUpAction(email.trim(), password, fullName.trim())
-    if (result?.error) {
+
+    const supabase = createClient()
+    const { data, error } = await supabase.auth.signUp({
+      email:    email.trim(),
+      password,
+      options: {
+        data:            { full_name: fullName.trim() },
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+
+    if (error) {
       setIsLoading(false)
-      setSuccess(false)
-      setErrors({ form: result.error })
+      setErrors({ form: error.message })
+      return
     }
+
+    setSuccess(true)
+
+    if (data.session) {
+      // GOTRUE_MAILER_AUTOCONFIRM=true — user is confirmed immediately
+      router.push("/dashboard")
+    }
+    // If no session, the success screen shows "check your email"
   }
 
   if (success) {
@@ -141,6 +160,7 @@ export function SignupForm() {
       </motion.div>
     )
   }
+
 
   return (
     <motion.div

@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
-export async function middleware(request: NextRequest) {
+export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -25,10 +25,9 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  /* IMPORTANT: do not add logic between createServerClient and getUser().
-     A simple mistake can make it very hard to debug issues with users
-     being randomly logged out. */
-  const { data: { user } } = await supabase.auth.getUser()
+  // Do not add code between createServerClient and getClaims().
+  const { data } = await supabase.auth.getClaims()
+  const user = data?.claims
 
   const { pathname } = request.nextUrl
 
@@ -55,13 +54,4 @@ export async function middleware(request: NextRequest) {
   }
 
   return supabaseResponse
-}
-
-export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/login",
-    "/signup",
-    "/forgot-password",
-  ],
 }
