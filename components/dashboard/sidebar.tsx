@@ -16,6 +16,7 @@ import {
   X,
   Mic2,
   UserRound,
+  Home,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useSidebar } from "@/components/dashboard/sidebar-context"
@@ -59,6 +60,7 @@ const NAV_GROUPS = [
 const BOTTOM_ITEMS = [
   { label: "Notifications", href: "/dashboard/notifications", icon: Bell,     badge: 3 },
   { label: "Settings",      href: "/dashboard/settings",      icon: Settings, badge: 0 },
+  { label: "Home",          href: "/",                        icon: Home,      badge: 0 },
 ]
 
 /* ═══════════════════════════════════════════════════════════
