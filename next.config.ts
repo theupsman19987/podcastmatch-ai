@@ -75,12 +75,13 @@ const nextConfig: NextConfig = {
   /* ── Supabase proxy ─────────────────────────────────────────── */
   // Browser calls https://podcastmatchai.com/sb/* (same-origin, no mixed-content).
   // Next.js server-side rewrites to Kong over plain HTTP — browser never sees it.
+  // /auth/v1/* is a second rewrite so GOTRUE_SITE_URL can be the bare domain root
+  // (https://www.podcastmatchai.com) and GoTrue email links resolve through the proxy.
   async rewrites() {
+    const kong = "http://supabasekong-nzt6wv9k32n45xzst6vd5mmk.72.62.168.96.sslip.io"
     return [
-      {
-        source:      "/sb/:path*",
-        destination: "http://supabasekong-nzt6wv9k32n45xzst6vd5mmk.72.62.168.96.sslip.io/:path*",
-      },
+      { source: "/sb/:path*",     destination: `${kong}/:path*` },
+      { source: "/auth/v1/:path*", destination: `${kong}/auth/v1/:path*` },
     ]
   },
 
