@@ -23,22 +23,19 @@ export function DNAAnalysis() {
   const router = useRouter()
   const { formData } = useDNA()
   const [revealed, setRevealed] = useState(0)
+  const [savesDone, setSavesDone] = useState(false)
 
   useEffect(() => {
-    /* Persist to localStorage (instant, works without auth) */
     try {
       localStorage.setItem("podmatch_creator_dna", JSON.stringify(formData))
     } catch { /* ignore */ }
 
-    /* Persist DNA answers to Supabase */
-    completeDnaAssessment(formData).catch(() => {})
-
-    /* Generate and persist the creator profile */
     const profile = generateProfile(formData)
-    saveCreatorProfile(profile).catch(() => {})
-
-    /* Track completion event */
-    trackClientEvent({ event: "dna_completed" }).catch(() => {})
+    Promise.allSettled([
+      completeDnaAssessment(formData),
+      saveCreatorProfile(profile),
+      trackClientEvent({ event: "dna_completed" }),
+    ]).then(() => setSavesDone(true))
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -47,9 +44,12 @@ export function DNAAnalysis() {
       const t = setTimeout(() => setRevealed(r => r + 1), revealed === 0 ? 600 : 550)
       return () => clearTimeout(t)
     }
-    const t = setTimeout(() => router.push("/dashboard"), 900)
+    // Wait for the Supabase write before navigating so the profile page reads
+    // the new answers instead of the previous assessment's data. Fall back to
+    // 3 s if the write is unusually slow.
+    const t = setTimeout(() => router.push("/dashboard"), savesDone ? 900 : 3000)
     return () => clearTimeout(t)
-  }, [revealed, router])
+  }, [revealed, savesDone, router])
 
   return (
     <motion.div

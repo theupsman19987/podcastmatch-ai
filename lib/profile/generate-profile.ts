@@ -71,16 +71,17 @@ function visibilityScore(d: DNAFormData) {
   else if (d.s6_socialMediaActivity.includes("Active")) s += 9
   else if (d.s6_socialMediaActivity.includes("Moderate")) s += 5
   if (d.s6_publishedWork.includes("Multiple")) s += 12
-  else if (d.s6_publishedWork && !d.s6_publishedWork.includes("None") && !d.s6_publishedWork.includes("progress")) s += 6
+  else if (d.s6_publishedWork.includes("progress")) s += 3
+  else if (d.s6_publishedWork && !d.s6_publishedWork.includes("None")) s += 6
   if (d.s6_publicSpeaking.includes("regularly")) s += 7
   return clamp(s, 45, 96)
 }
 
 function alignmentScore(d: DNAFormData) {
   let s = 50
-  if (d.s7_centralMessage.join(" ").length > 10) s += 10
-  if (d.s7_oneRememberedThing.length > 20) s += 8
-  if (d.s4_uniqueVoice.length > 20) s += 7
+  if (d.s7_centralMessage.length > 0) s += 10
+  if (d.s7_oneRememberedThing.length > 0) s += 8
+  if (d.s4_uniqueVoice.length > 0) s += 7
   if (d.s7_missionCategory.length > 0) s += 7
   if (d.s7_creatorArchetype) s += 5
   if (d.s2_primaryTopic.length > 0) s += 5
@@ -90,11 +91,11 @@ function alignmentScore(d: DNAFormData) {
 
 function audienceMatchScore(d: DNAFormData) {
   let s = 50
-  if (d.s3_audienceBenefits.length > 30) s += 10
-  if (d.s3_audienceChallenge.length > 20) s += 8
+  if (d.s3_audienceBenefits.length > 0) s += 10
+  if (d.s3_audienceChallenge.length > 0) s += 8
   if (d.s3_ageGroup) s += 6
   if (d.s3_audienceType) s += 8
-  if (d.s3_audienceOutcome.length > 20) s += 8
+  if (d.s3_audienceOutcome.length > 0) s += 8
   if (d.s1_podcastMotivation.length >= 2) s += 5
   return clamp(s, 50, 95)
 }
@@ -103,12 +104,13 @@ function topicAuthorityScore(d: DNAFormData) {
   let s = 48
   if (d.s2_primaryTopic.length > 0) s += 8
   if (d.s2_speakForHour.length > 0) s += 8
-  if (d.s2_problemSolved.length > 30) s += 8
-  if (d.s2_personalResults.length > 30) s += 8
+  if (d.s2_problemSolved.length > 0) s += 8
+  if (d.s2_personalResults.length > 0) s += 8
   if (d.s2_expertiseCategory.includes("Thought Leader") || d.s2_expertiseCategory.includes("Executive")) s += 10
   else if (d.s2_expertiseCategory.includes("Expert") || d.s2_expertiseCategory.includes("Author")) s += 7
   if (d.s6_publishedWork.includes("Multiple")) s += 8
-  else if (d.s6_publishedWork && !d.s6_publishedWork.includes("None") && !d.s6_publishedWork.includes("progress")) s += 5
+  else if (d.s6_publishedWork.includes("progress")) s += 2
+  else if (d.s6_publishedWork && !d.s6_publishedWork.includes("None")) s += 5
   return clamp(s, 48, 97)
 }
 
@@ -122,6 +124,8 @@ function visibilityPotentialScore(d: DNAFormData) {
   if (d.s6_publicSpeaking.includes("regularly")) s += 10
   if (d.s6_readiness.includes("immediately")) s += 5
   if (d.s6_publishedWork.includes("Multiple")) s += 8
+  else if (d.s6_publishedWork.includes("progress")) s += 2
+  else if (d.s6_publishedWork && !d.s6_publishedWork.includes("None")) s += 5
   return clamp(s, 45, 95)
 }
 
