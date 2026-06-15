@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
-import { createClient } from "@/lib/supabase/server"
-import { DashboardHomeContent } from "./dashboard-client"
+import { createClient }           from "@/lib/supabase/server"
+import { computeAndSaveScore }    from "@/lib/actions/scoring"
+import { DashboardHomeContent }   from "./dashboard-client"
 
 export const metadata: Metadata = {
   title: "Dashboard — PodcastMatch AI",
@@ -10,7 +11,6 @@ export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  /* ── Real user first name ──────────────────────────────── */
   const rawName   = (user?.user_metadata?.full_name as string | undefined) ?? user?.email ?? ""
   const firstName = rawName.split(" ")[0] || "there"
   const userId    = user?.id ?? ""
@@ -18,41 +18,33 @@ export default async function DashboardPage() {
   const startOfDay = new Date()
   startOfDay.setHours(0, 0, 0, 0)
 
-  /* ── DB queries (parallel) ─────────────────────────────── */
-  const [savedResult, matchResult, todayResult, profileResult, dnaResult] = await Promise.all([
-    supabase
-      .from("saved_podcasts")
+  /* Parallel: activity counts + scoring */
+  const [savedResult, matchResult, todayResult, dnaResult, scoring] = await Promise.all([
+    supabase.from("saved_podcasts")
       .select("*", { count: "exact", head: true })
       .eq("user_id", userId),
-    supabase
-      .from("match_history")
+    supabase.from("match_history")
       .select("*", { count: "exact", head: true })
       .eq("user_id", userId),
-    supabase
-      .from("match_history")
+    supabase.from("match_history")
       .select("*", { count: "exact", head: true })
       .eq("user_id", userId)
       .gte("created_at", startOfDay.toISOString()),
-    supabase
-      .from("creator_profiles")
-      .select("visibility_score")
-      .eq("user_id", userId)
-      .single(),
-    supabase
-      .from("dna_assessments")
+    supabase.from("dna_assessments")
       .select("completed", { count: "exact", head: true })
       .eq("user_id", userId)
       .eq("completed", true),
+    computeAndSaveScore(),
   ])
 
   return (
     <DashboardHomeContent
       firstName={firstName}
-      visibilityScore={profileResult.data?.visibility_score ?? 0}
       savedCount={savedResult.count ?? 0}
       matchCount={matchResult.count ?? 0}
       newToday={todayResult.count ?? 0}
       hasDna={(dnaResult.count ?? 0) > 0}
+      scoring={scoring}
     />
   )
 }

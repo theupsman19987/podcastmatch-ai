@@ -156,11 +156,16 @@ export function DashboardTopbar({
                     "shadow-[var(--shadow-lg)] py-1.5"
                   )}
                 >
+                  {/* User name header inside dropdown */}
+                  <div className="px-3 py-2 border-b border-border/40 mb-1">
+                    <p className="text-[12px] font-semibold text-foreground truncate">{displayName}</p>
+                    <a href="/" className="text-[11px] text-primary hover:underline">← Home page</a>
+                  </div>
                   {[
-                    { label: "Profile",         href: "/dashboard/profile" },
+                    { label: "Profile",          href: "/dashboard/profile" },
                     { label: "Account Settings", href: "/dashboard/settings" },
-                    { label: "Billing",          href: "/dashboard/billing" },
-                    { label: "Sign Out",         href: "/login", danger: true },
+                    { label: "Billing",           href: "/dashboard/billing" },
+                    { label: "Sign Out",          href: "/login", danger: true },
                   ].map(item => (
                     <a
                       key={item.label}

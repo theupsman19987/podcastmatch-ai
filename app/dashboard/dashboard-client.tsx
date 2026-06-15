@@ -21,10 +21,12 @@ import {
   Clock,
   Dna,
   ChevronRight,
+  CheckCircle2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import type { ScoringResult, ScoreBreakdown, ImprovementFlags } from "@/lib/actions/scoring"
 
 /* ── Greeting ─────────────────────────────────────────────── */
 function getGreeting(): string {
@@ -93,12 +95,12 @@ function getScoreStatus(score: number) {
 
 /* ── Props ─────────────────────────────────────────────────── */
 export interface DashboardHomeProps {
-  firstName:       string
-  visibilityScore: number
-  savedCount:      number
-  matchCount:      number
-  newToday:        number
-  hasDna:          boolean
+  firstName:  string
+  savedCount: number
+  matchCount: number
+  newToday:   number
+  hasDna:     boolean
+  scoring:    ScoringResult
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -108,61 +110,81 @@ export interface DashboardHomeProps {
 const RING_R    = 88
 const RING_CIRC = 2 * Math.PI * RING_R
 
-const SUBSCORES = [
-  { label: "Authority",  score: 84, color: "var(--premium-gold)",  barBg: "bg-[oklch(0.78_0.15_83/0.10)]",  barFill: "bg-[var(--premium-gold)]"  },
-  { label: "Audience",   score: 81, color: "var(--premium-cyan)",  barBg: "bg-[oklch(0.70_0.16_200/0.10)]", barFill: "bg-[var(--premium-cyan)]"  },
-  { label: "Clarity",    score: 73, color: "var(--primary)",       barBg: "bg-primary/10",                  barFill: "bg-primary"                },
-  { label: "Readiness",  score: 77, color: "var(--premium-cyan)",  barBg: "bg-[oklch(0.70_0.16_200/0.10)]", barFill: "bg-[var(--premium-cyan)]"  },
-  { label: "Growth",     score: 89, color: "oklch(0.70 0.16 145)", barBg: "bg-[oklch(0.55_0.16_145/0.10)]", barFill: "bg-[oklch(0.70_0.16_145)]" },
-]
+/* Normalise sub-scores to 0–100 for bar display */
+function buildSubscores(b: ScoreBreakdown) {
+  return [
+    { label: "Authority",  score: Math.round(b.authority / 25 * 100), color: "var(--premium-gold)",  barBg: "bg-[oklch(0.78_0.15_83/0.10)]",  barFill: "bg-[var(--premium-gold)]"  },
+    { label: "Audience",   score: Math.round(b.audience  / 20 * 100), color: "var(--premium-cyan)",  barBg: "bg-[oklch(0.70_0.16_200/0.10)]", barFill: "bg-[var(--premium-cyan)]"  },
+    { label: "Clarity",    score: Math.round(b.clarity   / 20 * 100), color: "var(--primary)",       barBg: "bg-primary/10",                  barFill: "bg-primary"                },
+    { label: "Readiness",  score: Math.round(b.readiness / 20 * 100), color: "var(--premium-cyan)",  barBg: "bg-[oklch(0.70_0.16_200/0.10)]", barFill: "bg-[var(--premium-cyan)]"  },
+    { label: "Growth",     score: Math.round(b.growth    / 15 * 100), color: "oklch(0.70 0.16 145)", barBg: "bg-[oklch(0.55_0.16_145/0.10)]", barFill: "bg-[oklch(0.70_0.16_145)]" },
+  ]
+}
 
-const IMPROVEMENTS = [
-  {
-    priority: "High",
-    impact: "+8 pts",
-    icon: Globe,
-    title: "Add Your Website",
-    desc: "Link your website to boost authority and discoverability by podcast hosts.",
-    action: "Add Now",
-    href: "/dashboard/profile#section-bio",
-  },
-  {
-    priority: "High",
-    impact: "+6 pts",
-    icon: FileText,
-    title: "Create a Media Kit",
-    desc: "A media kit triples your booking acceptance rate.",
-    action: "Create Kit",
-    href: "/dashboard/profile#section-media-kit",
-  },
-  {
-    priority: "Medium",
-    impact: "+5 pts",
-    icon: UserCheck,
-    title: "Complete Your Profile",
-    desc: "You're at 65% — fill in your bio, speaking topics, and audience details.",
-    action: "Complete",
-    href: "/dashboard/profile#section-bio",
-  },
-  {
-    priority: "Medium",
-    impact: "+4 pts",
-    icon: Lightbulb,
-    title: "Define Signature Topics",
-    desc: "Specialists get booked 3× more. Narrow your message to 3 clear topics.",
-    action: "Define Topics",
-    href: "/dashboard/profile#section-speaking-topics",
-  },
-  {
-    priority: "Medium",
-    impact: "+4 pts",
-    icon: Shield,
-    title: "Strengthen Positioning",
-    desc: "Update your one-liner to say who you help and the outcome you deliver.",
-    action: "View Positioning",
-    href: "/dashboard/profile#section-positioning",
-  },
-]
+function buildImprovements(f: ImprovementFlags) {
+  return [
+    {
+      priority: "High",
+      pts: 8,
+      done: f.websiteAdded,
+      icon: Globe,
+      title: "Add Your Website",
+      desc: f.websiteAdded
+        ? "Website linked — hosts can find you."
+        : "Link your website to boost authority and discoverability by podcast hosts.",
+      action: "Add Now",
+      href: "/dashboard/profile#section-bio",
+    },
+    {
+      priority: "High",
+      pts: 6,
+      done: f.mediaKitReady,
+      icon: FileText,
+      title: "Create a Media Kit",
+      desc: f.mediaKitReady
+        ? "Media kit is ready to share."
+        : "Complete your bio and DNA assessment to unlock your shareable media kit.",
+      action: "Create Kit",
+      href: "/dashboard/profile#section-media-kit",
+    },
+    {
+      priority: "Medium",
+      pts: 5,
+      done: f.bioCompleted,
+      icon: UserCheck,
+      title: "Complete Your Bio",
+      desc: f.bioCompleted
+        ? "Bio is looking great."
+        : "Fill in your bio so podcast hosts know who you are and why you're a compelling guest.",
+      action: "Complete",
+      href: "/dashboard/profile#section-bio",
+    },
+    {
+      priority: "Medium",
+      pts: 7,
+      done: f.topicsDefined,
+      icon: Lightbulb,
+      title: "Define Signature Topics",
+      desc: f.topicsDefined
+        ? "3+ speaking topics defined."
+        : "Specialists get booked 3× more. Define at least 3 clear speaking topics.",
+      action: "Define Topics",
+      href: "/dashboard/profile#section-speaking-topics",
+    },
+    {
+      priority: "Medium",
+      pts: 8,
+      done: f.assessmentComplete,
+      icon: Shield,
+      title: "Complete DNA Assessment",
+      desc: f.assessmentComplete
+        ? "Assessment complete — AI profile generated."
+        : "Your Creator DNA Assessment unlocks AI matching, positioning, and your full score.",
+      action: "Take Assessment",
+      href: "/onboarding/creator-dna",
+    },
+  ]
+}
 
 const RECOMMENDED = [
   {
@@ -214,9 +236,10 @@ const QUICK_ACTIONS = [
 /* ══════════════════════════════════════════════════════════════
    Section 1 — Visibility Score Hero
    ══════════════════════════════════════════════════════════════ */
-function VisibilityScoreHero({ score }: { score: number }) {
-  const status = getScoreStatus(score)
-  const filled = RING_CIRC * (score / 100)
+function VisibilityScoreHero({ score, breakdown }: { score: number; breakdown: ScoreBreakdown }) {
+  const status   = getScoreStatus(score)
+  const filled   = RING_CIRC * (score / 100)
+  const SUBSCORES = buildSubscores(breakdown)
 
   return (
     <motion.section
@@ -354,8 +377,10 @@ function VisibilityScoreHero({ score }: { score: number }) {
 /* ══════════════════════════════════════════════════════════════
    Section 2 — Improvement Opportunities
    ══════════════════════════════════════════════════════════════ */
-function ImprovementOpportunitiesSection() {
+function ImprovementOpportunitiesSection({ flags }: { flags: ImprovementFlags }) {
   const { ref, isInView } = useSectionView()
+  const items = buildImprovements(flags)
+  const doneCount = items.filter(i => i.done).length
 
   return (
     <section ref={ref} aria-labelledby="improvements-heading">
@@ -365,12 +390,17 @@ function ImprovementOpportunitiesSection() {
           <h2 id="improvements-heading" className="text-sm font-semibold text-foreground">
             Improve Your Visibility
           </h2>
+          {doneCount > 0 && (
+            <span className="rounded-full border border-[oklch(0.55_0.16_145/0.30)] bg-[oklch(0.55_0.16_145/0.10)] px-2 py-0.5 text-[9px] font-bold text-[oklch(0.70_0.16_145)]">
+              {doneCount}/{items.length} done
+            </span>
+          )}
         </div>
         <p className="text-xs text-muted-foreground">Complete these actions to increase your score</p>
       </div>
 
       <div className="flex flex-col gap-2.5">
-        {IMPROVEMENTS.map((item, i) => (
+        {items.map((item, i) => (
           <motion.div
             key={item.title}
             initial={{ opacity: 0, x: -10 }}
@@ -378,48 +408,69 @@ function ImprovementOpportunitiesSection() {
             transition={{ delay: i * 0.07, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className={cn(
               "group relative flex items-center gap-3 rounded-[var(--radius-lg)]",
-              "border border-border/40 bg-card px-4 py-3 shadow-[var(--shadow-card)]",
-              "transition-all duration-150 hover:border-primary/25 hover:bg-muted/10"
+              "border bg-card px-4 py-3 shadow-[var(--shadow-card)]",
+              "transition-all duration-150",
+              item.done
+                ? "border-border/25 opacity-60"
+                : "border-border/40 hover:border-primary/25 hover:bg-muted/10"
             )}
           >
-            {/* Priority bar */}
+            {/* Priority / done bar */}
             <div
               aria-hidden
               className={cn(
                 "absolute inset-y-2 left-0 w-0.5 rounded-r-full",
-                item.priority === "High" ? "bg-red-500/60" : "bg-amber-500/40"
+                item.done
+                  ? "bg-[oklch(0.55_0.16_145/0.50)]"
+                  : item.priority === "High" ? "bg-red-500/60" : "bg-amber-500/40"
               )}
             />
 
             {/* Icon */}
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/8">
-              <item.icon className="size-4 text-primary" aria-hidden="true" />
+            <div className={cn(
+              "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
+              item.done ? "bg-[oklch(0.55_0.16_145/0.10)]" : "bg-primary/8"
+            )}>
+              {item.done
+                ? <CheckCircle2 className="size-4 text-[oklch(0.70_0.16_145)]" aria-hidden="true" />
+                : <item.icon className="size-4 text-primary" aria-hidden="true" />
+              }
             </div>
 
             {/* Text */}
             <div className="min-w-0 flex-1">
               <div className="mb-0.5 flex items-center gap-2">
                 <p className="text-[12px] font-semibold text-foreground">{item.title}</p>
-                <span className={cn(
-                  "shrink-0 rounded-full border px-1.5 py-px text-[9px] font-bold uppercase tracking-wide",
-                  item.priority === "High"
-                    ? "border-red-500/30 bg-red-500/10 text-red-400"
-                    : "border-amber-500/30 bg-amber-500/10 text-amber-400"
-                )}>
-                  {item.priority}
-                </span>
+                {!item.done && (
+                  <span className={cn(
+                    "shrink-0 rounded-full border px-1.5 py-px text-[9px] font-bold uppercase tracking-wide",
+                    item.priority === "High"
+                      ? "border-red-500/30 bg-red-500/10 text-red-400"
+                      : "border-amber-500/30 bg-amber-500/10 text-amber-400"
+                  )}>
+                    {item.priority}
+                  </span>
+                )}
               </div>
               <p className="truncate text-[11px] text-muted-foreground">{item.desc}</p>
             </div>
 
             {/* Impact + action */}
             <div className="flex shrink-0 items-center gap-2">
-              <span className="rounded-full border border-[oklch(0.55_0.16_145/0.30)] bg-[oklch(0.55_0.16_145/0.10)] px-2 py-0.5 text-[10px] font-bold text-[oklch(0.70_0.16_145)]">
-                {item.impact}
-              </span>
-              <Button variant="ghost" size="sm" asChild className="h-7 px-2.5 text-[11px]">
-                <Link href={item.href}>{item.action}</Link>
-              </Button>
+              {item.done ? (
+                <span className="rounded-full border border-[oklch(0.55_0.16_145/0.30)] bg-[oklch(0.55_0.16_145/0.10)] px-2 py-0.5 text-[10px] font-bold text-[oklch(0.70_0.16_145)]">
+                  ✓ Done
+                </span>
+              ) : (
+                <>
+                  <span className="rounded-full border border-[oklch(0.55_0.16_145/0.30)] bg-[oklch(0.55_0.16_145/0.10)] px-2 py-0.5 text-[10px] font-bold text-[oklch(0.70_0.16_145)]">
+                    +{item.pts} pts
+                  </span>
+                  <Button variant="ghost" size="sm" asChild className="h-7 px-2.5 text-[11px]">
+                    <Link href={item.href}>{item.action}</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </motion.div>
         ))}
@@ -602,15 +653,19 @@ function RecommendedOpportunitiesSection() {
 /* ══════════════════════════════════════════════════════════════
    Section 4 — Visibility Growth
    ══════════════════════════════════════════════════════════════ */
-function VisibilityGrowthSection({ visibilityScore }: { visibilityScore: number }) {
+function VisibilityGrowthSection({ breakdown }: { breakdown: ScoreBreakdown }) {
   const { ref, isInView } = useSectionView()
+  const profilePct = Math.round(
+    (breakdown.authority / 25 * 0.25 + breakdown.clarity / 20 * 0.25 +
+     breakdown.audience  / 20 * 0.25 + breakdown.readiness / 20 * 0.25) * 100
+  )
 
   const metrics = [
     {
       label: "Visibility Score",
-      value: String(visibilityScore),
-      delta: "+6 this week",
-      deltaUp: true,
+      value: String(breakdown.total),
+      delta: `${breakdown.total}/100 overall`,
+      deltaUp: breakdown.total > 0,
       type: "sparkline" as const,
       points: "0,28 20,24 40,22 60,20 80,18 100,14 120,12 140,8 160,4",
       pct: undefined as number | undefined,
@@ -619,12 +674,12 @@ function VisibilityGrowthSection({ visibilityScore }: { visibilityScore: number 
     },
     {
       label: "Profile Completion",
-      value: "65%",
-      delta: "+15% this month",
-      deltaUp: true,
+      value: `${profilePct}%`,
+      delta: profilePct >= 80 ? "Profile strong" : `${100 - profilePct}% left to complete`,
+      deltaUp: profilePct >= 50,
       type: "bar" as const,
       points: undefined as string | undefined,
-      pct: 65,
+      pct: profilePct,
       color: "var(--premium-cyan)",
       icon: UserCheck,
     },
@@ -783,12 +838,15 @@ function RecentActivitySection() {
    ══════════════════════════════════════════════════════════════ */
 export function DashboardHomeContent({
   firstName,
-  visibilityScore,
   savedCount,
   matchCount,
   newToday,
   hasDna,
+  scoring,
 }: DashboardHomeProps) {
+  const { breakdown, flags } = scoring
+  const visibilityScore = breakdown.total
+
   return (
     <div className="flex flex-col gap-8 max-w-[1400px]">
 
@@ -817,11 +875,11 @@ export function DashboardHomeContent({
       {!hasDna && <DNABanner />}
 
       {/* ── Section 1: Visibility Score Hero ──────────────── */}
-      <VisibilityScoreHero score={visibilityScore} />
+      <VisibilityScoreHero score={visibilityScore} breakdown={breakdown} />
 
       {/* ── Sections 2 + 6: Improvements | Quick Actions ─── */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_280px]">
-        <ImprovementOpportunitiesSection />
+        <ImprovementOpportunitiesSection flags={flags} />
         <QuickActionsSection />
       </div>
 
@@ -830,7 +888,7 @@ export function DashboardHomeContent({
 
       {/* ── Sections 4 + 5: Growth | Recent Activity ──────── */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
-        <VisibilityGrowthSection visibilityScore={visibilityScore} />
+        <VisibilityGrowthSection breakdown={breakdown} />
         <RecentActivitySection />
       </div>
 
