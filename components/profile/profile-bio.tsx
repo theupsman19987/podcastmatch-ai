@@ -5,7 +5,7 @@ import { motion } from "motion/react"
 import { User, Globe, Check, Loader2, AlertCircle } from "lucide-react"
 import { saveBio } from "@/lib/actions/user-profile"
 import { getSettings, updateProfileSettings } from "@/lib/actions/settings"
-import { scheduleRescore } from "@/lib/scoring/rescore-client"
+import { useScoringStatus } from "./scoring-status-context"
 import { cn } from "@/lib/utils"
 
 const MAX = 500
@@ -16,6 +16,7 @@ interface Props {
 }
 
 export function ProfileBio({ initialBio }: Props) {
+  const { triggerRescore } = useScoringStatus()
   const [bio,        setBio]        = useState(initialBio ?? "")
   const [website,    setWebsite]    = useState("")
   const [bioSaving,  setBioSaving]  = useState(false)
@@ -39,16 +40,12 @@ export function ProfileBio({ initialBio }: Props) {
     if (bioSaving) return
     setBioSaving(true); setBioSaved(false); setBioError(null)
     const { error } = await saveBio(bio)
-    if (error) {
-      setBioSaving(false)
-      setBioError("Couldn't save — try again.")
-      return
-    }
-    await scheduleRescore().catch(() => {})
     setBioSaving(false)
+    if (error) { setBioError("Couldn't save — try again."); return }
     setBioSaved(true)
     if (bioTimer.current) clearTimeout(bioTimer.current)
     bioTimer.current = setTimeout(() => setBioSaved(false), 2500)
+    triggerRescore()  // fire-and-forget — ScoreStatusBar handles scoring UX
   }
 
   async function handleSaveWebsite() {
@@ -59,16 +56,12 @@ export function ProfileBio({ initialBio }: Props) {
     }
     setWebSaving(true); setWebSaved(false); setWebError(null)
     const { error } = await updateProfileSettings({ website: website.trim() })
-    if (error) {
-      setWebSaving(false)
-      setWebError("Couldn't save — try again.")
-      return
-    }
-    await scheduleRescore().catch(() => {})
     setWebSaving(false)
+    if (error) { setWebError("Couldn't save — try again."); return }
     setWebSaved(true)
     if (webTimer.current) clearTimeout(webTimer.current)
     webTimer.current = setTimeout(() => setWebSaved(false), 2500)
+    triggerRescore()  // fire-and-forget — ScoreStatusBar handles scoring UX
   }
 
   return (

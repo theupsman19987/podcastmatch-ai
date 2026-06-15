@@ -1,6 +1,7 @@
 import { type Metadata } from "next"
 import { createClient }       from "@/lib/supabase/server"
 import { ProfilePageClient }  from "@/components/profile/profile-page-client"
+import type { ScoreBreakdown } from "@/lib/scoring/visibility-score"
 
 export const metadata: Metadata = {
   title:  "Creator Profile | PodcastMatch AI",
@@ -20,11 +21,18 @@ export default async function ProfilePage() {
     .map((n: string) => n[0].toUpperCase())
     .join("") || "?"
 
-  const profileResult = user
-    ? await supabase.from("profiles").select("avatar_url, bio").eq("id", user.id).single()
-    : null
+  const [profileResult, settingsResult] = user
+    ? await Promise.all([
+        supabase.from("profiles").select("avatar_url, bio").eq("id", user.id).single(),
+        supabase.from("user_settings").select("profile_settings").eq("user_id", user.id).maybeSingle(),
+      ])
+    : [null, null]
+
   const avatarUrl = profileResult?.data?.avatar_url ?? null
   const bio       = profileResult?.data?.bio ?? null
+
+  const ps = (settingsResult?.data?.profile_settings ?? {}) as Record<string, unknown>
+  const initialBreakdown = (ps?.score_breakdown ?? null) as ScoreBreakdown | null
 
   return (
     <ProfilePageClient
@@ -32,6 +40,7 @@ export default async function ProfilePage() {
       initials={initials}
       initialAvatarUrl={avatarUrl}
       initialBio={bio}
+      initialBreakdown={initialBreakdown}
     />
   )
 }

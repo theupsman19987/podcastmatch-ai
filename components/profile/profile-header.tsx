@@ -5,13 +5,23 @@ import { motion } from "motion/react"
 import { Camera, Sparkles, TrendingUp, Loader2 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { saveAvatarUrl } from "@/lib/actions/user-profile"
-import { scheduleRescore } from "@/lib/scoring/rescore-client"
+import { useScoringStatus } from "./scoring-status-context"
 import type { GeneratedProfile } from "@/lib/profile/generate-profile"
 
-function ScoreArc({ score, label, color = "primary" }: { score: number; label: string; color?: "primary" | "gold" }) {
-  const size = 72
-  const r = 29
-  const c = 2 * Math.PI * r
+function ScoreArc({
+  score,
+  label,
+  color   = "primary",
+  pulsing = false,
+}: {
+  score:    number
+  label:    string
+  color?:   "primary" | "gold"
+  pulsing?: boolean
+}) {
+  const size   = 72
+  const r      = 29
+  const c      = 2 * Math.PI * r
   const offset = c * (1 - score / 100)
   const stroke = color === "gold" ? "oklch(0.85 0.16 85)" : "oklch(var(--primary))"
 
@@ -19,19 +29,39 @@ function ScoreArc({ score, label, color = "primary" }: { score: number; label: s
     <div className="flex flex-col items-center gap-1.5">
       <div className="relative">
         <svg width={size} height={size} className="-rotate-90">
-          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="currentColor" strokeWidth={3} className="text-border/30" />
+          <circle
+            cx={size / 2} cy={size / 2} r={r}
+            fill="none" stroke="currentColor" strokeWidth={3}
+            className="text-border/30"
+          />
           <motion.circle
             cx={size / 2} cy={size / 2} r={r}
             fill="none" stroke={stroke} strokeWidth={3}
             strokeDasharray={c}
-            initial={{ strokeDashoffset: c }}
-            animate={{ strokeDashoffset: offset }}
-            transition={{ duration: 1.2, delay: 0.4, ease: "easeOut" }}
             strokeLinecap="round"
+            initial={{ strokeDashoffset: c }}
+            animate={{
+              strokeDashoffset: offset,
+              opacity: pulsing ? [1, 0.4, 1] : 1,
+            }}
+            transition={{
+              strokeDashoffset: { duration: 1.2, delay: 0.3, ease: "easeOut" },
+              opacity: pulsing
+                ? { repeat: Infinity, duration: 1.1, ease: "easeInOut" }
+                : { duration: 0.3 },
+            }}
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-base font-bold text-foreground">{score}</span>
+          <motion.span
+            key={score}
+            initial={{ scale: 1.15, opacity: 0.6 }}
+            animate={{ scale: 1,    opacity: 1   }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className="text-base font-bold text-foreground"
+          >
+            {score}
+          </motion.span>
         </div>
       </div>
       <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider text-center leading-tight max-w-[64px]">
@@ -42,15 +72,26 @@ function ScoreArc({ score, label, color = "primary" }: { score: number; label: s
 }
 
 interface Props {
-  profile:        GeneratedProfile
-  firstName?:     string
-  initials?:      string
-  avatarUrl?:     string | null
-  onAvatarChange?: (url: string) => void
+  profile:              GeneratedProfile
+  firstName?:           string
+  initials?:            string
+  avatarUrl?:           string | null
+  onAvatarChange?:      (url: string) => void
+  liveVisibilityScore?: number
+  scorePulsing?:        boolean
 }
 
-export function ProfileHeader({ profile, firstName, initials, avatarUrl, onAvatarChange }: Props) {
-  const fileRef   = useRef<HTMLInputElement>(null)
+export function ProfileHeader({
+  profile,
+  firstName,
+  initials,
+  avatarUrl,
+  onAvatarChange,
+  liveVisibilityScore,
+  scorePulsing = false,
+}: Props) {
+  const { triggerRescore } = useScoringStatus()
+  const fileRef            = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
   const [error,     setError]     = useState<string | null>(null)
 
@@ -84,7 +125,7 @@ export function ProfileHeader({ profile, firstName, initials, avatarUrl, onAvata
       const { error: saveErr } = await saveAvatarUrl(publicUrl)
       if (saveErr) { setError("Saved image but couldn't update profile."); return }
 
-      await scheduleRescore().catch(() => {})
+      triggerRescore()        // fire-and-forget — ScoreStatusBar handles UX
       onAvatarChange?.(publicUrl)
     } finally {
       setUploading(false)
@@ -92,7 +133,8 @@ export function ProfileHeader({ profile, firstName, initials, avatarUrl, onAvata
     }
   }
 
-  const displayName = firstName || profile.title || "Creator"
+  const displayName    = firstName || profile.title || "Creator"
+  const visScore       = liveVisibilityScore ?? profile.visibilityScore
 
   return (
     <motion.div
@@ -119,7 +161,6 @@ export function ProfileHeader({ profile, firstName, initials, avatarUrl, onAvata
               )}
             </div>
 
-            {/* Upload overlay */}
             <button
               onClick={() => fileRef.current?.click()}
               disabled={uploading}
@@ -130,7 +171,7 @@ export function ProfileHeader({ profile, firstName, initials, avatarUrl, onAvata
             >
               {uploading
                 ? <Loader2 className="w-5 h-5 text-white animate-spin" />
-                : <Camera className="w-5 h-5 text-white" />
+                : <Camera  className="w-5 h-5 text-white" />
               }
             </button>
 
@@ -150,9 +191,7 @@ export function ProfileHeader({ profile, firstName, initials, avatarUrl, onAvata
 
           {/* Info */}
           <div className="flex-1 min-w-0">
-            {error && (
-              <p className="mb-2 text-[11px] text-destructive">{error}</p>
-            )}
+            {error && <p className="mb-2 text-[11px] text-destructive">{error}</p>}
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <span className="text-xs font-bold text-primary uppercase tracking-widest">Creator Profile</span>
               <span className="w-1 h-1 rounded-full bg-border/60 inline-block" />
@@ -178,10 +217,19 @@ export function ProfileHeader({ profile, firstName, initials, avatarUrl, onAvata
             </div>
           </div>
 
-          {/* Score Arcs */}
+          {/* Score Arcs — key on score triggers re-animation on change */}
           <div className="flex items-center gap-6 sm:gap-8 shrink-0">
-            <ScoreArc score={profile.visibilityScore} label="Visibility Score" />
-            <ScoreArc score={profile.aiAlignmentScore} label="AI Alignment" color="gold" />
+            <ScoreArc
+              key={`vis-${visScore}`}
+              score={visScore}
+              label="Visibility Score"
+              pulsing={scorePulsing}
+            />
+            <ScoreArc
+              score={profile.aiAlignmentScore}
+              label="AI Alignment"
+              color="gold"
+            />
           </div>
         </div>
       </div>
