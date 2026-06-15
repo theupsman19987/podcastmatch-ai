@@ -83,7 +83,9 @@ export async function computeAndSaveScore(): Promise<ScoringResult> {
   })
 
   /* Persist updated score */
-  const scoreJson: Json = JSON.parse(JSON.stringify(breakdown))
+  const scoreJson:  Json = JSON.parse(JSON.stringify(breakdown))
+  const flagsJson:  Json = JSON.parse(JSON.stringify(flags))
+
   await supabase.from("creator_profiles").upsert(
     {
       user_id:          user.id,
@@ -93,13 +95,14 @@ export async function computeAndSaveScore(): Promise<ScoringResult> {
     { onConflict: "user_id" }
   )
 
-  /* Also persist breakdown to profile_settings for quick reads */
+  /* Persist breakdown + flags to profile_settings for fast dashboard reads */
   await supabase.from("user_settings").upsert(
     {
       user_id:          user.id,
       profile_settings: {
         ...(profileSettings as object),
         score_breakdown: scoreJson,
+        score_flags:     flagsJson,
       } as Json,
       updated_at: new Date().toISOString(),
     },
@@ -107,4 +110,40 @@ export async function computeAndSaveScore(): Promise<ScoringResult> {
   )
 
   return { breakdown, flags }
+}
+
+/* ── Read stored score (no recompute) ───────────────────────
+   Returns the last-persisted score + flags from profile_settings.
+   Falls back to computeAndSaveScore() on first visit (no stored score). */
+export async function getOrInitScore(): Promise<ScoringResult> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    const empty = { authority: 0, clarity: 0, audience: 0, readiness: 0, growth: 0, total: 0 }
+    const emptyFlags = Object.fromEntries(
+      ["websiteAdded","mediaKitReady","publishedWork","bioSubstantial","oneLinerPresent",
+       "topicsDefined","assessmentComplete","audienceDescribed","audienceChallengeDefined",
+       "audienceOutcomeDefined","bioCompleted","profileComplete","bookingReady",
+       "recentActivity","hasSavedMatches","recentAssessment"].map(k => [k, false])
+    ) as ImprovementFlags
+    return { breakdown: empty, flags: emptyFlags }
+  }
+
+  const { data: settings } = await supabase
+    .from("user_settings")
+    .select("profile_settings")
+    .eq("user_id", user.id)
+    .maybeSingle()
+
+  const ps = (settings?.profile_settings ?? {}) as Record<string, unknown>
+  const storedBreakdown = ps?.score_breakdown as ScoreBreakdown | undefined
+  const storedFlags     = ps?.score_flags     as ImprovementFlags | undefined
+
+  if (storedBreakdown && typeof storedBreakdown.total === "number" && storedFlags) {
+    return { breakdown: storedBreakdown, flags: storedFlags }
+  }
+
+  /* First-time user — compute and persist */
+  return computeAndSaveScore()
 }

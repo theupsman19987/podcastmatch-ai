@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { createClient }           from "@/lib/supabase/server"
-import { computeAndSaveScore }    from "@/lib/actions/scoring"
+import { getOrInitScore }          from "@/lib/actions/scoring"
 import { DashboardHomeContent }   from "./dashboard-client"
 
 export const metadata: Metadata = {
@@ -34,7 +34,7 @@ export default async function DashboardPage() {
       .select("completed", { count: "exact", head: true })
       .eq("user_id", userId)
       .eq("completed", true),
-    computeAndSaveScore(),
+    getOrInitScore(),
   ])
 
   return (

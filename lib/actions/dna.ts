@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server"
 import type { DNAFormData } from "@/components/onboarding/dna-context"
 import type { Json } from "@/lib/supabase/database.types"
+import { computeAndSaveScore } from "@/lib/actions/scoring"
 
 /* ── Save in-progress answers (auto-save) ────────────────── */
 export async function saveDnaAnswers(
@@ -50,6 +51,8 @@ export async function completeDnaAssessment(
     )
 
   if (error) return { error: error.message }
+
+  await computeAndSaveScore().catch(() => {})
   return {}
 }
 

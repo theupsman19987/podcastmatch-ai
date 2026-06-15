@@ -39,14 +39,16 @@ export function ProfileBio({ initialBio }: Props) {
     if (bioSaving) return
     setBioSaving(true); setBioSaved(false); setBioError(null)
     const { error } = await saveBio(bio)
-    setBioSaving(false)
-    if (error) { setBioError("Couldn't save — try again.") }
-    else {
-      setBioSaved(true)
-      computeAndSaveScore().catch(() => {})  // fire-and-forget rescore
-      if (bioTimer.current) clearTimeout(bioTimer.current)
-      bioTimer.current = setTimeout(() => setBioSaved(false), 2500)
+    if (error) {
+      setBioSaving(false)
+      setBioError("Couldn't save — try again.")
+      return
     }
+    await computeAndSaveScore().catch(() => {})
+    setBioSaving(false)
+    setBioSaved(true)
+    if (bioTimer.current) clearTimeout(bioTimer.current)
+    bioTimer.current = setTimeout(() => setBioSaved(false), 2500)
   }
 
   async function handleSaveWebsite() {
@@ -57,14 +59,16 @@ export function ProfileBio({ initialBio }: Props) {
     }
     setWebSaving(true); setWebSaved(false); setWebError(null)
     const { error } = await updateProfileSettings({ website: website.trim() })
-    setWebSaving(false)
-    if (error) { setWebError("Couldn't save — try again.") }
-    else {
-      setWebSaved(true)
-      computeAndSaveScore().catch(() => {})  // fire-and-forget rescore
-      if (webTimer.current) clearTimeout(webTimer.current)
-      webTimer.current = setTimeout(() => setWebSaved(false), 2500)
+    if (error) {
+      setWebSaving(false)
+      setWebError("Couldn't save — try again.")
+      return
     }
+    await computeAndSaveScore().catch(() => {})
+    setWebSaving(false)
+    setWebSaved(true)
+    if (webTimer.current) clearTimeout(webTimer.current)
+    webTimer.current = setTimeout(() => setWebSaved(false), 2500)
   }
 
   return (
