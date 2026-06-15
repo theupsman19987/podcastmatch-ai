@@ -48,7 +48,7 @@ export default async function DashboardPage() {
   return (
     <DashboardHomeContent
       firstName={firstName}
-      visibilityScore={profileResult.data?.visibility_score ?? 25}
+      visibilityScore={profileResult.data?.visibility_score ?? 0}
       savedCount={savedResult.count ?? 0}
       matchCount={matchResult.count ?? 0}
       newToday={todayResult.count ?? 0}

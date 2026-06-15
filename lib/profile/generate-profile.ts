@@ -183,32 +183,38 @@ const POD_MAP: Record<string, string> = {
 }
 
 function computeCategoryAlignments(d: DNAFormData): CategoryAlignment[] {
+  const BASE = 42
   const scores: Record<string, number> = {}
-  ALIGNMENT_CATS.forEach(c => { scores[c] = 32 })
+  ALIGNMENT_CATS.forEach(c => { scores[c] = BASE })
 
-  const boosts = TOPIC_BOOSTS[d.s2_primaryTopic[0] ?? ""]
-  if (boosts) {
-    scores[boosts[0]] = (scores[boosts[0]] ?? 32) + 40
-    scores[boosts[1]] = (scores[boosts[1]] ?? 32) + 22
-  }
+  // Use all selected topics (primary + speakForHour), secondary at 60% weight
+  const allTopics = [...new Set([...d.s2_primaryTopic, ...d.s2_speakForHour])]
+  allTopics.forEach((topic, idx) => {
+    const boosts = TOPIC_BOOSTS[topic]
+    if (!boosts) return
+    const w = idx === 0 ? 1 : 0.6
+    scores[boosts[0]] = Math.min((scores[boosts[0]] ?? BASE) + Math.round(40 * w), 95)
+    scores[boosts[1]] = Math.min((scores[boosts[1]] ?? BASE) + Math.round(22 * w), 95)
+  })
 
   d.s5_podcastCategories.forEach(pc => {
     const mapped = POD_MAP[pc]
-    if (mapped) scores[mapped] = Math.min((scores[mapped] ?? 32) + 18, 95)
+    if (mapped) scores[mapped] = Math.min((scores[mapped] ?? BASE) + 18, 95)
   })
 
-  if (d.s7_missionCategory.some(m => m.includes("Empower") || m.includes("Inspire"))) {
-    scores["Personal Development"] = Math.min((scores["Personal Development"] ?? 32) + 10, 95)
+  // Mission boosts — covers all 8 mission options
+  if (d.s7_missionCategory.some(m => m.includes("Empower") || m.includes("Inspire") || m.includes("Educate"))) {
+    scores["Personal Development"] = Math.min((scores["Personal Development"] ?? BASE) + 10, 95)
   }
-  if (d.s7_missionCategory.some(m => m.includes("Grow") || m.includes("Disrupt"))) {
-    scores["Business & Entrepreneurship"] = Math.min((scores["Business & Entrepreneurship"] ?? 32) + 10, 95)
+  if (d.s7_missionCategory.some(m => m.includes("Grow") || m.includes("Disrupt") || m.includes("social"))) {
+    scores["Business & Entrepreneurship"] = Math.min((scores["Business & Entrepreneurship"] ?? BASE) + 10, 95)
   }
-  if (d.s7_missionCategory.some(m => m.includes("Heal") || m.includes("community"))) {
-    scores["Health & Recovery"] = Math.min((scores["Health & Recovery"] ?? 32) + 10, 95)
+  if (d.s7_missionCategory.some(m => m.includes("Heal") || m.includes("community") || m.includes("support"))) {
+    scores["Health & Recovery"] = Math.min((scores["Health & Recovery"] ?? BASE) + 10, 95)
   }
 
   return ALIGNMENT_CATS.map(name => {
-    const alignment = clamp(scores[name] ?? 32, 28, 95)
+    const alignment = clamp(scores[name] ?? BASE, BASE, 95)
     return {
       name,
       alignment,
