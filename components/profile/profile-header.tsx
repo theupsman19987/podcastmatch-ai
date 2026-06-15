@@ -5,7 +5,7 @@ import { motion } from "motion/react"
 import { Camera, Sparkles, TrendingUp, Loader2 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { saveAvatarUrl } from "@/lib/actions/user-profile"
-import { computeAndSaveScore } from "@/lib/actions/scoring"
+import { scheduleRescore } from "@/lib/scoring/rescore-client"
 import type { GeneratedProfile } from "@/lib/profile/generate-profile"
 
 function ScoreArc({ score, label, color = "primary" }: { score: number; label: string; color?: "primary" | "gold" }) {
@@ -84,7 +84,7 @@ export function ProfileHeader({ profile, firstName, initials, avatarUrl, onAvata
       const { error: saveErr } = await saveAvatarUrl(publicUrl)
       if (saveErr) { setError("Saved image but couldn't update profile."); return }
 
-      await computeAndSaveScore().catch(() => {})
+      await scheduleRescore().catch(() => {})
       onAvatarChange?.(publicUrl)
     } finally {
       setUploading(false)
