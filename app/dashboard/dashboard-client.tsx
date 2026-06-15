@@ -124,7 +124,7 @@ const IMPROVEMENTS = [
     title: "Add Your Website",
     desc: "Link your website to boost authority and discoverability by podcast hosts.",
     action: "Add Now",
-    href: "/dashboard/profile",
+    href: "/dashboard/profile#section-bio",
   },
   {
     priority: "High",
@@ -133,7 +133,7 @@ const IMPROVEMENTS = [
     title: "Create a Media Kit",
     desc: "A media kit triples your booking acceptance rate.",
     action: "Create Kit",
-    href: "/dashboard/profile",
+    href: "/dashboard/profile#section-media-kit",
   },
   {
     priority: "Medium",
@@ -142,7 +142,7 @@ const IMPROVEMENTS = [
     title: "Complete Your Profile",
     desc: "You're at 65% — fill in your bio, speaking topics, and audience details.",
     action: "Complete",
-    href: "/dashboard/profile",
+    href: "/dashboard/profile#section-bio",
   },
   {
     priority: "Medium",
@@ -151,7 +151,7 @@ const IMPROVEMENTS = [
     title: "Define Signature Topics",
     desc: "Specialists get booked 3× more. Narrow your message to 3 clear topics.",
     action: "Define Topics",
-    href: "/dashboard/profile",
+    href: "/dashboard/profile#section-speaking-topics",
   },
   {
     priority: "Medium",
@@ -159,8 +159,8 @@ const IMPROVEMENTS = [
     icon: Shield,
     title: "Strengthen Positioning",
     desc: "Update your one-liner to say who you help and the outcome you deliver.",
-    action: "Update Bio",
-    href: "/dashboard/profile",
+    action: "View Positioning",
+    href: "/dashboard/profile#section-positioning",
   },
 ]
 

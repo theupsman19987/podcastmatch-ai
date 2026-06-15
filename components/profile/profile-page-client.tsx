@@ -13,6 +13,7 @@ import { CategoryAlignmentCards }   from "./category-alignment-cards"
 import { SpeakingTopics }           from "./speaking-topics"
 import { AudienceProfileSection }   from "./audience-profile-section"
 import { QuickActions }             from "./quick-actions"
+import { MediaKit }                 from "./media-kit"
 
 function loadFromLocalStorage() {
   try {
@@ -49,20 +50,31 @@ export function ProfilePageClient({ firstName, initials, initialAvatarUrl, initi
 
   return (
     <div className="flex flex-col gap-6 px-4 py-6 md:px-6 lg:px-8 max-w-screen-xl mx-auto w-full">
-      <ProfileHeader
-        profile={profile}
-        firstName={firstName}
-        initials={initials}
-        avatarUrl={avatarUrl}
-        onAvatarChange={setAvatarUrl}
-      />
-      <ProfileBio initialBio={initialBio} />
-      <BrandIdentity profile={profile} />
+      <div id="section-header">
+        <ProfileHeader
+          profile={profile}
+          firstName={firstName}
+          initials={initials}
+          avatarUrl={avatarUrl}
+          onAvatarChange={setAvatarUrl}
+        />
+      </div>
+      <div id="section-bio">
+        <ProfileBio initialBio={initialBio} />
+      </div>
+      <div id="section-positioning">
+        <BrandIdentity profile={profile} />
+      </div>
       <StrengthDashboard profile={profile} />
       <AIInsightsPanel profile={profile} />
       <CategoryAlignmentCards profile={profile} />
-      <SpeakingTopics profile={profile} />
+      <div id="section-speaking-topics">
+        <SpeakingTopics profile={profile} />
+      </div>
       <AudienceProfileSection profile={profile} />
+      <div id="section-media-kit">
+        <MediaKit profile={profile} />
+      </div>
       <QuickActions />
     </div>
   )

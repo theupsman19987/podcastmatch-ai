@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { label: "Features",        href: "/features"      },
   { label: "Success Stories", href: "/success"       },
   { label: "Pricing",         href: "/pricing"       },
+  { label: "Contact",         href: "/contact"       },
 ]
 
 const LEGAL_LINKS = [
