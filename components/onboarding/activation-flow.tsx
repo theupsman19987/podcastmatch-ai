@@ -330,9 +330,9 @@ function ProgressShell({ step, children }: { step: number; children: React.React
 /* ── Step variants for AnimatePresence ───────────────────────── */
 
 const stepVariants = {
-  enter: (dir: number) => ({ x: dir > 0 ? 48 : -48, opacity: 0 }),
-  center: { x: 0, opacity: 1, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } },
-  exit:  (dir: number) => ({ x: dir > 0 ? -48 : 48, opacity: 0, transition: { duration: 0.18 } }),
+  enter:  (dir: number) => ({ x: dir > 0 ? 48 : -48, opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit:   (dir: number) => ({ x: dir > 0 ? -48 : 48, opacity: 0, transition: { duration: 0.18 } }),
 }
 
 /* ── Main component ──────────────────────────────────────────── */
@@ -814,6 +814,7 @@ export function ActivationFlow({ initialFirstName }: { initialFirstName?: string
           initial="enter"
           animate="center"
           exit="exit"
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
         >
           {renderStep()}
         </motion.div>

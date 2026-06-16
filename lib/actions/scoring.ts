@@ -5,8 +5,6 @@ import { computeScore } from "@/lib/scoring/visibility-score"
 import type { ScoreBreakdown, ImprovementFlags, ScoringResult } from "@/lib/scoring/visibility-score"
 import type { Json } from "@/lib/supabase/database.types"
 
-export type { ScoringResult }
-
 export async function computeAndSaveScore(): Promise<ScoringResult> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -18,7 +16,7 @@ export async function computeAndSaveScore(): Promise<ScoringResult> {
        "topicsDefined","assessmentComplete","audienceDescribed","audienceChallengeDefined",
        "audienceOutcomeDefined","bioCompleted","profileComplete","bookingReady",
        "recentActivity","hasSavedMatches","recentAssessment"].map(k => [k, false])
-    ) as ImprovementFlags
+    ) as unknown as ImprovementFlags
     return { breakdown: empty, flags: emptyFlags }
   }
 
@@ -120,7 +118,7 @@ export async function getOrInitScore(): Promise<ScoringResult> {
        "topicsDefined","assessmentComplete","audienceDescribed","audienceChallengeDefined",
        "audienceOutcomeDefined","bioCompleted","profileComplete","bookingReady",
        "recentActivity","hasSavedMatches","recentAssessment"].map(k => [k, false])
-    ) as ImprovementFlags
+    ) as unknown as ImprovementFlags
     return { breakdown: empty, flags: emptyFlags }
   }
 
