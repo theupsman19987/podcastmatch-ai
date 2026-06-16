@@ -588,6 +588,47 @@ export interface Database {
         }
         Relationships: []
       }
+      podcast_creator_alignment: {
+        Row: {
+          id:                       string
+          podcast_id:               string
+          user_id:                  string
+          topic_score:              number
+          audience_score:           number
+          niche_score:              number
+          guest_openness_score:     number
+          audience_alignment_score: number
+          match_quality_score:      number
+          computed_at:              string
+          created_at:               string
+          updated_at:               string
+        }
+        Insert: {
+          id?:                       string
+          podcast_id:                string
+          user_id:                   string
+          topic_score?:              number
+          audience_score?:           number
+          niche_score?:              number
+          guest_openness_score?:     number
+          audience_alignment_score?: number
+          match_quality_score?:      number
+          computed_at?:              string
+          created_at?:               string
+          updated_at?:               string
+        }
+        Update: {
+          topic_score?:              number
+          audience_score?:           number
+          niche_score?:              number
+          guest_openness_score?:     number
+          audience_alignment_score?: number
+          match_quality_score?:      number
+          computed_at?:              string
+          updated_at?:               string
+        }
+        Relationships: []
+      }
     }
     Views:     Record<string, never>
     Functions: Record<string, never>
