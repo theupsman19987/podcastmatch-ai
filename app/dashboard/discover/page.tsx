@@ -1,9 +1,11 @@
 import type { Metadata } from "next"
 import { DiscoveryProvider } from "@/components/discovery/discovery-context"
+import { PerformanceProvider } from "@/components/discovery/performance-context"
 import { DiscoverySearchBar } from "@/components/discovery/search-bar"
 import { DiscoveryFilterSidebar, DiscoveryFilterDrawer } from "@/components/discovery/filter-panel"
 import { DiscoveryResultsGrid } from "@/components/discovery/results-grid"
 import { DiscoveryInsightPanel } from "@/components/discovery/insight-panel"
+import { getContactMethodPerformance } from "@/lib/outreach/intelligence"
 
 export const metadata: Metadata = {
   title: "Discover Podcasts — PodcastMatch AI",
@@ -18,8 +20,12 @@ export const metadata: Metadata = {
    an API call inside discovery-context.tsx when ready.
    ═══════════════════════════════════════════════════════════ */
 
-export default function DiscoverPage() {
+export default async function DiscoverPage() {
+  // Fetch aggregate contact method performance once — distributed to all cards via context
+  const contactMethodPerf = await getContactMethodPerformance()
+
   return (
+    <PerformanceProvider data={contactMethodPerf}>
     <DiscoveryProvider>
 
       {/* Mobile filter drawer (portal-style, rendered at body level via fixed positioning) */}
@@ -56,5 +62,6 @@ export default function DiscoverPage() {
 
       </div>
     </DiscoveryProvider>
+    </PerformanceProvider>
   )
 }

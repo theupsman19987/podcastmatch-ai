@@ -291,6 +291,52 @@ export interface Database {
         }
         Relationships: []
       }
+      outreach_log: {
+        Row: {
+          id:                   string
+          user_id:              string
+          podcast_id:           string
+          podcast_name:         string
+          contact_method_rank:  number
+          contact_value:        string | null
+          contacted_at:         string
+          followed_up:          boolean
+          followed_up_at:       string | null
+          got_response:         boolean
+          got_response_at:      string | null
+          got_booked:           boolean
+          got_booked_at:        string | null
+          notes:                string | null
+          created_at:           string
+        }
+        Insert: {
+          id?:                  string
+          user_id:              string
+          podcast_id:           string
+          podcast_name:         string
+          contact_method_rank:  number
+          contact_value?:       string | null
+          contacted_at?:        string
+          followed_up?:         boolean
+          followed_up_at?:      string | null
+          got_response?:        boolean
+          got_response_at?:     string | null
+          got_booked?:          boolean
+          got_booked_at?:       string | null
+          notes?:               string | null
+          created_at?:          string
+        }
+        Update: {
+          followed_up?:         boolean
+          followed_up_at?:      string | null
+          got_response?:        boolean
+          got_response_at?:     string | null
+          got_booked?:          boolean
+          got_booked_at?:       string | null
+          notes?:               string | null
+        }
+        Relationships: []
+      }
       podcasts: {
         Row: {
           id:                   string

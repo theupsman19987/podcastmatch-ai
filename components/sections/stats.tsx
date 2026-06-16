@@ -236,6 +236,53 @@ function SectionHeader() {
       animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
       transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
     >
+      {/* START HERE — entry point anchor */}
+      <div className="relative flex flex-col items-center gap-2 mb-2">
+        {/* Ambient glow behind the text */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-8 -top-3 h-10 rounded-full blur-2xl opacity-25"
+          style={{
+            background:
+              "linear-gradient(90deg, oklch(0.78 0.15 83), oklch(0.70 0.16 200))",
+          }}
+        />
+
+        <div className="flex items-center gap-4">
+          <span
+            aria-hidden
+            className="h-px w-20"
+            style={{
+              background:
+                "linear-gradient(to right, transparent, oklch(0.78 0.15 83 / 0.7))",
+            }}
+          />
+          <span
+            className="text-[16px] font-black uppercase tracking-[0.2em]"
+            style={{
+              background: "linear-gradient(90deg, oklch(0.78 0.15 83), oklch(0.70 0.16 200))",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            ↓ Start Here
+          </span>
+          <span
+            aria-hidden
+            className="h-px w-20"
+            style={{
+              background:
+                "linear-gradient(to left, transparent, oklch(0.70 0.16 200 / 0.7))",
+            }}
+          />
+        </div>
+
+        <p className="text-[11px] font-medium tracking-wide text-muted-foreground/60">
+          Your fastest path to getting booked on podcasts
+        </p>
+      </div>
+
       <Badge variant="ai">
         <span aria-hidden>✦</span> Platform Capabilities
       </Badge>

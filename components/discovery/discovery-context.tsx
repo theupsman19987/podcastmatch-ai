@@ -18,6 +18,8 @@ import {
 import type { PodcastApiResponse } from "@/lib/podcasts/schema"
 import { createClient }            from "@/lib/supabase/client"
 import { trackClientEvent }        from "@/lib/analytics/track"
+import { usePerformance }          from "@/components/discovery/performance-context"
+import { contactMethodBoost }      from "@/lib/outreach/boost"
 
 /* ═══════════════════════════════════════════════════════════
    DiscoveryContext — single source of truth for the
@@ -73,6 +75,7 @@ interface DiscoveryContextValue {
 const DiscoveryContext = createContext<DiscoveryContextValue | null>(null)
 
 export function DiscoveryProvider({ children }: { children: React.ReactNode }) {
+  const perfMap = usePerformance()   // contact method performance from outer PerformanceProvider
   const [query,            setQueryRaw]      = useState("")
   const [debouncedQuery,   setDebouncedQuery] = useState("")
   const [isSearching,      setIsSearching]   = useState(false)
@@ -248,12 +251,16 @@ export function DiscoveryProvider({ children }: { children: React.ReactNode }) {
         return true
       })
       .sort((a, b) => {
-        if (sortBy === "match")    return b.matchScore   - a.matchScore
+        if (sortBy === "match") {
+          const boostA = contactMethodBoost(a.contactMethodRank ?? 7, perfMap)
+          const boostB = contactMethodBoost(b.contactMethodRank ?? 7, perfMap)
+          return (b.matchScore + boostB) - (a.matchScore + boostA)
+        }
         if (sortBy === "audience") return b.audienceSize - a.audienceSize
         const order: Record<string, number> = { weekly: 0, biweekly: 1, monthly: 2 }
         return order[a.hostActivity] - order[b.hostActivity]
       })
-  }, [podcasts, debouncedQuery, filters, sortBy])
+  }, [podcasts, debouncedQuery, filters, sortBy, perfMap])
 
   /* ── Toggle saved ───────────────────────────────────────── */
   const toggleSaved = useCallback(async (id: string) => {

@@ -26,6 +26,15 @@ export type AnalyticsEvent =
   | "waitlist_joined"
   | "discovery_searched"
   | "load_more_clicked"
+  // Contact method CTAs — tracks which methods users actually act on
+  | "clicked_apply"       // rank 1: booking form
+  | "clicked_email"       // ranks 2-4: producer / booking / host email
+  | "clicked_linkedin"    // rank 5
+  | "clicked_instagram"   // rank 6
+  // Outreach outcomes — reported by the user via check-in prompts
+  | "did_user_follow_up"   // user confirms they followed up after initial contact
+  | "did_user_get_response" // user confirms the podcast replied
+  | "did_user_get_booked"  // user confirms they were booked as a guest
 
 export interface TrackPayload {
   event:      AnalyticsEvent

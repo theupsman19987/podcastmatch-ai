@@ -12,6 +12,7 @@ import { type DiscoveryPodcast, COVER_GRADIENTS } from "@/components/discovery/m
 import { AiScoreBadge } from "@/components/ui/ai-score-badge"
 import { OpportunityRankBadge } from "@/components/matching/opportunity-rank-badge"
 import { ContactMethodBadge, contactCtaLabel } from "@/components/discovery/contact-method-badge"
+import { OutreachModal } from "@/components/outreach/outreach-modal"
 import type { ContactMethodRank } from "@/lib/podcasts/schema"
 
 /* ═══════════════════════════════════════════════════════════
@@ -85,7 +86,8 @@ interface DiscoveryCardProps {
 }
 
 export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }: DiscoveryCardProps) {
-  const [pitchHovered, setPitchHovered] = useState(false)
+  const [pitchHovered,  setPitchHovered]  = useState(false)
+  const [modalOpen,     setModalOpen]     = useState(false)
   const coverGradient  = COVER_GRADIENTS[podcast.coverIndex % COVER_GRADIENTS.length]
   const vis            = VIS_STYLES[podcast.visibilityPotential]
   const priorityBadges = podcast.badges.slice(0, 2)
@@ -263,6 +265,7 @@ export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }:
           </button>
 
           <button
+            onClick={() => setModalOpen(true)}
             onMouseEnter={() => setPitchHovered(true)}
             onMouseLeave={() => setPitchHovered(false)}
             aria-label={`${ctaLabel} — ${podcast.name}`}
@@ -285,12 +288,27 @@ export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }:
         className="pointer-events-none absolute inset-x-0 top-0 h-px
                    bg-gradient-to-r from-transparent via-[oklch(0.96_0_0/0.09)] to-transparent"
       />
+
+      {/* Outreach modal (portal — renders at body level) */}
+      <OutreachModal
+        podcast={{
+          id:                 podcast.id,
+          name:               podcast.name,
+          host:               podcast.host,
+          producerName:       podcast.producerName,
+          contactMethodRank:  podcast.contactMethodRank,
+          bestContactValue:   podcast.bestContactValue,
+        }}
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
     </motion.article>
   )
 }
 
 /* ── List view variant ────────────────────────────────────── */
 function DiscoveryCardList({ podcast, onSave, index = 0 }: Omit<DiscoveryCardProps, "viewMode">) {
+  const [modalOpen,   setModalOpen]   = useState(false)
   const coverGradient = COVER_GRADIENTS[podcast.coverIndex % COVER_GRADIENTS.length]
   const vis           = VIS_STYLES[podcast.visibilityPotential]
   const rank          = podcast.contactMethodRank as ContactMethodRank | undefined
@@ -366,12 +384,26 @@ function DiscoveryCardList({ podcast, onSave, index = 0 }: Omit<DiscoveryCardPro
           }
         </button>
         <button
+          onClick={() => setModalOpen(true)}
           aria-label={`${ctaLabel} — ${podcast.name}`}
           className="flex h-8 items-center gap-1.5 rounded-lg bg-primary/12 px-2.5 text-[11px] font-semibold text-primary transition-all hover:bg-primary hover:text-white"
         >
           <Zap className="size-3" aria-hidden="true" /> {ctaLabel}
         </button>
       </div>
+
+      <OutreachModal
+        podcast={{
+          id:                podcast.id,
+          name:              podcast.name,
+          host:              podcast.host,
+          producerName:      podcast.producerName,
+          contactMethodRank: podcast.contactMethodRank,
+          bestContactValue:  podcast.bestContactValue,
+        }}
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
     </motion.article>
   )
 }
