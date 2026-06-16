@@ -11,6 +11,7 @@ interface ScoringStatusContextValue {
   breakdown:      ScoreBreakdown | null
   delta:          number | null
   triggerRescore: () => void
+  dismiss:        () => void
 }
 
 const Ctx = createContext<ScoringStatusContextValue | null>(null)
@@ -27,6 +28,12 @@ export function ScoringStatusProvider({
   const [delta,     setDelta]     = useState<number | null>(null)
   const prevTotalRef = useRef<number | null>(initialBreakdown?.total ?? null)
   const resetTimer   = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const dismiss = useCallback(() => {
+    if (resetTimer.current) clearTimeout(resetTimer.current)
+    setStatus("idle")
+    setDelta(null)
+  }, [])
 
   const triggerRescore = useCallback(() => {
     if (resetTimer.current) clearTimeout(resetTimer.current)
@@ -51,7 +58,7 @@ export function ScoringStatusProvider({
   }, [])
 
   return (
-    <Ctx.Provider value={{ status, breakdown, delta, triggerRescore }}>
+    <Ctx.Provider value={{ status, breakdown, delta, triggerRescore, dismiss }}>
       {children}
     </Ctx.Provider>
   )

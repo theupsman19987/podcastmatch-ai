@@ -117,7 +117,7 @@ export function ProfileHeader({
         .from("avatars")
         .upload(path, file, { upsert: true, contentType: file.type })
 
-      if (uploadErr) { setError("Upload failed — try again."); return }
+      if (uploadErr) { setError(`Upload failed: ${uploadErr.message}`); return }
 
       const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path)
       const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`

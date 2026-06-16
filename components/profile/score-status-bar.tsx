@@ -6,7 +6,7 @@ import { useScoringStatus } from "./scoring-status-context"
 import { cn } from "@/lib/utils"
 
 export function ScoreStatusBar() {
-  const { status, delta } = useScoringStatus()
+  const { status, delta, dismiss } = useScoringStatus()
   const visible = status !== "idle"
   const isDone  = status === "done"
 
@@ -23,6 +23,8 @@ export function ScoreStatusBar() {
           key="score-status-bar"
           role="status"
           aria-live="polite"
+          onClick={isDone ? dismiss : undefined}
+          title={isDone ? "Click to dismiss" : undefined}
           initial={{ opacity: 0, y: 20, scale: 0.95 }}
           animate={{ opacity: 1, y: 0,  scale: 1    }}
           exit={{    opacity: 0, y: 20, scale: 0.95 }}
@@ -31,7 +33,7 @@ export function ScoreStatusBar() {
             "fixed bottom-6 right-6 z-50 flex items-center gap-2.5",
             "rounded-xl border px-4 py-2.5 shadow-xl backdrop-blur-md",
             isDone
-              ? "border-[oklch(0.55_0.16_145/0.35)] bg-[oklch(0.12_0.04_145/0.95)] text-[oklch(0.75_0.16_145)]"
+              ? "border-[oklch(0.55_0.16_145/0.35)] bg-[oklch(0.12_0.04_145/0.95)] text-[oklch(0.75_0.16_145)] cursor-pointer"
               : "border-primary/30 bg-card/95 text-foreground"
           )}
         >
