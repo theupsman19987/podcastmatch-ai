@@ -63,21 +63,21 @@ CREATE TABLE IF NOT EXISTS public.podcasts (
   typical_guest_type  TEXT,                               -- e.g. "CEOs, founders, authors"
 
   -- ── Contact method rank (auto-computed, never set manually) ───────────────
-  --   1 = producer_email  (most direct — producer books guests)
-  --   2 = host_email
-  --   3 = booking_email
-  --   4 = contact_form_url
+  --   1 = booking form     (contact_form_url OR booking_link — preferred by podcasts)
+  --   2 = producer_email  (the person who actually books guests)
+  --   3 = booking_email   (dedicated pitch address)
+  --   4 = host_email      (direct but host may not manage cal)
   --   5 = linkedin_url
   --   6 = instagram_url
-  --   7 = no known contact (website only)
+  --   7 = no known contact
   contact_method_rank INTEGER GENERATED ALWAYS AS (
     CASE
-      WHEN producer_email    IS NOT NULL THEN 1
-      WHEN host_email        IS NOT NULL THEN 2
-      WHEN booking_email     IS NOT NULL THEN 3
-      WHEN contact_form_url  IS NOT NULL THEN 4
-      WHEN linkedin_url      IS NOT NULL THEN 5
-      WHEN instagram_url     IS NOT NULL THEN 6
+      WHEN contact_form_url IS NOT NULL OR booking_link IS NOT NULL THEN 1
+      WHEN producer_email   IS NOT NULL THEN 2
+      WHEN booking_email    IS NOT NULL THEN 3
+      WHEN host_email       IS NOT NULL THEN 4
+      WHEN linkedin_url     IS NOT NULL THEN 5
+      WHEN instagram_url    IS NOT NULL THEN 6
       ELSE 7
     END
   ) STORED,

@@ -3,7 +3,8 @@
 import { useState } from "react"
 import Link from "next/link"
 import { motion } from "motion/react"
-import { Bookmark, BookmarkCheck, ArrowRight, Users, Zap, TrendingUp, Sparkles, Flame, BarChart3 } from "lucide-react"
+import { Bookmark, BookmarkCheck, ArrowRight, Users, Zap, TrendingUp, Sparkles, Flame, BarChart3, Mail, ExternalLink, Briefcase } from "lucide-react"
+import { CONTACT_METHOD_LABELS, contactRankColor, hasActionableContact } from "@/lib/podcasts/contact-rank"
 import { cn } from "@/lib/utils"
 import { type DiscoveryPodcast, COVER_GRADIENTS } from "@/components/discovery/mock-data"
 import { AiScoreBadge } from "@/components/ui/ai-score-badge"
@@ -71,6 +72,39 @@ const VIS_STYLES: Record<DiscoveryPodcast["visibilityPotential"], { label: strin
   "high":      { label: "High Visibility",        cls: "bg-primary/10 text-primary border-primary/25" },
   "medium":    { label: "Good Visibility",        cls: "bg-[oklch(0.70_0.16_200/0.10)] text-[var(--premium-cyan)] border-[oklch(0.70_0.16_200/0.25)]" },
   "growing":   { label: "Growing",               cls: "bg-[oklch(0.55_0.16_145/0.10)] text-[oklch(0.70_0.16_145)] border-[oklch(0.55_0.16_145/0.25)]" },
+}
+
+/* ── Contact method badge ─────────────────────────────────── */
+const CONTACT_ICON: Record<number, React.ElementType> = {
+  1: ExternalLink,  // booking form
+  2: Mail,          // producer email
+  3: Mail,          // booking email
+  4: Mail,          // host email
+  5: Briefcase,     // linkedin
+  6: Sparkles,      // instagram fallback
+}
+
+const CONTACT_COLOR: Record<"green" | "blue" | "amber" | "gray", string> = {
+  green: "border-[oklch(0.55_0.16_145/0.30)] bg-[oklch(0.55_0.16_145/0.10)] text-[oklch(0.70_0.16_145)]",
+  blue:  "border-primary/25 bg-primary/10 text-primary",
+  amber: "border-[oklch(0.78_0.15_83/0.25)] bg-[oklch(0.78_0.15_83/0.10)] text-[var(--premium-gold)]",
+  gray:  "border-border/30 bg-muted/20 text-muted-foreground",
+}
+
+function ContactBadge({ rank }: { rank: number }) {
+  if (!hasActionableContact(rank as 1|2|3|4|5|6|7)) return null
+  const Icon  = CONTACT_ICON[rank] ?? Mail
+  const color = contactRankColor(rank as 1|2|3|4|5|6|7)
+  const label = CONTACT_METHOD_LABELS[rank as 1|2|3|4|5|6|7]
+  return (
+    <span className={cn(
+      "flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-medium",
+      CONTACT_COLOR[color]
+    )}>
+      <Icon className="size-2.5" aria-hidden="true" />
+      {label}
+    </span>
+  )
 }
 
 interface DiscoveryCardProps {
@@ -220,6 +254,9 @@ export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }:
               {podcast.guestFriendlyScore}% guest friendly
             </span>
           )}
+          {podcast.contactMethodRank !== undefined && (
+            <ContactBadge rank={podcast.contactMethodRank} />
+          )}
         </div>
 
         {/* Category tags + opportunity rank */}
@@ -331,6 +368,9 @@ function DiscoveryCardList({ podcast, onSave, index = 0 }: Omit<DiscoveryCardPro
           <span className={cn("flex items-center gap-1 rounded-full border px-1.5 py-0.5", vis.cls)}>
             <TrendingUp className="size-2.5" aria-hidden="true" />{vis.label}
           </span>
+          {podcast.contactMethodRank !== undefined && (
+            <ContactBadge rank={podcast.contactMethodRank} />
+          )}
         </div>
       </div>
 

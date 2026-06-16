@@ -38,11 +38,12 @@ function normalizeDbRow(row: PodcastRow): DiscoveryPodcast {
     hostEmail:      row.host_email,
     bookingEmail:   row.booking_email,
     contactFormUrl: row.contact_form_url,
+    bookingLink:    row.booking_link,
     linkedinUrl:    row.linkedin_url,
     instagramUrl:   row.instagram_url,
   }
   const rank        = computeContactMethodRank(contactFields)
-  const bestContact = getBestContact({ ...contactFields, bookingLink: row.booking_link })
+  const bestContact = getBestContact(contactFields)
 
   // Feed through the standard enrichment pipeline so scores/badges are consistent
   const base = enrichToDiscoveryPodcast({
