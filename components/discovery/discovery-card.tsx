@@ -3,16 +3,19 @@
 import { useState } from "react"
 import Link from "next/link"
 import { motion } from "motion/react"
-import { Bookmark, BookmarkCheck, ArrowRight, Users, Zap, TrendingUp, Sparkles, Flame, BarChart3, Mail, ExternalLink, Briefcase } from "lucide-react"
-import { CONTACT_METHOD_LABELS, contactRankColor, hasActionableContact } from "@/lib/podcasts/contact-rank"
+import {
+  Bookmark, BookmarkCheck, ArrowRight,
+  Users, Zap, TrendingUp, Sparkles, Flame, BarChart3,
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { type DiscoveryPodcast, COVER_GRADIENTS } from "@/components/discovery/mock-data"
 import { AiScoreBadge } from "@/components/ui/ai-score-badge"
 import { OpportunityRankBadge } from "@/components/matching/opportunity-rank-badge"
+import { ContactMethodBadge, contactCtaLabel } from "@/components/discovery/contact-method-badge"
+import type { ContactMethodRank } from "@/lib/podcasts/schema"
 
 /* ═══════════════════════════════════════════════════════════
    DiscoveryCard — rich podcast result card for the discovery engine.
-   Visual only — connect onSave + onPitch to backend when ready.
    ═══════════════════════════════════════════════════════════ */
 
 /* ── Badge config ─────────────────────────────────────────── */
@@ -74,39 +77,6 @@ const VIS_STYLES: Record<DiscoveryPodcast["visibilityPotential"], { label: strin
   "growing":   { label: "Growing",               cls: "bg-[oklch(0.55_0.16_145/0.10)] text-[oklch(0.70_0.16_145)] border-[oklch(0.55_0.16_145/0.25)]" },
 }
 
-/* ── Contact method badge ─────────────────────────────────── */
-const CONTACT_ICON: Record<number, React.ElementType> = {
-  1: ExternalLink,  // booking form
-  2: Mail,          // producer email
-  3: Mail,          // booking email
-  4: Mail,          // host email
-  5: Briefcase,     // linkedin
-  6: Sparkles,      // instagram fallback
-}
-
-const CONTACT_COLOR: Record<"green" | "blue" | "amber" | "gray", string> = {
-  green: "border-[oklch(0.55_0.16_145/0.30)] bg-[oklch(0.55_0.16_145/0.10)] text-[oklch(0.70_0.16_145)]",
-  blue:  "border-primary/25 bg-primary/10 text-primary",
-  amber: "border-[oklch(0.78_0.15_83/0.25)] bg-[oklch(0.78_0.15_83/0.10)] text-[var(--premium-gold)]",
-  gray:  "border-border/30 bg-muted/20 text-muted-foreground",
-}
-
-function ContactBadge({ rank }: { rank: number }) {
-  if (!hasActionableContact(rank as 1|2|3|4|5|6|7)) return null
-  const Icon  = CONTACT_ICON[rank] ?? Mail
-  const color = contactRankColor(rank as 1|2|3|4|5|6|7)
-  const label = CONTACT_METHOD_LABELS[rank as 1|2|3|4|5|6|7]
-  return (
-    <span className={cn(
-      "flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-medium",
-      CONTACT_COLOR[color]
-    )}>
-      <Icon className="size-2.5" aria-hidden="true" />
-      {label}
-    </span>
-  )
-}
-
 interface DiscoveryCardProps {
   podcast:    DiscoveryPodcast
   onSave:     (id: string) => void
@@ -116,9 +86,11 @@ interface DiscoveryCardProps {
 
 export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }: DiscoveryCardProps) {
   const [pitchHovered, setPitchHovered] = useState(false)
-  const coverGradient = COVER_GRADIENTS[podcast.coverIndex % COVER_GRADIENTS.length]
-  const vis = VIS_STYLES[podcast.visibilityPotential]
+  const coverGradient  = COVER_GRADIENTS[podcast.coverIndex % COVER_GRADIENTS.length]
+  const vis            = VIS_STYLES[podcast.visibilityPotential]
   const priorityBadges = podcast.badges.slice(0, 2)
+  const rank           = podcast.contactMethodRank as ContactMethodRank | undefined
+  const ctaLabel       = rank ? contactCtaLabel(rank) : "Pitch"
 
   if (viewMode === "list") return <DiscoveryCardList podcast={podcast} onSave={onSave} index={index} />
 
@@ -140,7 +112,6 @@ export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }:
         style={podcast.artwork ? undefined : { background: coverGradient }}
         aria-hidden="true"
       >
-        {/* Real artwork image */}
         {podcast.artwork ? (
           <img
             src={podcast.artwork}
@@ -151,21 +122,18 @@ export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }:
           />
         ) : (
           <>
-            {/* Texture overlay for gradient covers */}
             <div className="absolute inset-0 opacity-20"
               style={{
                 backgroundImage: "radial-gradient(circle, oklch(0.96 0 0 / 0.06) 1px, transparent 1px)",
                 backgroundSize: "20px 20px",
               }}
             />
-            {/* Podcast initials */}
             <span className="relative text-3xl font-black text-white/30 select-none tracking-tight">
               {podcast.name.split(" ").map(w => w[0]).join("").slice(0, 3)}
             </span>
           </>
         )}
 
-        {/* Cover glow on hover */}
         <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/10" />
 
         {/* Badges — top right */}
@@ -228,8 +196,8 @@ export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }:
           </div>
         </div>
 
-        {/* Meta row: activity + audience */}
-        <div className="flex flex-wrap items-center gap-2.5 text-[10px] text-muted-foreground">
+        {/* Meta row: activity + audience + visibility */}
+        <div className="flex flex-wrap items-center gap-2 text-[10px] text-muted-foreground">
           <span className="flex items-center gap-1">
             <span className={cn("h-1.5 w-1.5 rounded-full", ACTIVITY_DOT[podcast.hostActivity])} aria-hidden="true" />
             {ACTIVITY_LABEL[podcast.hostActivity]}
@@ -254,10 +222,12 @@ export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }:
               {podcast.guestFriendlyScore}% guest friendly
             </span>
           )}
-          {podcast.contactMethodRank !== undefined && (
-            <ContactBadge rank={podcast.contactMethodRank} />
-          )}
         </div>
+
+        {/* ── Best contact method ─────────────────────── */}
+        {rank !== undefined && rank !== 7 && (
+          <ContactMethodBadge rank={rank} className="w-full" />
+        )}
 
         {/* Category tags + opportunity rank */}
         <div className="flex flex-wrap items-center gap-1">
@@ -295,13 +265,13 @@ export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }:
           <button
             onMouseEnter={() => setPitchHovered(true)}
             onMouseLeave={() => setPitchHovered(false)}
-            aria-label={`Pitch to ${podcast.name}`}
+            aria-label={`${ctaLabel} — ${podcast.name}`}
             className="flex items-center gap-1.5 rounded-[var(--radius-md)] bg-primary/12 px-3 py-1.5
                        text-[11px] font-semibold text-primary
                        transition-all duration-150 hover:bg-primary hover:text-white"
           >
             <Zap className="size-3.5" aria-hidden="true" />
-            Pitch
+            {ctaLabel}
             <motion.span animate={{ x: pitchHovered ? 2 : 0 }} transition={{ duration: 0.15 }}>
               <ArrowRight className="size-3" aria-hidden="true" />
             </motion.span>
@@ -322,7 +292,9 @@ export function DiscoveryCard({ podcast, onSave, index = 0, viewMode = "grid" }:
 /* ── List view variant ────────────────────────────────────── */
 function DiscoveryCardList({ podcast, onSave, index = 0 }: Omit<DiscoveryCardProps, "viewMode">) {
   const coverGradient = COVER_GRADIENTS[podcast.coverIndex % COVER_GRADIENTS.length]
-  const vis = VIS_STYLES[podcast.visibilityPotential]
+  const vis           = VIS_STYLES[podcast.visibilityPotential]
+  const rank          = podcast.contactMethodRank as ContactMethodRank | undefined
+  const ctaLabel      = rank ? contactCtaLabel(rank) : "Pitch"
 
   return (
     <motion.article
@@ -368,8 +340,9 @@ function DiscoveryCardList({ podcast, onSave, index = 0 }: Omit<DiscoveryCardPro
           <span className={cn("flex items-center gap-1 rounded-full border px-1.5 py-0.5", vis.cls)}>
             <TrendingUp className="size-2.5" aria-hidden="true" />{vis.label}
           </span>
-          {podcast.contactMethodRank !== undefined && (
-            <ContactBadge rank={podcast.contactMethodRank} />
+          {/* Contact method inline for list view */}
+          {rank !== undefined && rank !== 7 && (
+            <ContactMethodBadge rank={rank} />
           )}
         </div>
       </div>
@@ -393,10 +366,10 @@ function DiscoveryCardList({ podcast, onSave, index = 0 }: Omit<DiscoveryCardPro
           }
         </button>
         <button
-          aria-label={`Pitch to ${podcast.name}`}
+          aria-label={`${ctaLabel} — ${podcast.name}`}
           className="flex h-8 items-center gap-1.5 rounded-lg bg-primary/12 px-2.5 text-[11px] font-semibold text-primary transition-all hover:bg-primary hover:text-white"
         >
-          <Zap className="size-3" aria-hidden="true" /> Pitch
+          <Zap className="size-3" aria-hidden="true" /> {ctaLabel}
         </button>
       </div>
     </motion.article>
