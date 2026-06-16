@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { motion, AnimatePresence } from "motion/react"
+import { motion } from "motion/react"
 import { Search, Bell, ChevronDown, Menu, Zap, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useSidebar } from "@/components/dashboard/sidebar-context"
@@ -139,53 +139,51 @@ export function DashboardTopbar({
             <ChevronDown className={cn("size-3 text-muted-foreground transition-transform duration-150", profileOpen && "rotate-180")} aria-hidden="true" />
           </button>
 
-          <AnimatePresence>
-            {profileOpen && (
-              <>
-                <div className="fixed inset-0 z-10" onClick={() => setProfileOpen(false)} aria-hidden="true" />
-                <motion.div
-                  role="menu"
-                  aria-label="Account options"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.22, ease: "easeInOut" }}
-                  className={cn(
-                    "absolute right-0 top-[calc(100%+6px)] z-20 w-48",
-                    "rounded-[var(--radius-lg)] border border-border bg-card",
-                    "shadow-[var(--shadow-lg)] py-1.5"
-                  )}
-                >
-                  {/* User name header inside dropdown */}
-                  <div className="px-3 py-2 border-b border-border/40 mb-1">
-                    <p className="text-[12px] font-semibold text-foreground truncate">{displayName}</p>
-                    <a href="/" className="text-[11px] text-primary hover:underline">← Home page</a>
-                  </div>
-                  {[
-                    { label: "Profile",          href: "/dashboard/profile" },
-                    { label: "Account Settings", href: "/dashboard/settings" },
-                    { label: "Billing",           href: "/dashboard/billing" },
-                    { label: "Sign Out",          href: "/login", danger: true },
-                  ].map(item => (
-                    <a
-                      key={item.label}
-                      href={item.href}
-                      role="menuitem"
-                      onClick={() => setProfileOpen(false)}
-                      className={cn(
-                        "flex h-8 items-center px-3 text-[13px] transition-colors duration-100",
-                        item.danger
-                          ? "text-destructive hover:bg-destructive/10"
-                          : "text-foreground/80 hover:bg-[var(--glass-bg)] hover:text-foreground"
-                      )}
-                    >
-                      {item.label}
-                    </a>
-                  ))}
-                </motion.div>
-              </>
+          {/* Clickaway overlay — only interactive when open */}
+          {profileOpen && (
+            <div className="fixed inset-0 z-10" onClick={() => setProfileOpen(false)} aria-hidden="true" />
+          )}
+
+          {/* Dropdown — always mounted so fade-out can play */}
+          <motion.div
+            role="menu"
+            aria-label="Account options"
+            animate={{ opacity: profileOpen ? 1 : 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            style={{ pointerEvents: profileOpen ? "auto" : "none" }}
+            className={cn(
+              "absolute right-0 top-[calc(100%+6px)] z-20 w-48",
+              "rounded-[var(--radius-lg)] border border-border bg-card",
+              "shadow-[var(--shadow-lg)] py-1.5"
             )}
-          </AnimatePresence>
+          >
+            {/* User name header inside dropdown */}
+            <div className="px-3 py-2 border-b border-border/40 mb-1">
+              <p className="text-[12px] font-semibold text-foreground truncate">{displayName}</p>
+              <a href="/" className="text-[11px] text-primary hover:underline">← Home page</a>
+            </div>
+            {[
+              { label: "Profile",          href: "/dashboard/profile" },
+              { label: "Account Settings", href: "/dashboard/settings" },
+              { label: "Billing",          href: "/dashboard/billing" },
+              { label: "Sign Out",         href: "/login", danger: true },
+            ].map(item => (
+              <a
+                key={item.label}
+                href={item.href}
+                role="menuitem"
+                onClick={() => setProfileOpen(false)}
+                className={cn(
+                  "flex h-8 items-center px-3 text-[13px] transition-colors duration-100",
+                  item.danger
+                    ? "text-destructive hover:bg-destructive/10"
+                    : "text-foreground/80 hover:bg-[var(--glass-bg)] hover:text-foreground"
+                )}
+              >
+                {item.label}
+              </a>
+            ))}
+          </motion.div>
         </div>
 
       </div>
