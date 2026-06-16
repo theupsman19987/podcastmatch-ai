@@ -47,7 +47,24 @@ export interface DiscoveryPodcast {
   artwork?:            string          // artwork image URL from API
   lastPublished?:      string          // ISO-8601 date
   language?:           string          // BCP-47 e.g. "en"
-  source?:             string          // "mock" | "podcast-index" | "apple" | "spotify"
+  source?:             string          // "mock" | "podcast-index" | "curated" | "apple" | "spotify"
+  // Contact intelligence — only present for curated DB entries
+  contactMethodRank?:  number          // 1 (best) → 7 (none)
+  bestContactMethod?:  string          // "Producer Email" | "Contact Form" | etc.
+  bestContactValue?:   string          // the actual email or URL
+  producerName?:       string
+  producerEmail?:      string
+  hostEmail?:          string
+  bookingEmail?:       string
+  contactFormUrl?:     string
+  bookingLink?:        string
+  instagramUrl?:       string
+  linkedinUrl?:        string
+  youtubeUrl?:         string
+  guestRequirements?:  string
+  typicalGuestType?:   string
+  qualityScore?:       number
+  curated?:            boolean
 }
 
 export interface DiscoveryFilters {

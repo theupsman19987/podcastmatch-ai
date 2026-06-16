@@ -17,11 +17,12 @@ import type { PodcastRecord, DeduplicationResult, DataSource } from "@/lib/podca
 
 /* Source quality priority (highest first) */
 const SOURCE_PRIORITY: Record<DataSource, number> = {
+  "curated":       5,   // manually enriched > all API sources
+  "apple":         4,
   "podcast-index": 3,
-  "apple":         4,   // Apple has richer metadata
   "spotify":       2,
-  "listen-notes":  1,
   "podchaser":     2,
+  "listen-notes":  1,
   "mock":          0,
 }
 

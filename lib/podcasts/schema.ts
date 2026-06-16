@@ -6,6 +6,9 @@
    enrich() in lib/podcasts/enrich.ts converts it to
    DiscoveryPodcast for display components.
 
+   CuratedPodcast maps the `podcasts` Supabase table row and
+   carries the full contact intelligence fields.
+
    FUTURE DATA SOURCES:
    - Listen Notes:  add source = "listen-notes"
    - Podchaser:     add source = "podchaser"
@@ -13,11 +16,31 @@
    All sources must normalize to PodcastRecord before storage.
    ═══════════════════════════════════════════════════════════ */
 
-export type DataSource = "podcast-index" | "apple" | "spotify" | "listen-notes" | "podchaser" | "mock"
+export type DataSource = "podcast-index" | "apple" | "spotify" | "listen-notes" | "podchaser" | "curated" | "mock"
 
 export type ActivityStatus = "active" | "hiatus" | "inactive"
 
-/* ── Canonical podcast record ─────────────────────────────── */
+export type EnrichmentStatus = "pending" | "partial" | "complete"
+
+/** 1 = best (producer email) → 7 = last resort (no contact found) */
+export type ContactMethodRank = 1 | 2 | 3 | 4 | 5 | 6 | 7
+
+/* ── Contact intelligence ─────────────────────────────────── */
+export interface ContactIntelligence {
+  producerName?:    string | null
+  producerEmail?:   string | null
+  hostEmail?:       string | null
+  bookingEmail?:    string | null
+  contactFormUrl?:  string | null
+  bookingLink?:     string | null
+  instagramUrl?:    string | null
+  linkedinUrl?:     string | null
+  youtubeUrl?:      string | null
+  twitterUrl?:      string | null
+  contactMethodRank: ContactMethodRank
+}
+
+/* ── Canonical podcast record (import layer) ──────────────── */
 export interface PodcastRecord {
   id:             string           // normalized: source_externalId (e.g. "pi_920666")
   externalId:     string           // raw ID from source API
@@ -29,7 +52,7 @@ export interface PodcastRecord {
   description:    string
 
   /* Taxonomy */
-  categories:     string[]         // normalized to our 17 internal categories
+  categories:     string[]         // normalized to our internal categories
   rawCategories?: string[]         // original from source (for debugging/re-mapping)
 
   /* Platform links */
@@ -55,6 +78,38 @@ export interface PodcastRecord {
 
   /* Metadata */
   importedAt:     string           // ISO-8601 — when we fetched this record
+}
+
+/* ── Curated podcast (maps the `podcasts` Supabase table) ─── */
+export interface CuratedPodcast {
+  id:                 string
+  slug:               string
+  podcastName:        string
+  hostName:           string
+  description:        string | null
+  artworkUrl:         string | null
+  category:           string
+  categories:         string[]
+  rssFeedUrl:         string | null
+  website:            string | null
+  appleUrl:           string | null
+  spotifyUrl:         string | null
+  episodeCount:       number
+  lastEpisodeDate:    string | null
+  language:           string
+  activityStatus:     ActivityStatus
+  acceptsGuests:      boolean
+  guestRequirements:  string | null
+  typicalGuestType:   string | null
+  contact:            ContactIntelligence
+  rssOwnerName:       string | null
+  rssOwnerEmail:      string | null
+  rssParsedAt:        string | null
+  enrichmentStatus:   EnrichmentStatus
+  qualityScore:       number
+  curated:            boolean
+  createdAt:          string
+  updatedAt:          string
 }
 
 /* ── Search request params ────────────────────────────────── */

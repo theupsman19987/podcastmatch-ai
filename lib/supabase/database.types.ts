@@ -291,6 +291,127 @@ export interface Database {
         }
         Relationships: []
       }
+      podcasts: {
+        Row: {
+          id:                   string
+          slug:                 string
+          podcast_name:         string
+          host_name:            string
+          description:          string | null
+          artwork_url:          string | null
+          category:             string
+          categories:           string[]
+          rss_feed_url:         string | null
+          website:              string | null
+          apple_url:            string | null
+          spotify_url:          string | null
+          episode_count:        number
+          last_episode_date:    string | null
+          language:             string
+          activity_status:      string
+          producer_name:        string | null
+          producer_email:       string | null
+          host_email:           string | null
+          booking_email:        string | null
+          contact_form_url:     string | null
+          booking_link:         string | null
+          instagram_url:        string | null
+          linkedin_url:         string | null
+          youtube_url:          string | null
+          twitter_url:          string | null
+          accepts_guests:       boolean
+          guest_requirements:   string | null
+          typical_guest_type:   string | null
+          contact_method_rank:  number        // GENERATED — computed by DB, read-only
+          rss_owner_name:       string | null
+          rss_owner_email:      string | null
+          rss_parsed_at:        string | null
+          enrichment_status:    string
+          quality_score:        number
+          curated:              boolean
+          notes:                string | null
+          created_at:           string
+          updated_at:           string
+        }
+        Insert: {
+          id?:                  string
+          slug:                 string
+          podcast_name:         string
+          host_name:            string
+          description?:         string | null
+          artwork_url?:         string | null
+          category:             string
+          categories?:          string[]
+          rss_feed_url?:        string | null
+          website?:             string | null
+          apple_url?:           string | null
+          spotify_url?:         string | null
+          episode_count?:       number
+          last_episode_date?:   string | null
+          language?:            string
+          activity_status?:     string
+          producer_name?:       string | null
+          producer_email?:      string | null
+          host_email?:          string | null
+          booking_email?:       string | null
+          contact_form_url?:    string | null
+          booking_link?:        string | null
+          instagram_url?:       string | null
+          linkedin_url?:        string | null
+          youtube_url?:         string | null
+          twitter_url?:         string | null
+          accepts_guests?:      boolean
+          guest_requirements?:  string | null
+          typical_guest_type?:  string | null
+          // contact_method_rank is GENERATED — omit from Insert
+          rss_owner_name?:      string | null
+          rss_owner_email?:     string | null
+          rss_parsed_at?:       string | null
+          enrichment_status?:   string
+          quality_score?:       number
+          curated?:             boolean
+          notes?:               string | null
+          created_at?:          string
+          updated_at?:          string
+        }
+        Update: {
+          podcast_name?:        string
+          host_name?:           string
+          description?:         string | null
+          artwork_url?:         string | null
+          category?:            string
+          categories?:          string[]
+          rss_feed_url?:        string | null
+          website?:             string | null
+          apple_url?:           string | null
+          spotify_url?:         string | null
+          episode_count?:       number
+          last_episode_date?:   string | null
+          activity_status?:     string
+          producer_name?:       string | null
+          producer_email?:      string | null
+          host_email?:          string | null
+          booking_email?:       string | null
+          contact_form_url?:    string | null
+          booking_link?:        string | null
+          instagram_url?:       string | null
+          linkedin_url?:        string | null
+          youtube_url?:         string | null
+          twitter_url?:         string | null
+          accepts_guests?:      boolean
+          guest_requirements?:  string | null
+          typical_guest_type?:  string | null
+          rss_owner_name?:      string | null
+          rss_owner_email?:     string | null
+          rss_parsed_at?:       string | null
+          enrichment_status?:   string
+          quality_score?:       number
+          curated?:             boolean
+          notes?:               string | null
+          updated_at?:          string
+        }
+        Relationships: []
+      }
     }
     Views:     Record<string, never>
     Functions: Record<string, never>
