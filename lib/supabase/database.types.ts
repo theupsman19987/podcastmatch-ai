@@ -339,122 +339,244 @@ export interface Database {
       }
       podcasts: {
         Row: {
-          id:                   string
-          slug:                 string
-          podcast_name:         string
-          host_name:            string
-          description:          string | null
-          artwork_url:          string | null
-          category:             string
-          categories:           string[]
-          rss_feed_url:         string | null
-          website:              string | null
-          apple_url:            string | null
-          spotify_url:          string | null
-          episode_count:        number
-          last_episode_date:    string | null
-          language:             string
-          activity_status:      string
-          producer_name:        string | null
-          producer_email:       string | null
-          host_email:           string | null
-          booking_email:        string | null
-          contact_form_url:     string | null
-          booking_link:         string | null
-          instagram_url:        string | null
-          linkedin_url:         string | null
-          youtube_url:          string | null
-          twitter_url:          string | null
-          accepts_guests:       boolean
-          guest_requirements:   string | null
-          typical_guest_type:   string | null
-          contact_method_rank:  number        // GENERATED — computed by DB, read-only
-          rss_owner_name:       string | null
-          rss_owner_email:      string | null
-          rss_parsed_at:        string | null
-          enrichment_status:    string
-          quality_score:        number
-          curated:              boolean
-          notes:                string | null
-          created_at:           string
-          updated_at:           string
+          // ── Identity ────────────────────────────────────────────
+          id:                          string
+          slug:                        string
+          // ── Basic metadata ──────────────────────────────────────
+          podcast_name:                string
+          host_name:                   string
+          co_host_name:                string | null
+          description:                 string | null
+          artwork_url:                 string | null
+          // ── Taxonomy ────────────────────────────────────────────
+          category:                    string
+          categories:                  string[]
+          publishing_frequency:        string | null
+          // ── Platform links ──────────────────────────────────────
+          rss_feed_url:                string | null
+          website:                     string | null
+          apple_url:                   string | null
+          spotify_url:                 string | null
+          // ── Content stats ────────────────────────────────────────
+          episode_count:               number
+          last_episode_date:           string | null
+          language:                    string
+          activity_status:             string
+          // ── Contact Intelligence ─────────────────────────────────
+          producer_name:               string | null
+          producer_email:              string | null
+          host_email:                  string | null
+          booking_email:               string | null
+          contact_form_url:            string | null
+          booking_link:                string | null
+          preferred_contact_method:    string | null
+          contact_confidence:          string
+          contact_verified_at:         string | null
+          outreach_ready:              boolean
+          contact_notes:               string | null
+          // ── Social ──────────────────────────────────────────────
+          instagram_url:               string | null
+          linkedin_url:                string | null
+          youtube_url:                 string | null
+          twitter_url:                 string | null
+          // ── Guest Intelligence ───────────────────────────────────
+          accepts_guests:              boolean
+          guest_requirements:          string | null
+          typical_guest_type:          string | null
+          guest_application_required:  boolean
+          guest_expertise_areas:       string[]
+          guest_experience_level:      string | null
+          remote_interviews:           boolean
+          video_interviews:            boolean
+          audio_only:                  boolean
+          interview_length_min:        number | null
+          avg_guest_frequency:         string | null
+          // ── Audience Intelligence ────────────────────────────────
+          target_audience:             string | null
+          audience_pain_points:        string[]
+          audience_goals:              string[]
+          industry_focus:              string[]
+          experience_level:            string | null
+          geographic_focus:            string | null
+          faith_based:                 boolean
+          business_focused:            boolean
+          personal_development:        boolean
+          leadership_focused:          boolean
+          entrepreneurship_focused:    boolean
+          // ── Matching Intelligence Scores (computed by trigger) ───
+          authority_score:             number
+          guest_friendliness_score:    number
+          visibility_score:            number
+          response_probability_score:  number
+          // ── GENERATED column (read-only) ────────────────────────
+          contact_method_rank:         number
+          // ── RSS enrichment cache ─────────────────────────────────
+          rss_owner_name:              string | null
+          rss_owner_email:             string | null
+          rss_parsed_at:               string | null
+          // ── Data Quality & Cleanup ───────────────────────────────
+          is_duplicate:                boolean
+          duplicate_of:                string | null
+          website_verified:            boolean
+          website_verified_at:         string | null
+          publishing_verified:         boolean
+          last_verified_at:            string | null
+          abandoned_flag:              boolean
+          category_standardized:       boolean
+          // ── Admin ────────────────────────────────────────────────
+          enrichment_status:           string
+          quality_score:               number
+          curated:                     boolean
+          notes:                       string | null
+          // ── Timestamps ──────────────────────────────────────────
+          created_at:                  string
+          updated_at:                  string
         }
         Insert: {
-          id?:                  string
-          slug:                 string
-          podcast_name:         string
-          host_name:            string
-          description?:         string | null
-          artwork_url?:         string | null
-          category:             string
-          categories?:          string[]
-          rss_feed_url?:        string | null
-          website?:             string | null
-          apple_url?:           string | null
-          spotify_url?:         string | null
-          episode_count?:       number
-          last_episode_date?:   string | null
-          language?:            string
-          activity_status?:     string
-          producer_name?:       string | null
-          producer_email?:      string | null
-          host_email?:          string | null
-          booking_email?:       string | null
-          contact_form_url?:    string | null
-          booking_link?:        string | null
-          instagram_url?:       string | null
-          linkedin_url?:        string | null
-          youtube_url?:         string | null
-          twitter_url?:         string | null
-          accepts_guests?:      boolean
-          guest_requirements?:  string | null
-          typical_guest_type?:  string | null
+          id?:                         string
+          slug:                        string
+          podcast_name:                string
+          host_name:                   string
+          co_host_name?:               string | null
+          description?:                string | null
+          artwork_url?:                string | null
+          category:                    string
+          categories?:                 string[]
+          publishing_frequency?:       string | null
+          rss_feed_url?:               string | null
+          website?:                    string | null
+          apple_url?:                  string | null
+          spotify_url?:                string | null
+          episode_count?:              number
+          last_episode_date?:          string | null
+          language?:                   string
+          activity_status?:            string
+          producer_name?:              string | null
+          producer_email?:             string | null
+          host_email?:                 string | null
+          booking_email?:              string | null
+          contact_form_url?:           string | null
+          booking_link?:               string | null
+          preferred_contact_method?:   string | null
+          contact_confidence?:         string
+          contact_verified_at?:        string | null
+          outreach_ready?:             boolean
+          contact_notes?:              string | null
+          instagram_url?:              string | null
+          linkedin_url?:               string | null
+          youtube_url?:                string | null
+          twitter_url?:                string | null
+          accepts_guests?:             boolean
+          guest_requirements?:         string | null
+          typical_guest_type?:         string | null
+          guest_application_required?: boolean
+          guest_expertise_areas?:      string[]
+          guest_experience_level?:     string | null
+          remote_interviews?:          boolean
+          video_interviews?:           boolean
+          audio_only?:                 boolean
+          interview_length_min?:       number | null
+          avg_guest_frequency?:        string | null
+          target_audience?:            string | null
+          audience_pain_points?:       string[]
+          audience_goals?:             string[]
+          industry_focus?:             string[]
+          experience_level?:           string | null
+          geographic_focus?:           string | null
+          faith_based?:                boolean
+          business_focused?:           boolean
+          personal_development?:       boolean
+          leadership_focused?:         boolean
+          entrepreneurship_focused?:   boolean
+          // Scores are computed by trigger — omit from Insert
           // contact_method_rank is GENERATED — omit from Insert
-          rss_owner_name?:      string | null
-          rss_owner_email?:     string | null
-          rss_parsed_at?:       string | null
-          enrichment_status?:   string
-          quality_score?:       number
-          curated?:             boolean
-          notes?:               string | null
-          created_at?:          string
-          updated_at?:          string
+          rss_owner_name?:             string | null
+          rss_owner_email?:            string | null
+          rss_parsed_at?:              string | null
+          is_duplicate?:               boolean
+          duplicate_of?:               string | null
+          website_verified?:           boolean
+          website_verified_at?:        string | null
+          publishing_verified?:        boolean
+          last_verified_at?:           string | null
+          abandoned_flag?:             boolean
+          category_standardized?:      boolean
+          enrichment_status?:          string
+          quality_score?:              number
+          curated?:                    boolean
+          notes?:                      string | null
+          created_at?:                 string
+          updated_at?:                 string
         }
         Update: {
-          podcast_name?:        string
-          host_name?:           string
-          description?:         string | null
-          artwork_url?:         string | null
-          category?:            string
-          categories?:          string[]
-          rss_feed_url?:        string | null
-          website?:             string | null
-          apple_url?:           string | null
-          spotify_url?:         string | null
-          episode_count?:       number
-          last_episode_date?:   string | null
-          activity_status?:     string
-          producer_name?:       string | null
-          producer_email?:      string | null
-          host_email?:          string | null
-          booking_email?:       string | null
-          contact_form_url?:    string | null
-          booking_link?:        string | null
-          instagram_url?:       string | null
-          linkedin_url?:        string | null
-          youtube_url?:         string | null
-          twitter_url?:         string | null
-          accepts_guests?:      boolean
-          guest_requirements?:  string | null
-          typical_guest_type?:  string | null
-          rss_owner_name?:      string | null
-          rss_owner_email?:     string | null
-          rss_parsed_at?:       string | null
-          enrichment_status?:   string
-          quality_score?:       number
-          curated?:             boolean
-          notes?:               string | null
-          updated_at?:          string
+          podcast_name?:               string
+          host_name?:                  string
+          co_host_name?:               string | null
+          description?:                string | null
+          artwork_url?:                string | null
+          category?:                   string
+          categories?:                 string[]
+          publishing_frequency?:       string | null
+          rss_feed_url?:               string | null
+          website?:                    string | null
+          apple_url?:                  string | null
+          spotify_url?:                string | null
+          episode_count?:              number
+          last_episode_date?:          string | null
+          activity_status?:            string
+          producer_name?:              string | null
+          producer_email?:             string | null
+          host_email?:                 string | null
+          booking_email?:              string | null
+          contact_form_url?:           string | null
+          booking_link?:               string | null
+          preferred_contact_method?:   string | null
+          contact_confidence?:         string
+          contact_verified_at?:        string | null
+          outreach_ready?:             boolean
+          contact_notes?:              string | null
+          instagram_url?:              string | null
+          linkedin_url?:               string | null
+          youtube_url?:                string | null
+          twitter_url?:                string | null
+          accepts_guests?:             boolean
+          guest_requirements?:         string | null
+          typical_guest_type?:         string | null
+          guest_application_required?: boolean
+          guest_expertise_areas?:      string[]
+          guest_experience_level?:     string | null
+          remote_interviews?:          boolean
+          video_interviews?:           boolean
+          audio_only?:                 boolean
+          interview_length_min?:       number | null
+          avg_guest_frequency?:        string | null
+          target_audience?:            string | null
+          audience_pain_points?:       string[]
+          audience_goals?:             string[]
+          industry_focus?:             string[]
+          experience_level?:           string | null
+          geographic_focus?:           string | null
+          faith_based?:                boolean
+          business_focused?:           boolean
+          personal_development?:       boolean
+          leadership_focused?:         boolean
+          entrepreneurship_focused?:   boolean
+          rss_owner_name?:             string | null
+          rss_owner_email?:            string | null
+          rss_parsed_at?:              string | null
+          is_duplicate?:               boolean
+          duplicate_of?:               string | null
+          website_verified?:           boolean
+          website_verified_at?:        string | null
+          publishing_verified?:        boolean
+          last_verified_at?:           string | null
+          abandoned_flag?:             boolean
+          category_standardized?:      boolean
+          enrichment_status?:          string
+          quality_score?:              number
+          curated?:                    boolean
+          notes?:                      string | null
+          updated_at?:                 string
         }
         Relationships: []
       }
