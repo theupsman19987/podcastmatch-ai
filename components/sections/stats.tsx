@@ -243,25 +243,18 @@ function SectionHeader() {
           href="/signup"
           className={cn(
             "relative inline-flex items-center gap-3 px-10 py-4 rounded-full",
-            "text-[15px] font-black uppercase tracking-[0.18em] text-white",
+            "text-[15px] font-black uppercase tracking-[0.18em]",
+            "gradient-gold",
             "transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.03]",
-            "shadow-[0_0_32px_oklch(0.78_0.15_83/0.45),0_4px_20px_rgba(0,0,0,0.4)]",
-            "hover:shadow-[0_0_48px_oklch(0.78_0.15_83/0.65),0_8px_28px_rgba(0,0,0,0.5)]",
+            "shadow-[0_0_24px_oklch(0.70_0.16_200/0.5),0_4px_20px_rgba(0,0,0,0.4)]",
+            "hover:shadow-[0_0_36px_oklch(0.70_0.16_200/0.7),0_8px_28px_rgba(0,0,0,0.5)]",
+            "border border-[oklch(0.78_0.15_83/0.3)]",
           )}
           style={{
-            background: "linear-gradient(90deg, oklch(0.78 0.15 83), oklch(0.65 0.18 250))",
-            border: "1px solid oklch(0.78 0.15 83 / 0.4)",
+            color: "oklch(0.70 0.16 200)",
+            textShadow: "0 0 12px oklch(0.70 0.16 200 / 0.4)",
           }}
         >
-          {/* subtle inner shimmer */}
-          <span
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-full opacity-30"
-            style={{
-              background:
-                "linear-gradient(135deg, rgba(255,255,255,0.25) 0%, transparent 60%)",
-            }}
-          />
           <span>→</span>
           <span>Start Here</span>
         </Link>
