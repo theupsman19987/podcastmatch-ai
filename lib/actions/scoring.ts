@@ -2,16 +2,10 @@
 
 import { createClient } from "@/lib/supabase/server"
 import { computeScore } from "@/lib/scoring/visibility-score"
-import type { ScoreBreakdown, ImprovementFlags } from "@/lib/scoring/visibility-score"
+import type { ScoreBreakdown, ImprovementFlags, ScoringResult } from "@/lib/scoring/visibility-score"
 import type { Json } from "@/lib/supabase/database.types"
 
-export type { ScoreBreakdown, ImprovementFlags }
-
-export interface ScoringResult {
-  breakdown: ScoreBreakdown
-  flags:     ImprovementFlags
-  error?:    string
-}
+export type { ScoringResult }
 
 export async function computeAndSaveScore(): Promise<ScoringResult> {
   const supabase = await createClient()

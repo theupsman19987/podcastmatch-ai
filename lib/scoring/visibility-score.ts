@@ -4,6 +4,14 @@
    Scores presence + structure + completion only.
    ═══════════════════════════════════════════════════════════ */
 
+/* Shared result type — lives here so client modules can import it
+   without touching the "use server" actions file. */
+export interface ScoringResult {
+  breakdown: ScoreBreakdown
+  flags:     ImprovementFlags
+  error?:    string
+}
+
 export interface ScoreInput {
   /* Profile */
   bio:             string | null

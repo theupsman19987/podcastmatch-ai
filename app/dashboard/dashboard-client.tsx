@@ -26,7 +26,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
-import type { ScoringResult, ScoreBreakdown, ImprovementFlags } from "@/lib/actions/scoring"
+import type { ScoringResult, ScoreBreakdown, ImprovementFlags } from "@/lib/scoring/visibility-score"
 
 /* ── Greeting ─────────────────────────────────────────────── */
 function getGreeting(): string {

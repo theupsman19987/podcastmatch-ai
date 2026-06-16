@@ -1,7 +1,7 @@
 "use client"
 
 import { computeAndSaveScore } from "@/lib/actions/scoring"
-import type { ScoringResult } from "@/lib/actions/scoring"
+import type { ScoringResult } from "@/lib/scoring/visibility-score"
 
 /**
  * Single-flight, debounced scoring scheduler.
