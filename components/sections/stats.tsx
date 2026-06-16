@@ -20,6 +20,7 @@ import {
   Trophy,
   Quote,
 } from "lucide-react"
+import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { Marquee } from "@/components/ui/marquee"
 import { Badge } from "@/components/ui/badge"
@@ -236,47 +237,34 @@ function SectionHeader() {
       animate={isInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
       transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* START HERE — entry point anchor */}
-      <div className="relative flex flex-col items-center gap-2 mb-2">
-        {/* Ambient glow behind the text */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-8 -top-3 h-10 rounded-full blur-2xl opacity-25"
+      {/* START HERE — CTA button */}
+      <div className="relative flex flex-col items-center gap-3 mb-2">
+        <Link
+          href="/signup"
+          className={cn(
+            "relative inline-flex items-center gap-3 px-10 py-4 rounded-full",
+            "text-[15px] font-black uppercase tracking-[0.18em] text-white",
+            "transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.03]",
+            "shadow-[0_0_32px_oklch(0.78_0.15_83/0.45),0_4px_20px_rgba(0,0,0,0.4)]",
+            "hover:shadow-[0_0_48px_oklch(0.78_0.15_83/0.65),0_8px_28px_rgba(0,0,0,0.5)]",
+          )}
           style={{
-            background:
-              "linear-gradient(90deg, oklch(0.78 0.15 83), oklch(0.70 0.16 200))",
+            background: "linear-gradient(90deg, oklch(0.78 0.15 83), oklch(0.65 0.18 250))",
+            border: "1px solid oklch(0.78 0.15 83 / 0.4)",
           }}
-        />
-
-        <div className="flex items-center gap-4">
+        >
+          {/* subtle inner shimmer */}
           <span
             aria-hidden
-            className="h-px w-20"
+            className="pointer-events-none absolute inset-0 rounded-full opacity-30"
             style={{
               background:
-                "linear-gradient(to right, transparent, oklch(0.78 0.15 83 / 0.7))",
+                "linear-gradient(135deg, rgba(255,255,255,0.25) 0%, transparent 60%)",
             }}
           />
-          <span
-            className="text-[16px] font-black uppercase tracking-[0.2em]"
-            style={{
-              background: "linear-gradient(90deg, oklch(0.78 0.15 83), oklch(0.70 0.16 200))",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
-          >
-            ↓ Start Here
-          </span>
-          <span
-            aria-hidden
-            className="h-px w-20"
-            style={{
-              background:
-                "linear-gradient(to left, transparent, oklch(0.70 0.16 200 / 0.7))",
-            }}
-          />
-        </div>
+          <span>→</span>
+          <span>Start Here</span>
+        </Link>
 
         <p className="text-[11px] font-medium tracking-wide text-muted-foreground/60">
           Your fastest path to getting booked on podcasts
