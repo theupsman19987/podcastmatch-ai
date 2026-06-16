@@ -146,10 +146,10 @@ export function DashboardTopbar({
                 <motion.div
                   role="menu"
                   aria-label="Account options"
-                  initial={{ opacity: 0, y: -6, scale: 0.97 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -6, scale: 0.97 }}
-                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.22, ease: "easeInOut" }}
                   className={cn(
                     "absolute right-0 top-[calc(100%+6px)] z-20 w-48",
                     "rounded-[var(--radius-lg)] border border-border bg-card",
