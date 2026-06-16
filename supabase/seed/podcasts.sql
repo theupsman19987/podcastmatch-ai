@@ -1,6 +1,6 @@
 -- ═══════════════════════════════════════════════════════════════════════════
 --  PodcastMatch AI — Phase 1 Curated Podcast Seed Data
---  25 high-quality podcasts, enrichment-ready.
+--  50 high-quality podcasts, enrichment-ready.
 --
 --  Run AFTER migration 003_podcast_contact_intelligence.sql
 --  Paste into: Supabase Studio → SQL Editor → New Query → Run
@@ -456,6 +456,485 @@ INSERT INTO public.podcasts (
   false, NULL, 'TED speaker applications only — not a traditional podcast booking.',
   'https://www.ted.com/participate/organize-a-local-tedx-event', NULL,
   'partial', 90, true
+),
+
+-- ══════════════════════════════════════════════════════════════════════════════
+--  BATCH 2 — Podcasts 26–50
+-- ══════════════════════════════════════════════════════════════════════════════
+
+-- ── ENTREPRENEURSHIP (continued) ───────────────────────────────────────────
+
+(
+  'mixergy',
+  'Mixergy',
+  'Andrew Warner',
+  'Andrew Warner does in-depth interviews with founders about how they built their companies — including the failures. Highly respected in the startup world for going deep on real numbers and hard lessons. One of the most guest-friendly shows for authentic business builders.',
+  'Entrepreneurship',
+  ARRAY['Entrepreneurship','Business'],
+  'https://mixergy.com',
+  NULL,
+  1900, '2025-06-01', 'active',
+  true, 'Startup founders, bootstrappers, SaaS builders',
+  'Andrew goes very deep on revenue, tactics, and real business metrics. Guests must be comfortable sharing specifics. Authentic struggle + success stories over PR polish.',
+  'https://mixergy.com/contact',
+  NULL,
+  'partial', 82, true
+),
+
+(
+  'side-hustle-school',
+  'Side Hustle School',
+  'Chris Guillebeau',
+  'Daily 10-minute episodes featuring real side hustle stories from real people. One of the most prolific business podcasts. Very guest-friendly — Chris actively seeks diverse stories of people earning extra income on the side.',
+  'Entrepreneurship',
+  ARRAY['Entrepreneurship','Business','Personal Development'],
+  'https://sidehustleschool.com',
+  NULL,
+  2000, '2025-06-01', 'active',
+  true, 'Side hustlers, solopreneurs, people building income alongside a day job',
+  'Must have a real side hustle story — doesn''t need to be huge. Authenticity over scale. Chris wants variety: unusual niches, unexpected outcomes.',
+  'https://sidehustleschool.com/contact',
+  NULL,
+  'partial', 78, true
+),
+
+-- ── BUSINESS (continued) ───────────────────────────────────────────────────
+
+(
+  'masters-of-scale',
+  'Masters of Scale',
+  'Reid Hoffman',
+  'LinkedIn co-founder Reid Hoffman interviews the world''s top business leaders on how they scaled their companies. Narrative storytelling format with deep strategic insight. Highly selective — guests are typically Fortune 500 CEOs or iconic startup founders.',
+  'Business',
+  ARRAY['Business','Entrepreneurship','Leadership'],
+  'https://mastersofscale.com',
+  NULL,
+  350, '2025-06-01', 'active',
+  true, 'Tech CEOs, Fortune 500 executives, unicorn founders',
+  'Very selective. Guests are typically household names. Relationship-based booking through the WaitWhat team.',
+  NULL, NULL,
+  'pending', 93, true
+),
+
+(
+  'diary-of-a-ceo',
+  'The Diary of a CEO',
+  'Steven Bartlett',
+  'Steven Bartlett (youngest Dragon on Dragon''s Den UK, founder of Social Chain) interviews leading entrepreneurs, scientists, and business icons. One of the fastest-growing business podcasts in Europe with a massive global audience.',
+  'Business',
+  ARRAY['Business','Entrepreneurship','Personal Development'],
+  'https://stevenbartlett.com/the-diary-of-a-ceo-podcast',
+  NULL,
+  480, '2025-06-01', 'active',
+  true, 'Business leaders, scientists, authors, high-profile entrepreneurs',
+  'Steven''s team is very selective but responds to compelling pitches. Authors with a major book launch or experts with a genuinely contrarian insight get priority.',
+  NULL, NULL,
+  'pending', 92, true
+),
+
+(
+  'acquired',
+  'Acquired',
+  'Ben Gilbert & David Rosenthal',
+  'Deep-dive episodes on the stories of the greatest technology companies — 3-6 hours per episode. Ben and David go further than any other podcast on company histories, strategy, and compounding advantages. Very selective — primarily covers iconic companies rather than booking individual guests.',
+  'Business',
+  ARRAY['Business','Technology','Finance & Investing'],
+  'https://www.acquired.fm',
+  NULL,
+  200, '2025-06-01', 'active',
+  true, 'CEOs and executives of iconic technology companies being covered',
+  'Not a traditional guest podcast. Guests are typically the founders or CEOs of the specific company being studied. Relationship-driven, not pitch-driven.',
+  NULL, NULL,
+  'pending', 94, true
+),
+
+-- ── MARKETING (continued) ──────────────────────────────────────────────────
+
+(
+  'online-marketing-made-easy',
+  'Online Marketing Made Easy',
+  'Amy Porterfield',
+  'Amy Porterfield teaches entrepreneurs how to grow their email list, launch courses, and build digital businesses. One of the most trusted voices in online marketing. Openly accepts guest pitches and has an engaged, action-oriented audience of female entrepreneurs.',
+  'Marketing',
+  ARRAY['Marketing','Entrepreneurship','Women in Business'],
+  'https://amyporterfield.com/podcast',
+  NULL,
+  650, '2025-06-01', 'active',
+  true, 'Online course creators, email marketers, female entrepreneurs',
+  'Guest must have proven online business tactics to teach. Amy''s audience wants actionable, step-by-step strategies. Digital marketing, list-building, and course launch expertise are ideal.',
+  'https://amyporterfield.com/contact',
+  NULL,
+  'partial', 85, true
+),
+
+(
+  'perpetual-traffic',
+  'Perpetual Traffic',
+  'Ralph Burns & Kasim Aslam',
+  'The podcast for paid advertising professionals. Deep tactical content on Facebook ads, Google ads, and paid media strategy. Run by agency owners who are in the trenches daily. Very guest-friendly for ad practitioners with real results.',
+  'Marketing',
+  ARRAY['Marketing','Business','Technology'],
+  'https://www.perpetualtraffic.com',
+  NULL,
+  580, '2025-06-01', 'active',
+  true, 'Paid media specialists, agency owners, performance marketers, e-commerce brands',
+  'Must have real paid advertising results to share — specific numbers, specific platforms, specific learnings. No theory — audience is made up of practitioners.',
+  'https://www.perpetualtraffic.com/contact',
+  NULL,
+  'partial', 77, true
+),
+
+-- ── PERSONAL DEVELOPMENT (continued) ──────────────────────────────────────
+
+(
+  'marie-forleo',
+  'The Marie Forleo Podcast',
+  'Marie Forleo',
+  'Marie Forleo helps entrepreneurs build businesses and lives they love. Warm, energetic format with occasional guests. Audience skews female entrepreneur. Strong platform for thought leadership, self-help, and business strategy books.',
+  'Personal Development',
+  ARRAY['Personal Development','Women in Business','Business'],
+  'https://www.marieforleo.com/podcast',
+  NULL,
+  420, '2025-06-01', 'active',
+  true, 'Female entrepreneurs, authors, coaches, thought leaders',
+  'Best fit for authors of personal development or business books. Marie''s audience is aspirational and action-oriented. Must have a clear, deliverable insight for her audience.',
+  'https://www.marieforleo.com/contact',
+  NULL,
+  'partial', 82, true
+),
+
+(
+  'mindset-mentor',
+  'The Mindset Mentor',
+  'Rob Dial',
+  'Rob Dial delivers daily mindset and motivation episodes aimed at entrepreneurs and high performers. One of the fastest-growing personal development podcasts. Actively books guests who can speak to high-performance, mental health, and business mindset.',
+  'Personal Development',
+  ARRAY['Personal Development','Business','Entrepreneurship'],
+  'https://www.robdial.com/podcast',
+  NULL,
+  1500, '2025-06-01', 'active',
+  true, 'Mindset coaches, therapists, high-performance entrepreneurs, authors',
+  'Guests should have a compelling personal transformation story or expert framework for mental performance. Rob''s audience is young, ambitious, and looking for practical mindset shifts.',
+  'https://www.robdial.com/contact',
+  NULL,
+  'partial', 79, true
+),
+
+(
+  'tony-robbins-podcast',
+  'Tony Robbins Podcast',
+  'Tony Robbins',
+  'Tony Robbins interviews the world''s top achievers in business, health, and life. One of the most recognized personal development brands globally. Guests are typically high-profile — world leaders, billionaires, athletes, and bestselling authors.',
+  'Personal Development',
+  ARRAY['Personal Development','Business','Leadership'],
+  'https://www.tonyrobbins.com/podcast',
+  NULL,
+  300, '2025-06-01', 'active',
+  true, 'World-class performers, bestselling authors, athletes, business icons',
+  'Highly selective. Guest selection driven by Tony''s personal connections and his team. Guests must align with Tony''s brand of peak performance and abundance mindset.',
+  NULL, NULL,
+  'pending', 85, true
+),
+
+(
+  'knowledge-project',
+  'The Knowledge Project',
+  'Shane Parrish',
+  'Shane Parrish (Farnam Street) interviews world-class thinkers on decision-making, mental models, and the pursuit of mastery. Deep, long-form conversations with psychologists, investors, executives, and philosophers. Highly selective — quality over frequency.',
+  'Personal Development',
+  ARRAY['Personal Development','Business','Science'],
+  'https://fs.blog/knowledge-project',
+  NULL,
+  200, '2025-06-01', 'active',
+  true, 'World-class thinkers, investors, psychologists, executives, philosophers',
+  'Shane prioritizes depth of thinking over celebrity. Guests must have a genuinely novel framework or insight. Relationship-driven.',
+  NULL, NULL,
+  'pending', 90, true
+),
+
+-- ── LEADERSHIP (continued) ────────────────────────────────────────────────
+
+(
+  'hbr-ideacast',
+  'HBR IdeaCast',
+  'Harvard Business Review',
+  'The Harvard Business Review''s weekly podcast featuring thought leaders in business and management. One of the most credible leadership podcasts globally. Guests are typically HBR authors, researchers, or executives whose work is being featured.',
+  'Leadership',
+  ARRAY['Leadership','Business','Education'],
+  'https://hbr.org/podcasts/ideacast',
+  NULL,
+  1000, '2025-06-01', 'active',
+  true, 'Management researchers, HBR authors, C-suite executives, organizational psychologists',
+  'Most guests have a connection to HBR — either a published article, case study, or book. Having an HBR article significantly improves chances. Contact HBR editorial team.',
+  'https://hbr.org/contact-us',
+  NULL,
+  'partial', 87, true
+),
+
+-- ── HEALTH & WELLNESS (continued) ─────────────────────────────────────────
+
+(
+  'model-health-show',
+  'The Model Health Show',
+  'Shawn Stevenson',
+  'Shawn Stevenson interviews leading experts on nutrition, sleep, fitness, and the science of optimal health. One of the top health podcasts in the US. Very guest-friendly with an active booking process.',
+  'Health & Wellness',
+  ARRAY['Health & Wellness','Science','Personal Development'],
+  'https://themodelhealthshow.com',
+  NULL,
+  700, '2025-06-01', 'active',
+  true, 'Nutritionists, sleep researchers, fitness experts, wellness physicians',
+  'Guests must have scientific credibility or a compelling personal health transformation story. Shawn''s audience is serious about health optimization — not casual wellness content.',
+  'https://themodelhealthshow.com/contact',
+  NULL,
+  'partial', 83, true
+),
+
+(
+  'found-my-fitness',
+  'Found My Fitness',
+  'Dr. Rhonda Patrick',
+  'Dr. Rhonda Patrick interviews scientists and researchers on longevity, nutrition, and human performance. Deep scientific content — Rhonda goes deeper on the research than almost anyone. Guest list is primarily academic researchers and physicians with peer-reviewed work.',
+  'Health & Wellness',
+  ARRAY['Health & Wellness','Science'],
+  'https://www.foundmyfitness.com/podcast',
+  NULL,
+  250, '2025-06-01', 'active',
+  true, 'Longevity researchers, physicians, neuroscientists, nutritional scientists',
+  'Must have peer-reviewed research in longevity, nutrition, exercise, or neuroscience. Rhonda''s audience is highly sophisticated and scientifically literate.',
+  'https://www.foundmyfitness.com/contact',
+  NULL,
+  'partial', 89, true
+),
+
+(
+  'rich-roll',
+  'Rich Roll Podcast',
+  'Rich Roll',
+  'Rich Roll (ultra-endurance athlete, author) hosts long-form conversations on plant-based nutrition, ultra-endurance, spirituality, and conscious entrepreneurship. Highly eclectic guest mix — athletes, authors, scientists, and spiritual leaders.',
+  'Health & Wellness',
+  ARRAY['Health & Wellness','Sports & Performance','Personal Development'],
+  'https://www.richroll.com/podcast',
+  NULL,
+  850, '2025-06-01', 'active',
+  true, 'Athletes, plant-based advocates, wellness authors, performance scientists',
+  'Rich values depth and authenticity. Guests must have a genuine story of transformation — physical, mental, or spiritual. Vegan/plant-based angle is a strong fit but not required.',
+  'https://www.richroll.com/contact',
+  NULL,
+  'partial', 83, true
+),
+
+-- ── TECHNOLOGY (continued) ────────────────────────────────────────────────
+
+(
+  'a16z-podcast',
+  'a16z Podcast',
+  'Andreessen Horowitz',
+  'The Andreessen Horowitz (a16z) team covers technology trends, innovation, and the future of software. Guest list is typically a16z portfolio companies, researchers, and technology thought leaders. Highly influential in the VC and startup ecosystem.',
+  'Technology',
+  ARRAY['Technology','Business','Finance & Investing'],
+  'https://a16z.com/podcast',
+  NULL,
+  700, '2025-06-01', 'active',
+  true, 'Tech founders, researchers, VCs, software engineers building the future',
+  'Guests are typically connected to the a16z ecosystem or have written something notable in the tech space. Portfolio company founders and research partners are primary.',
+  NULL, NULL,
+  'pending', 88, true
+),
+
+-- ── FINANCE & INVESTING (continued) ───────────────────────────────────────
+
+(
+  'afford-anything',
+  'Afford Anything',
+  'Paula Pant',
+  'Paula Pant challenges the assumption that you can''t afford anything you want — you just have to make smart tradeoffs. Mix of real estate investing, financial independence, and mindset. Very guest-friendly with an active pitch process.',
+  'Finance & Investing',
+  ARRAY['Finance & Investing','Personal Development','Entrepreneurship'],
+  'https://affordanything.com/podcast',
+  NULL,
+  500, '2025-06-01', 'active',
+  true, 'Real estate investors, financial planners, FI bloggers, mindset coaches',
+  'Guests must have a specific angle on wealth-building, real estate, or financial independence. Paula values nuance and intellectual honesty — no hype or get-rich-quick angles.',
+  'https://affordanything.com/contact',
+  NULL,
+  'partial', 81, true
+),
+
+(
+  'dave-ramsey-show',
+  'The Dave Ramsey Show',
+  'Dave Ramsey',
+  'America''s most listened-to personal finance program. Dave Ramsey takes calls and interviews guests on getting out of debt, building wealth, and living generously. Massive conservative-leaning financial audience. Guest slots rare and selective.',
+  'Finance & Investing',
+  ARRAY['Finance & Investing','Leadership','Business'],
+  'https://www.ramseysolutions.com/shows/the-ramsey-show',
+  NULL,
+  3500, '2025-06-01', 'active',
+  true, 'Personal finance authors, debt-free success stories, small business owners',
+  'Guests must align with Ramsey''s principles — debt-free living, cash envelope system, no crypto. Books on personal finance or business are ideal. Contact Ramsey producer team.',
+  'https://www.ramseysolutions.com/contact',
+  NULL,
+  'partial', 87, true
+),
+
+-- ── WOMEN IN BUSINESS (continued) ──────────────────────────────────────────
+
+(
+  'we-can-do-hard-things',
+  'We Can Do Hard Things',
+  'Glennon Doyle & Abby Wambach',
+  'Glennon Doyle and Abby Wambach have raw, honest conversations about life, womanhood, relationships, and social issues. Massive female audience. Guests span authors, activists, scientists, and cultural figures who challenge the status quo.',
+  'Women in Business',
+  ARRAY['Women in Business','Personal Development','Society & Culture'],
+  'https://momastery.com/blog/we-can-do-hard-things',
+  NULL,
+  350, '2025-06-01', 'active',
+  true, 'Female authors, activists, therapists, cultural figures, physicians',
+  'Guests must fit the honest, vulnerability-forward tone. Glennon''s audience is predominantly women looking for permission to live authentically. Strong fit for memoir authors and mental health advocates.',
+  NULL, NULL,
+  'pending', 82, true
+),
+
+-- ── SPORTS & PERFORMANCE ──────────────────────────────────────────────────
+
+(
+  'finding-mastery',
+  'Finding Mastery',
+  'Michael Gervais',
+  'Dr. Michael Gervais (sports psychologist to the Seattle Seahawks and world-class athletes) interviews high performers on the mental skills needed to be world-class. Deep, research-backed conversations on psychology, performance, and purpose.',
+  'Sports & Performance',
+  ARRAY['Sports & Performance','Personal Development','Health & Wellness'],
+  'https://findingmastery.com/podcasts',
+  NULL,
+  380, '2025-06-01', 'active',
+  true, 'Elite athletes, military special operators, C-suite executives, performance coaches',
+  'Guests must have achieved peak performance at the top of their field. Mental performance story is key. Dr. Gervais values psychological depth over celebrity alone.',
+  'https://findingmastery.com/contact',
+  NULL,
+  'partial', 88, true
+),
+
+(
+  'the-sports-doctor',
+  'The Sports Doctor',
+  'Dr. Robert Weil',
+  'Dr. Robert Weil covers sports medicine, injury prevention, and peak physical performance. Long-running show with a loyal sports medicine and fitness professional audience. Active guest booking process for practitioners and researchers.',
+  'Sports & Performance',
+  ARRAY['Sports & Performance','Health & Wellness'],
+  'https://www.thesportsdoctor.com',
+  NULL,
+  900, '2025-06-01', 'active',
+  true, 'Sports medicine physicians, physical therapists, trainers, researchers',
+  'Must have expertise in sports medicine, injury prevention, nutrition for athletes, or physical performance. Clinical experience valued.',
+  'https://www.thesportsdoctor.com/contact',
+  NULL,
+  'partial', 72, true
+),
+
+-- ── FAITH & SPIRITUALITY ───────────────────────────────────────────────────
+
+(
+  'elevation-with-steven-furtick',
+  'Elevation with Steven Furtick',
+  'Steven Furtick',
+  'Pastor Steven Furtick of Elevation Church shares messages on faith, personal growth, and purpose. One of the most-downloaded faith-based podcasts globally. Primarily sermon-based — not a traditional interview show but occasionally features guest speakers.',
+  'Faith & Spirituality',
+  ARRAY['Faith & Spirituality','Personal Development'],
+  'https://elevationchurch.org/podcasts',
+  NULL,
+  800, '2025-06-01', 'active',
+  false, 'Guest speakers for Elevation Church events', NULL,
+  'https://elevationchurch.org/contact',
+  NULL,
+  'partial', 82, true
+),
+
+(
+  'the-daily-stoic',
+  'The Daily Stoic Podcast',
+  'Ryan Holiday',
+  'Ryan Holiday shares daily Stoic wisdom and occasionally interviews authors, philosophers, and business leaders who embody Stoic principles. Ryan is a bestselling author (Obstacle is the Way, Ego is the Enemy). Strong fit for philosophy, history, and business crossover guests.',
+  'Faith & Spirituality',
+  ARRAY['Faith & Spirituality','Personal Development','Education'],
+  'https://dailystoic.com/podcast',
+  NULL,
+  500, '2025-06-01', 'active',
+  true, 'Philosophy authors, historians, athletes who practice Stoic principles',
+  'Guests must have a genuine connection to Stoic philosophy or have written on timeless principles. Authors with a philosophy or self-mastery angle are ideal.',
+  'https://dailystoic.com/contact',
+  NULL,
+  'partial', 83, true
+),
+
+-- ── SOCIETY & CULTURE / SCIENCE ───────────────────────────────────────────
+
+(
+  'revisionist-history',
+  'Revisionist History',
+  'Malcolm Gladwell',
+  'Malcolm Gladwell re-examines overlooked or misunderstood events, people, and ideas from the past. Narrative non-fiction storytelling at its finest. Primarily a solo narrative show — occasional experts and interview subjects featured within episodes.',
+  'Society & Culture',
+  ARRAY['Society & Culture','Education','Science'],
+  'https://www.pushkin.fm/podcasts/revisionist-history',
+  NULL,
+  100, '2025-06-01', 'active',
+  true, 'Academics, historians, scientists, policy experts featured in Malcolm''s research',
+  'Not a traditional guest booking — Malcolm approaches experts for his specific episode topics. Cold pitches are rarely effective. A strong academic publication or connection to Pushkin Industries helps.',
+  NULL, NULL,
+  'pending', 91, true
+),
+
+(
+  'hidden-brain',
+  'Hidden Brain',
+  'Shankar Vedantam',
+  'NPR''s Hidden Brain uses science and storytelling to reveal unconscious patterns that drive human behavior. Shankar Vedantam interviews researchers and psychologists. Highly curated — guests are typically academics with peer-reviewed research that connects to everyday life.',
+  'Society & Culture',
+  ARRAY['Society & Culture','Science','Education'],
+  'https://hiddenbrain.org',
+  'https://feeds.npr.org/510308/podcast.xml',
+  400, '2025-06-01', 'active',
+  true, 'Psychologists, behavioral economists, neuroscientists, social scientists',
+  'NPR produced — guests are primarily academic researchers. Must have peer-reviewed work that translates into surprising, counterintuitive insights about human behavior.',
+  NULL, NULL,
+  'pending', 90, true
+),
+
+-- ── PARENTING ─────────────────────────────────────────────────────────────
+
+(
+  'good-inside',
+  'Good Inside',
+  'Dr. Becky Kennedy',
+  'Dr. Becky Kennedy (the "millennial parenting whisperer" per TIME Magazine) helps parents build connection-based relationships with their kids. One of the fastest-growing parenting podcasts. Highly guest-friendly with an engaged community of parents.',
+  'Parenting',
+  ARRAY['Parenting','Personal Development','Education'],
+  'https://www.goodinside.com/podcast',
+  NULL,
+  350, '2025-06-01', 'active',
+  true, 'Child psychologists, family therapists, parenting authors, pediatricians',
+  'Guest expertise must directly serve parents of young children. Clinical or research background in child development strongly preferred. Dr. Becky''s audience trusts science-based parenting approaches.',
+  'https://www.goodinside.com/contact',
+  NULL,
+  'partial', 86, true
+),
+
+(
+  'big-life-kids',
+  'Big Life Journal Podcast',
+  'Andrea Driessen & Stephanie Harrison',
+  'Interviews with psychologists, educators, and experts on raising resilient, growth-minded children. Strong fit for parenting authors, school counselors, and child development researchers. Active guest booking process.',
+  'Parenting',
+  ARRAY['Parenting','Education','Personal Development'],
+  'https://biglifejournal.com/podcast',
+  NULL,
+  280, '2025-06-01', 'active',
+  true, 'Child psychologists, educators, parenting authors, school counselors',
+  'Must have expertise that directly helps parents raise resilient, confident children. Growth mindset framework is central to the show.',
+  'https://biglifejournal.com/contact',
+  NULL,
+  'partial', 74, true
 )
 
 ON CONFLICT (slug) DO NOTHING;
