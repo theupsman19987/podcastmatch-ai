@@ -350,6 +350,7 @@ export interface Database {
           artwork_url:                 string | null
           // ── Taxonomy ────────────────────────────────────────────
           category:                    string
+          subcategory:                 string | null
           categories:                  string[]
           publishing_frequency:        string | null
           // ── Platform links ──────────────────────────────────────
@@ -363,6 +364,7 @@ export interface Database {
           language:                    string
           activity_status:             string
           // ── Contact Intelligence ─────────────────────────────────
+          primary_email:               string | null
           producer_name:               string | null
           producer_email:              string | null
           host_email:                  string | null
@@ -408,6 +410,8 @@ export interface Database {
           guest_friendliness_score:    number
           visibility_score:            number
           response_probability_score:  number
+          audience_alignment_score:    number
+          match_quality_score:         number
           // ── GENERATED column (read-only) ────────────────────────
           contact_method_rank:         number
           // ── RSS enrichment cache ─────────────────────────────────
@@ -441,6 +445,7 @@ export interface Database {
           description?:                string | null
           artwork_url?:                string | null
           category:                    string
+          subcategory?:                string | null
           categories?:                 string[]
           publishing_frequency?:       string | null
           rss_feed_url?:               string | null
@@ -451,6 +456,7 @@ export interface Database {
           last_episode_date?:          string | null
           language?:                   string
           activity_status?:            string
+          primary_email?:              string | null
           producer_name?:              string | null
           producer_email?:             string | null
           host_email?:                 string | null
@@ -515,6 +521,7 @@ export interface Database {
           description?:                string | null
           artwork_url?:                string | null
           category?:                   string
+          subcategory?:                string | null
           categories?:                 string[]
           publishing_frequency?:       string | null
           rss_feed_url?:               string | null
@@ -524,6 +531,7 @@ export interface Database {
           episode_count?:              number
           last_episode_date?:          string | null
           activity_status?:            string
+          primary_email?:              string | null
           producer_name?:              string | null
           producer_email?:             string | null
           host_email?:                 string | null

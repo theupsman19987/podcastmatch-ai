@@ -58,6 +58,7 @@ export type GuestFrequency =
 
 /* ── Contact Intelligence ─────────────────────────────────── */
 export interface ContactIntelligence {
+  primaryEmail?:           string | null
   producerName?:           string | null
   producerEmail?:          string | null
   hostEmail?:              string | null
@@ -112,6 +113,8 @@ export interface IntelligenceScores {
   guestFriendlinessScore:   number  // 0–100 openness to guests
   visibilityScore:          number  // 0–100 cross-platform reach
   responseProbabilityScore: number  // 0–100 likelihood of reply
+  audienceAlignmentScore:   number  // 0–100 set at match-time, per creator
+  matchQualityScore:        number  // 0–100 composite of all 4 podcast scores
 }
 
 /* ── Data Quality Flags ───────────────────────────────────── */
@@ -171,6 +174,7 @@ export interface CuratedPodcast {
 
   // Taxonomy
   category:                string
+  subcategory:             string | null
   categories:              string[]
   publishingFrequency:     PublishingFrequency | null
 
