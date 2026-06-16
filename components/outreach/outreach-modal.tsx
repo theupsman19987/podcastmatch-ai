@@ -72,7 +72,7 @@ function SubjectField({ subject }: { subject: string }) {
 
 /* ── Main component ──────────────────────────────────────── */
 export function OutreachModal({ podcast, isOpen, onClose }: OutreachModalProps) {
-  const rank  = podcast.contactMethodRank as Exclude<ContactMethodRank, 7> | undefined
+  const rank  = podcast.contactMethodRank as ContactMethodRank | undefined
   const value = podcast.bestContactValue
 
   const template = rank && rank !== 7

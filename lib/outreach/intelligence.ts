@@ -65,7 +65,8 @@ export async function getContactMethodPerformance(): Promise<ContactMethodPerfor
 export async function getPodcastPerformance(podcastId: string): Promise<PodcastStats | null> {
   try {
     const supabase = await createClient()
-    const { data, error } = await supabase.rpc("get_podcast_performance", {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase as any).rpc("get_podcast_performance", {
       p_podcast_id: podcastId,
     })
     if (error || !data || !Array.isArray(data) || data.length === 0) return null
