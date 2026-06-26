@@ -2,13 +2,16 @@ import type { Metadata } from "next"
 import { DiscoverPageContent } from "./discover-client"
 
 export const metadata: Metadata = {
-  title: "Discover Opportunities",
+  title: "Find Podcasts To Be A Guest On | PodcastMatch AI",
   description:
-    "AI-powered visibility discovery. Curated podcast opportunities matched to your expertise, audience, and goals — not a keyword search.",
+    "Discover podcast opportunities matched to your expertise, audience, message, and outreach readiness with PodcastMatch AI.",
+  alternates: {
+    canonical: "https://podcastmatchai.com/discover",
+  },
   openGraph: {
-    title: "Discover Podcast Opportunities | PodcastMatch AI",
+    title:       "Find Podcasts To Be A Guest On | PodcastMatch AI",
     description:
-      "AI-powered visibility discovery. Curated podcast opportunities matched to your expertise, audience, and goals.",
+      "Discover podcast opportunities matched to your expertise, audience, message, and outreach readiness.",
     url: "https://podcastmatchai.com/discover",
   },
 }

@@ -13,13 +13,12 @@
    - Speaker niche pages: webPageSchema + breadcrumbSchema + reviewSchema
    ═══════════════════════════════════════════════════════════ */
 
-/* ── Site config — update when domain is confirmed ────── */
 export const SITE_CONFIG = {
-  url:         "https://podmatch.ai",
+  url:         "https://podcastmatchai.com",
   name:        "PodcastMatch AI",
   description:
     "PodcastMatch AI is an AI-powered podcast guest matching platform that helps creators, coaches, speakers, authors, and entrepreneurs discover high-fit podcast opportunities through advanced audience alignment scoring and host activity intelligence.",
-  logoUrl:     "https://podmatch.ai/logo.png",
+  logoUrl:     "https://podcastmatchai.com/logo.png",
   twitterUrl:  "https://twitter.com/podmatchai",
   linkedinUrl: "https://linkedin.com/company/podmatchai",
   instagramUrl: "https://instagram.com/podmatchai",
@@ -74,13 +73,6 @@ export function softwareApplicationSchema() {
       "Creator Opportunity Queue",
       "Podcast Outreach Intelligence",
     ],
-    "aggregateRating": {
-      "@type":       "AggregateRating",
-      "ratingValue": "4.9",
-      "reviewCount": "1847",
-      "bestRating":  "5",
-      "worstRating": "1",
-    },
   }
 }
 

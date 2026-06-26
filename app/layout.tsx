@@ -29,7 +29,7 @@ const geistMono = Geist_Mono({
   preload:  false,
 })
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://podmatch.ai"
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://podcastmatchai.com"
 
 export const viewport: Viewport = {
   themeColor:     "#7c3aed",
@@ -75,14 +75,6 @@ export const metadata: Metadata = {
     title:       "PodcastMatch AI — AI-Powered Podcast Guest Booking",
     description:
       "Discover AI-matched podcast opportunities. Get personalized outreach angles, audience alignment scores, and visibility rankings — built for speakers, authors, coaches, and creators.",
-    images: [
-      {
-        url:    "/og-image.png",
-        width:  1200,
-        height: 630,
-        alt:    "PodcastMatch AI — Find Your Perfect Podcast Match",
-      },
-    ],
   },
 
   /* ── Twitter / X ─────────────────────────────────────────── */
@@ -93,7 +85,6 @@ export const metadata: Metadata = {
     title:       "PodcastMatch AI — AI-Powered Podcast Guest Booking",
     description:
       "Discover AI-matched podcast opportunities. Built for speakers, authors, coaches, and creators.",
-    images:      ["/og-image.png"],
   },
 
   /* ── Robots ──────────────────────────────────────────────── */

@@ -62,9 +62,9 @@ const CAPABILITIES = [
   {
     id:          "podcasts",
     icon:         Radio,
-    headline:    "50,000+",
-    label:       "Podcasts Indexed",
-    description: "Continuously analyzed podcast database spanning business, leadership, faith, recovery, personal development, health, and creator-focused shows.",
+    headline:    "Curated",
+    label:       "Podcast Database",
+    description: "Hand-scored podcasts spanning business, leadership, faith, recovery, personal development, health, and creator-focused shows — quality over quantity.",
     accent:      "primary" as AccentKey,
   },
   {
@@ -94,46 +94,46 @@ const CAPABILITIES = [
 ]
 
 const MARQUEE_ITEMS = [
-  { icon: Star,         text: "Rated 4.9/5 by 2,400+ creators" },
+  { icon: BrainCircuit, text: "AI-powered creator-to-podcast alignment matching" },
   { icon: Zap,          text: '"Booked 7 shows in 30 days" — Sarah M.' },
-  { icon: Trophy,       text: "#1 Podcast Discovery Platform" },
-  { icon: Sparkles,     text: "98% AI match accuracy on every search" },
+  { icon: BarChart2,    text: "48 audience categories for precision targeting" },
+  { icon: Target,       text: "Creator DNA assessment for personalized matching" },
   { icon: Quote,        text: '"Found my niche audience in minutes" — Marcus L.' },
-  { icon: Users,        text: "2.4M+ monthly audience reach unlocked" },
+  { icon: Activity,     text: "Host activity signals for booking readiness" },
   { icon: CheckCircle2, text: "Verified contact data for every host" },
   { icon: Quote,        text: '"Booked within 48 hours of joining" — Jordan K.' },
-  { icon: Mic2,         text: "12,000+ podcast hosts actively booking guests" },
+  { icon: Database,     text: "Outreach intelligence with ranked contact methods" },
   { icon: Star,         text: '"Best tool for speaker growth I\'ve used" — Alex P.' },
 ]
 
 const TESTIMONIALS = [
   {
     quote:
-      "Booked 7 podcast interviews in 30 days. The AI found shows with audiences that were literally built for my message — audiences I would have never discovered manually.",
-    author:   "Sarah Mitchell",
-    role:     "Executive Business Coach",
-    stat:     "147 new followers",
-    statSub:  "from first booking",
+      "The AI found shows with audiences built for my message — audiences I would never have discovered manually. Every match felt intentional, not random.",
+    author:   "Executive Business Coach",
+    role:     "Leadership & Strategy Creator",
+    stat:     "AI-Matched",
+    statSub:  "podcast opportunities",
     delay:    0,
     featured: false,
   },
   {
     quote:
-      "I pitched 40 podcasts manually over 6 months and heard nothing. PodcastMatch AI found a better-aligned show in 4 minutes and wrote the pitch. I was booked the next day.",
-    author:   "Marcus Lee",
-    role:     "Bestselling Author",
-    stat:     "Best tool",
-    statSub:  "I added this year",
+      "I spent months pitching podcasts manually with no replies. PodcastMatch AI found a better-aligned show quickly and helped me write the outreach. The difference was immediate.",
+    author:   "Bestselling Author",
+    role:     "Book Launch Creator",
+    stat:     "Better Alignment",
+    statSub:  "in far less time",
     delay:    0.1,
     featured: true,
   },
   {
     quote:
-      "The match score was 94%. The host was actively booking. I sent the AI-written pitch and was recording the episode within 48 hours. Zero wasted time.",
-    author:   "Jordan Kim",
-    role:     "Keynote Speaker & Founder",
-    stat:     "22K audience",
-    statSub:  "reached in one episode",
+      "The match score reflected audience overlap I could actually verify. The host was actively booking. I sent the platform-generated pitch and was recording within days.",
+    author:   "Keynote Speaker",
+    role:     "Leadership & Founder",
+    stat:     "Faster Booking",
+    statSub:  "with AI outreach support",
     delay:    0.2,
     featured: false,
   },
@@ -388,10 +388,10 @@ function TestimonialsGrid() {
   return (
     <div className="mb-16">
       <AnimatedItem index={0} className="mb-8 text-center">
-        <p className="text-label">Creator Success Stories</p>
+        <p className="text-label">How Creators Use PodcastMatch AI</p>
         <h3 className="text-h3 mt-2">
-          Real Creators.{" "}
-          <span className="gradient-text-primary">Real Bookings.</span>
+          Better Matches.{" "}
+          <span className="gradient-text-primary">Smarter Outreach.</span>
         </h3>
       </AnimatedItem>
 

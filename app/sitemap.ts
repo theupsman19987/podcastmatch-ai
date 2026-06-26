@@ -1,57 +1,79 @@
 import type { MetadataRoute } from "next"
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://podmatch.ai"
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://podcastmatchai.com"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date()
-
   return [
-    /* ── Marketing / public pages ─────────────────────────── */
+    /* ── Core marketing pages ─────────────────────────── */
     {
       url:             BASE_URL,
-      lastModified:    now,
+      lastModified:    new Date("2026-06-25"),
       changeFrequency: "weekly",
       priority:        1.0,
     },
     {
-      url:             `${BASE_URL}/login`,
-      lastModified:    now,
+      url:             `${BASE_URL}/discover`,
+      lastModified:    new Date("2026-06-25"),
+      changeFrequency: "weekly",
+      priority:        0.9,
+    },
+    {
+      url:             `${BASE_URL}/how-it-works`,
+      lastModified:    new Date("2026-06-25"),
       changeFrequency: "monthly",
       priority:        0.8,
     },
     {
+      url:             `${BASE_URL}/features`,
+      lastModified:    new Date("2026-06-25"),
+      changeFrequency: "monthly",
+      priority:        0.8,
+    },
+    {
+      url:             `${BASE_URL}/pricing`,
+      lastModified:    new Date("2026-06-25"),
+      changeFrequency: "monthly",
+      priority:        0.8,
+    },
+    {
+      url:             `${BASE_URL}/success`,
+      lastModified:    new Date("2026-06-25"),
+      changeFrequency: "monthly",
+      priority:        0.7,
+    },
+    {
+      url:             `${BASE_URL}/contact`,
+      lastModified:    new Date("2026-06-25"),
+      changeFrequency: "yearly",
+      priority:        0.6,
+    },
+
+    /* ── Auth pages ────────────────────────────────────── */
+    {
       url:             `${BASE_URL}/signup`,
-      lastModified:    now,
+      lastModified:    new Date("2026-06-25"),
       changeFrequency: "monthly",
       priority:        0.9,
     },
     {
-      url:             `${BASE_URL}/forgot-password`,
-      lastModified:    now,
+      url:             `${BASE_URL}/login`,
+      lastModified:    new Date("2026-06-25"),
+      changeFrequency: "monthly",
+      priority:        0.6,
+    },
+
+    /* ── Legal ─────────────────────────────────────────── */
+    {
+      url:             `${BASE_URL}/privacy`,
+      lastModified:    new Date("2026-06-25"),
       changeFrequency: "yearly",
       priority:        0.3,
     },
-
-    /* ── Onboarding ───────────────────────────────────────── */
-    {
-      url:             `${BASE_URL}/onboarding/creator-dna`,
-      lastModified:    now,
-      changeFrequency: "monthly",
-      priority:        0.7,
-    },
-
-    /* ── Legal ────────────────────────────────────────────── */
-    {
-      url:             `${BASE_URL}/privacy`,
-      lastModified:    now,
-      changeFrequency: "yearly",
-      priority:        0.4,
-    },
     {
       url:             `${BASE_URL}/terms`,
-      lastModified:    now,
+      lastModified:    new Date("2026-06-25"),
       changeFrequency: "yearly",
-      priority:        0.4,
+      priority:        0.3,
     },
   ]
 }

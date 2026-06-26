@@ -1,0 +1,59 @@
+# PodcastMatch AI
+
+> AI-powered podcast guest matching for speakers, authors, coaches, consultants, and creators.
+
+PodcastMatch AI helps creators discover better-fit podcast opportunities through intelligent matching — not keyword search. The platform analyzes creator identity, audience alignment, expertise depth, and host activity signals to surface relevant podcast opportunities.
+
+## What PodcastMatch AI does
+
+- Matches creators to podcasts based on audience fit, not just topic overlap
+- Scores each match using creator DNA, category alignment, and host activity data
+- Provides verified host contact data and outreach templates for every match
+- Generates a Visibility Score that reflects how discoverable a creator is to podcast hosts
+- Tracks outreach outcomes to improve future match recommendations
+
+## Who it is for
+
+- Public speakers and keynote speakers seeking podcast visibility
+- Authors promoting books or expanding their platform
+- Business coaches, life coaches, and executive coaches
+- Consultants and thought leaders building authority
+- Entrepreneurs and founders growing audience reach
+- Faith-based, recovery, health, and leadership speakers
+
+## What makes it different
+
+PodcastMatch AI is not a podcast directory. It is a Visibility Intelligence Platform. Instead of searching by keyword, creators complete a Creator DNA Assessment that maps their expertise, audience, and positioning. The platform then uses this profile to generate alignment-scored podcast matches with host contact intelligence and outreach readiness signals.
+
+## Current stage
+
+PodcastMatch AI is in active beta. The platform serves creators across business, leadership, personal development, health, faith, and recovery categories. The curated podcast database is hand-scored and continuously updated.
+
+## Public pages
+
+- Homepage: https://podcastmatchai.com
+- How it works: https://podcastmatchai.com/how-it-works
+- Features: https://podcastmatchai.com/features
+- Pricing: https://podcastmatchai.com/pricing
+- Discover podcasts: https://podcastmatchai.com/discover
+- Success stories: https://podcastmatchai.com/success
+- Contact: https://podcastmatchai.com/contact
+
+## Contact
+
+General: https://podcastmatchai.com/contact
+
+## What not to overstate
+
+- PodcastMatch AI does not guarantee podcast bookings
+- Match scores are based on alignment signals, not booking confirmations
+- The platform is AI-assisted, not fully automated
+- Specific booking rates and user counts are not published claims
+
+## Key concepts
+
+- Creator DNA Assessment: a guided profile builder that maps expertise, audience, and messaging
+- Visibility Score: a 0–100 score reflecting a creator's discoverability and podcast fit
+- Audience Alignment Score: how well a creator's audience matches a podcast's audience
+- Host Activity Signal: data points indicating whether a podcast host is actively booking guests
+- Contact Intelligence: verified contact methods ranked by outreach effectiveness
