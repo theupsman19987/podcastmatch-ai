@@ -30,7 +30,7 @@ export function ForgotPasswordForm() {
     const supabase = createClient()
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(
       email.trim(),
-      { redirectTo: `${window.location.origin}/auth/callback?next=/reset-password` }
+      { redirectTo: `${process.env.NEXT_PUBLIC_APP_URL ?? "https://www.podcastmatchai.com"}/auth/callback?next=/reset-password` }
     )
     setIsLoading(false)
 
