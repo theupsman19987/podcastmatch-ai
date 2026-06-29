@@ -38,12 +38,15 @@ export async function GET(request: Request) {
 
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      /* Ensure next is an internal path */
       const destination = next.startsWith("/") ? next : "/dashboard"
-      return NextResponse.redirect(`${origin}${destination}`)
+      // Tag password-reset redirects so the page knows it arrived via a recovery flow
+      const target = destination === "/reset-password"
+        ? `${origin}/reset-password?recovery=1`
+        : `${origin}${destination}`
+      return NextResponse.redirect(target)
     }
   }
 
-  /* Something went wrong — send to login with an error hint */
-  return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`)
+  /* Something went wrong — send to forgot-password with an error hint */
+  return NextResponse.redirect(`${origin}/forgot-password?error=reset_failed`)
 }

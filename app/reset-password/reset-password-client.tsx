@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link         from "next/link"
 import { motion }   from "motion/react"
@@ -19,20 +19,13 @@ export function ResetPasswordClient() {
   const [formError,  setFormError]  = useState<string | null>(null)
   const [isLoading,  setIsLoading]  = useState(false)
 
-  // Captured before createClient() runs so the SDK can't clean the URL first.
-  // False when a logged-in user visits this page directly (no reset link).
-  const hadCode = useRef<boolean>(false)
-
   useEffect(() => {
-    const codeBefore  = new URLSearchParams(window.location.search).get("code")
-    const hashBefore  = window.location.hash
-    hadCode.current   = !!codeBefore
+    // The /auth/callback route exchanges the code server-side and redirects here
+    // with ?recovery=1 to signal a valid recovery flow. No client-side code exchange needed.
+    const isRecovery = new URLSearchParams(window.location.search).get("recovery") === "1"
 
-    // Expired / already-used link — Supabase puts the error in the hash fragment
-    if (hashBefore.includes("error=")) {
-      const p    = new URLSearchParams(hashBefore.slice(1))
-      const desc = p.get("error_description") ?? "Reset link is invalid or has expired."
-      setStageError(desc)
+    if (!isRecovery) {
+      setStageError("No reset code found. Please request a new password reset link.")
       setStage("error")
       return
     }
@@ -40,31 +33,17 @@ export function ResetPasswordClient() {
     const supabase = createClient()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "PASSWORD_RECOVERY") {
-        // Happy path: PKCE exchange completed with /recovery suffix on code-verifier
-        setStage("form")
-
-      } else if (event === "SIGNED_IN" && hadCode.current && session) {
-        // Case B: code-verifier stored without /recovery suffix — SDK fires SIGNED_IN
-        // instead of PASSWORD_RECOVERY. hadCode guards against a pre-existing login session.
-        setStage("form")
-
-      } else if (event === "INITIAL_SESSION") {
-        if (session && hadCode.current) {
-          // Case A: race condition — exchange completed before listener registered.
-          // PASSWORD_RECOVERY already fired and was missed; INITIAL_SESSION carries the session.
+      if (
+        event === "INITIAL_SESSION" ||
+        event === "PASSWORD_RECOVERY" ||
+        event === "SIGNED_IN"
+      ) {
+        if (session) {
           setStage("form")
-          return
+        } else {
+          setStageError("Your session has expired. Please request a new reset link.")
+          setStage("error")
         }
-
-        // No session yet (or no code) — give the exchange up to 3 s to complete
-        setTimeout(() => {
-          setStage(prev => {
-            if (prev !== "exchanging") return prev
-            setStageError("No reset code found. Please request a new password reset link.")
-            return "error"
-          })
-        }, 3000)
       }
     })
 
