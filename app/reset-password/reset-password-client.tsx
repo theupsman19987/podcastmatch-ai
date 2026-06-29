@@ -1,69 +1,121 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { motion } from "motion/react"
+import Link         from "next/link"
+import { motion }   from "motion/react"
 import { ArrowRight, ArrowLeft, Loader2, AlertCircle } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
-import { AuthInput } from "@/components/auth/auth-input"
+import { createClient }  from "@/lib/supabase/client"
+import { AuthInput }     from "@/components/auth/auth-input"
 import { ShimmerButton } from "@/components/ui/shimmer-button"
+
+// console.warn is kept in production (removeConsole excludes "warn" and "error").
+// Filter DevTools console by "[AUTH-TRACE]" to see only these entries.
+const T = (label: string, data?: Record<string, unknown>) =>
+  console.warn(`[AUTH-TRACE] ${new Date().toISOString()} | ${label}`, data ?? "")
 
 export function ResetPasswordClient() {
   const router = useRouter()
 
-  const [stage, setStage] = useState<"exchanging" | "form" | "error">("exchanging")
+  const [stage,     setStage]     = useState<"exchanging" | "form" | "error">("exchanging")
   const [stageError, setStageError] = useState<string | null>(null)
-  const [password, setPassword] = useState("")
-  const [confirm, setConfirm] = useState("")
+  const [password,  setPassword]  = useState("")
+  const [confirm,   setConfirm]   = useState("")
   const [formError, setFormError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  // Tracks when the listener was registered so we can measure offset at each event
+  const listenerAt = useRef<number>(0)
+
   useEffect(() => {
-    // GoTrue redirects expired/invalid tokens with #error=... in the fragment.
-    const hash = window.location.hash
-    if (hash.includes("error=")) {
-      const p = new URLSearchParams(hash.slice(1))
-      setStageError(
-        p.get("error_description") ?? "Reset link is invalid or has expired."
-      )
+    const t0 = performance.now()
+
+    // ── STEP 1: snapshot URL state BEFORE createBrowserClient touches anything ──
+    const searchBefore = window.location.search
+    const hashBefore   = window.location.hash
+    const codeBefore   = new URLSearchParams(searchBefore).get("code")
+
+    T("STEP 1 | useEffect fired", {
+      t_ms:         0,
+      url:          window.location.href,
+      code_in_url:  !!codeBefore,
+      code_prefix:  codeBefore ? codeBefore.slice(0, 10) + "…" : null,
+      hash:         hashBefore || "(empty)",
+      readyState:   document.readyState,
+    })
+
+    // ── Hash-error path (expired / already-used link) ────────────────────────
+    if (hashBefore.includes("error=")) {
+      const p    = new URLSearchParams(hashBefore.slice(1))
+      const desc = p.get("error_description") ?? "Reset link is invalid or has expired."
+      T("STEP 2 | hash error detected → showing error state", { error: desc })
+      setStageError(desc)
       setStage("error")
       return
     }
 
-    // @supabase/ssr createBrowserClient sets detectSessionInUrl: true.
-    // On init it auto-exchanges ?code= (PKCE) or #access_token= (implicit),
-    // strips ?code= from the URL, then fires PASSWORD_RECOVERY.
-    // We must NOT call exchangeCodeForSession manually — that races the auto-exchange
-    // and triggers a re-render with code=null once the URL is cleared.
+    // ── STEP 3: create the Supabase browser client ───────────────────────────
+    T("STEP 3 | calling createClient()…", { t_ms: +(performance.now() - t0).toFixed(2) })
     const supabase = createClient()
 
-    // Expose auth on window so e2e tests can call verifyOtp on the same instance.
-    // Safe: the auth object holds no more than what's already in localStorage.
+    const searchAfter = window.location.search
+    const codeAfter   = new URLSearchParams(searchAfter).get("code")
+    T("STEP 4 | createClient() returned", {
+      t_ms:             +(performance.now() - t0).toFixed(2),
+      code_still_in_url: !!codeAfter,
+      url_changed:      searchAfter !== searchBefore,
+      url_now:          window.location.href,
+    })
+
+    // Expose auth instance for e2e test hooks
     if (typeof window !== "undefined") {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;(window as any).__sbAuth = supabase.auth
     }
 
-    // INITIAL_SESSION fires after _initialize completes (before PASSWORD_RECOVERY).
-    // PASSWORD_RECOVERY fires via setTimeout(0) inside _initialize, arriving
-    // slightly after INITIAL_SESSION. We wait 3 s so PKCE exchange can complete
-    // before we declare the link invalid.
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    // ── STEP 5: register the auth-state listener ─────────────────────────────
+    const lAt = performance.now()
+    listenerAt.current = lAt
+    T("STEP 5 | registering onAuthStateChange", { t_ms: +(lAt - t0).toFixed(2) })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      const eAt = performance.now()
+      T(`STEP 6 | EVENT → ${event}`, {
+        t_ms:              +(eAt - t0).toFixed(2),
+        ms_after_listener: +(eAt - listenerAt.current).toFixed(2),
+        session_null:      session === null,
+        user_email:        session?.user?.email ?? null,
+        code_in_url_now:   !!new URLSearchParams(window.location.search).get("code"),
+        url_now:           window.location.href,
+      })
+
       if (event === "PASSWORD_RECOVERY") {
+        T("  → PASSWORD_RECOVERY received — transitioning to form ✅")
         setStage("form")
+
       } else if (event === "INITIAL_SESSION") {
+        T("  → INITIAL_SESSION received — starting 3 s timer", {
+          session_present: !!session,
+          user_email:      session?.user?.email ?? null,
+        })
         setTimeout(() => {
           setStage(prev => {
             if (prev === "exchanging") {
+              T("  → 3 s elapsed, still exchanging — transitioning to error ❌")
               setStageError("No reset code found. Please request a new password reset link.")
               return "error"
             }
+            T(`  → 3 s elapsed, stage already = "${prev}" — no-op`)
             return prev
           })
-        }, 3000)  // 3s: allows async PKCE exchange to complete before declaring the link invalid
+        }, 3000)
+
+      } else {
+        T(`  → ${event} — no handler (ignored)`)
       }
     })
+
+    T("STEP 7 | listener registered", { t_ms: +(performance.now() - t0).toFixed(2) })
 
     return () => subscription.unsubscribe()
   }, [])
@@ -197,7 +249,7 @@ export function ResetPasswordClient() {
         href="/login"
         className="mt-6 flex items-center justify-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
-        <ArrowLeft className="size-3.5" aria-hidden="true" />
+        <ArrowLeft className="size-3.5" />
         Back to sign in
       </Link>
     </motion.div>
